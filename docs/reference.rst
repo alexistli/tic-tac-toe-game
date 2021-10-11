@@ -6,8 +6,8 @@ Reference
     :backlinks: none
 
 
-tic_tac_toe.__main__
---------------------
+tic_tac_toe_game.__main__
+-------------------------
 
-.. automodule:: tic_tac_toe.__main__
+.. automodule:: tic_tac_toe_game.__main__
    :members:

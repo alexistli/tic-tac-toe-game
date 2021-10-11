@@ -9,4 +9,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main(prog_name="tic-tac-toe")  # pragma: no cover
+    main(prog_name="tic-tac-toe-game")  # pragma: no cover

@@ -1,1 +1,1 @@
-"""Test suite for the tic_tac_toe package."""
+"""Test suite for the tic_tac_toe_game package."""

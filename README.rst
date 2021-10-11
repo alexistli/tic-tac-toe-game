@@ -7,26 +7,26 @@ Tic Tac Toe
 
 |pre-commit| |Black|
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/tic-tac-toe.svg
-   :target: https://pypi.org/project/tic-tac-toe/
+.. |PyPI| image:: https://img.shields.io/pypi/v/tic-tac-toe-game.svg
+   :target: https://pypi.org/project/tic-tac-toe-game/
    :alt: PyPI
-.. |Status| image:: https://img.shields.io/pypi/status/tic-tac-toe.svg
-   :target: https://pypi.org/project/tic-tac-toe/
+.. |Status| image:: https://img.shields.io/pypi/status/tic-tac-toe-game.svg
+   :target: https://pypi.org/project/tic-tac-toe-game/
    :alt: Status
-.. |Python Version| image:: https://img.shields.io/pypi/pyversions/tic-tac-toe
-   :target: https://pypi.org/project/tic-tac-toe
+.. |Python Version| image:: https://img.shields.io/pypi/pyversions/tic-tac-toe-game
+   :target: https://pypi.org/project/tic-tac-toe-game
    :alt: Python Version
-.. |License| image:: https://img.shields.io/pypi/l/tic-tac-toe
+.. |License| image:: https://img.shields.io/pypi/l/tic-tac-toe-game
    :target: https://opensource.org/licenses/MIT
    :alt: License
-.. |Read the Docs| image:: https://img.shields.io/readthedocs/tic-tac-toe/latest.svg?label=Read%20the%20Docs
-   :target: https://tic-tac-toe.readthedocs.io/
-   :alt: Read the documentation at https://tic-tac-toe.readthedocs.io/
-.. |Tests| image:: https://github.com/alexistli/tic-tac-toe/workflows/Tests/badge.svg
-   :target: https://github.com/alexistli/tic-tac-toe/actions?workflow=Tests
+.. |Read the Docs| image:: https://img.shields.io/readthedocs/tic-tac-toe-game/latest.svg?label=Read%20the%20Docs
+   :target: https://tic-tac-toe-game.readthedocs.io/
+   :alt: Read the documentation at https://tic-tac-toe-game.readthedocs.io/
+.. |Tests| image:: https://github.com/alexistli/tic-tac-toe-game/workflows/Tests/badge.svg
+   :target: https://github.com/alexistli/tic-tac-toe-game/actions?workflow=Tests
    :alt: Tests
-.. |Codecov| image:: https://codecov.io/gh/alexistli/tic-tac-toe/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/alexistli/tic-tac-toe
+.. |Codecov| image:: https://codecov.io/gh/alexistli/tic-tac-toe-game/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/alexistli/tic-tac-toe-game
    :alt: Codecov
 .. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
    :target: https://github.com/pre-commit/pre-commit
@@ -55,7 +55,7 @@ You can install *Tic Tac Toe* via pip_ from PyPI_:
 
 .. code:: console
 
-   $ pip install tic-tac-toe
+   $ pip install tic-tac-toe-game
 
 
 Usage
@@ -95,8 +95,8 @@ This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter
 .. _MIT license: https://opensource.org/licenses/MIT
 .. _PyPI: https://pypi.org/
 .. _Hypermodern Python Cookiecutter: https://github.com/cjolowicz/cookiecutter-hypermodern-python
-.. _file an issue: https://github.com/alexistli/tic-tac-toe/issues
+.. _file an issue: https://github.com/alexistli/tic-tac-toe-game/issues
 .. _pip: https://pip.pypa.io/
 .. github-only
 .. _Contributor Guide: CONTRIBUTING.rst
-.. _Usage: https://tic-tac-toe.readthedocs.io/en/latest/usage.html
+.. _Usage: https://tic-tac-toe-game.readthedocs.io/en/latest/usage.html
