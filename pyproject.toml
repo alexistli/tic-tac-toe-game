@@ -10,22 +10,21 @@ repository = "https://github.com/alexistli/tic-tac-toe"
 documentation = "https://tic-tac-toe.readthedocs.io"
 classifiers = [
     "Development Status :: 1 - Planning",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
 ]
 
 [tool.poetry.urls]
 Changelog = "https://github.com/alexistli/tic-tac-toe/releases"
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
+python = "^3.8"
 click = "^8.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
-coverage = {extras = ["toml"], version = "^5.4"}
+coverage = {extras = ["toml"], version = "^6.0"}
 safety = "^1.10.3"
 mypy = "^0.910"
 typeguard = "^2.12.1"
