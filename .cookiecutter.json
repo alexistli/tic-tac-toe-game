@@ -6,7 +6,7 @@
   "friendly_name": "Tic Tac Toe",
   "github_user": "alexistli",
   "license": "MIT",
-  "package_name": "tic_tac_toe",
-  "project_name": "tic-tac-toe",
+  "package_name": "tic_tac_toe_game",
+  "project_name": "tic-tac-toe-game",
   "version": "0.0.0"
 }

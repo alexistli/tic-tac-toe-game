@@ -13,9 +13,9 @@ Here is a list of important resources for contributors:
 - `Code of Conduct`_
 
 .. _MIT license: https://opensource.org/licenses/MIT
-.. _Source Code: https://github.com/alexistli/tic-tac-toe
-.. _Documentation: https://tic-tac-toe.readthedocs.io/
-.. _Issue Tracker: https://github.com/alexistli/tic-tac-toe/issues
+.. _Source Code: https://github.com/alexistli/tic-tac-toe-game
+.. _Documentation: https://tic-tac-toe-game.readthedocs.io/
+.. _Issue Tracker: https://github.com/alexistli/tic-tac-toe-game/issues
 
 How to report a bug
 -------------------
@@ -61,7 +61,7 @@ or the command-line interface:
 .. code:: console
 
    $ poetry run python
-   $ poetry run tic-tac-toe
+   $ poetry run tic-tac-toe-game
 
 .. _Poetry: https://python-poetry.org/
 .. _Nox: https://nox.thea.codes/
@@ -118,6 +118,6 @@ To run linting and code formatting checks before commiting your change, you can 
 It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
 
-.. _pull request: https://github.com/alexistli/tic-tac-toe/pulls
+.. _pull request: https://github.com/alexistli/tic-tac-toe-game/pulls
 .. github-only
 .. _Code of Conduct: CODE_OF_CONDUCT.rst

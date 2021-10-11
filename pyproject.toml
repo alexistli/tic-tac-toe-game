@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "tic-tac-toe"
+name = "tic-tac-toe-game"
 version = "0.0.0"
 description = "Tic Tac Toe"
 authors = ["Alexis Torelli <alexis.torelli.treanton@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
-homepage = "https://github.com/alexistli/tic-tac-toe"
-repository = "https://github.com/alexistli/tic-tac-toe"
-documentation = "https://tic-tac-toe.readthedocs.io"
+homepage = "https://github.com/alexistli/tic-tac-toe-game"
+repository = "https://github.com/alexistli/tic-tac-toe-game"
+documentation = "https://tic-tac-toe-game.readthedocs.io"
 classifiers = [
     "Development Status :: 1 - Planning",
     "Programming Language :: Python :: 3.8",
@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/alexistli/tic-tac-toe/releases"
+Changelog = "https://github.com/alexistli/tic-tac-toe-game/releases"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -47,14 +47,14 @@ sphinx-click = "^3.0.1"
 Pygments = "^2.9.0"
 
 [tool.poetry.scripts]
-tic-tac-toe = "tic_tac_toe.__main__:main"
+tic-tac-toe-game = "tic_tac_toe_game.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["tic_tac_toe"]
+source = ["tic_tac_toe_game"]
 
 [tool.coverage.report]
 show_missing = true
