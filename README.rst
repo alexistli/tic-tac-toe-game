@@ -1,5 +1,5 @@
 Tic Tac Toe Game
-===========
+================
 
 |PyPI| |Status| |Python Version| |License|
 
