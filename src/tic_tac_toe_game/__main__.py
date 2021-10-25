@@ -7,6 +7,8 @@ import click
 def main() -> None:
     """Tic Tac Toe Game."""
 
+    click.secho("hello", fg="green")
+
 
 if __name__ == "__main__":
     main(prog_name="tic-tac-toe-game")  # pragma: no cover
