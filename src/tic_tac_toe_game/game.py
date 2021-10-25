@@ -1,4 +1,6 @@
 """Tic Tac Toe Game."""
+import random
+from typing import Tuple, Union, Optional
 
 
 def game():
@@ -34,35 +36,6 @@ Version 2.0: Dumb AI + score limit
 """
 
 
-class Player:
-
-    def __init__(self, kind: str, name: str):
-        self.kind = kind
-        self.name = name
-        self.mark = None
-
-    def set_mark(self, mark):
-        self.mark = mark
-
-    def get_mark(self):
-        return self.mark
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.kind!r}, {self.name!r}, {self.mark!r})"
-
-
-class AIPlayer(Player):
-
-    def __init__(self, name: str = "Botybot"):
-        super().__init__(kind="AI", name=name)
-
-
-class HumanPlayer(Player):
-
-    def __init__(self, name: str = "Human"):
-        super().__init__(kind="Human", name=name)
-
-
 class Grid:
 
     _empty_cell = "_"
@@ -74,7 +47,31 @@ class Grid:
     def __init__(self):
         self.grid = Grid._empty_grid
 
-    def framed_grid(self):
+    def get_cell(self, coord: Tuple[int, int]) -> str:
+        return self.grid[coord[0]][coord[1]]
+
+    def set_cell(self, coord: Tuple[int, int], value: str) -> None:
+        if self.grid[coord[0]][coord[1]] != Grid._empty_cell:
+            raise ValueError('This cell has already been played!')
+        self.grid[coord[0]][coord[1]] = value
+
+    def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
+        return self.get_cell(coord) == Grid._empty_cell
+
+    def is_full(self) -> bool:
+        return all(cell != Grid._empty_cell for row in self.grid for cell in row)
+
+    def is_winning_move(self, coord: Tuple[int, int], value: str) -> bool:
+        has_winning_row = all(col == value for col in self.grid[coord[0]])
+        has_winning_col = all(row[coord[1]] == value for row in self.grid)
+        has_winning_diag = False
+        if coord[0] == coord[1]:
+            has_winning_diag = all(self.grid[irow][irow] == value for irow, row in enumerate(self.grid))
+        if coord[0] + coord[1] == 2:
+            has_winning_diag = has_winning_diag or all(self.grid[2 - irow][irow] == value for irow, row in enumerate(self.grid))
+        return has_winning_row or has_winning_col or has_winning_diag
+
+    def framed_grid(self) -> str:
         framed = []
         for idx, row in enumerate(self.grid):
             framed.append(Grid._vertical_separator.join(row))
@@ -82,17 +79,55 @@ class Grid:
                 framed.append(Grid._intersection.join(Grid._horizontal_separator * 3))
         return "\n".join(framed)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.grid!r})"
+
+
+class Player:
+
+    def __init__(self, kind: str, name: str):
+        self.kind = kind
+        self.name = name
+        self.mark = None
+
+    def set_mark(self, mark: str) -> None:
+        self.mark = mark
+
+    def get_mark(self) -> str:
+        return self.mark
+
+    def choose_cell(self, grid: Grid):
+        raise NotImplemented
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.kind!r}, {self.name!r}, {self.mark!r})"
+
+
+class AIPlayer(Player):
+
+    def __init__(self, name: str = "Botybot"):
+        super().__init__(kind="AI", name=name)
+
+    def choose_cell(self, grid: Grid) -> Tuple[int, int]:
+        empty_cells = [(irow, icol) for irow, row in enumerate(grid.grid)
+                       for icol, cell in enumerate(row) if grid.is_empty_cell((irow, icol))]
+        random_cell = random.choice(empty_cells)
+        return random_cell
+
+
+class HumanPlayer(Player):
+
+    def __init__(self, name: str = "Human"):
+        super().__init__(kind="Human", name=name)
 
 
 class Game:
 
     def __init__(self, player_x: Player, player_o: Player):
-        self.grid = Grid()
+        self.grid: Grid = Grid()
         self.player_x = player_x
         self.player_o = player_o
-        self.current_player = self.player_x
+        self.current_player: Optional[Player] = None
 
     def init_game(self):
         pass
@@ -100,13 +135,18 @@ class Game:
     def play_turn(self):
         pass
 
-    def get_next_player(self):
-        if self.current_player == self.player_x:
-            return self.player_o
+    def switch_player(self) -> None:
+        if not self.current_player:
+            self.current_player = self.player_x
+        elif self.current_player == self.player_x:
+            self.current_player = self.player_o
         else:
-            return self.player_x
+            self.current_player = self.player_x
 
-    def __repr__(self):
+    def get_player(self) -> Player:
+        return self.current_player
+
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
 
 

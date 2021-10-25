@@ -20,30 +20,40 @@ def main() -> None:
     mark = click.prompt('Please pick a mark', type=click.Choice(["X", "O"], case_sensitive=False), default="X")
     click.echo(mark)
 
-    game = Game(human_player, ai_player)
-
     # set marks
     if mark == "X":
-        game.x_player = human_player
-        game.o_player = ai_player
+        human_player.set_mark("X")
+        ai_player.set_mark("O")
+        x_player = human_player
+        o_player = ai_player
     else:
-        game.x_player = ai_player
-        game.o_player = human_player
+        ai_player.set_mark("X")
+        human_player.set_mark("O")
+        x_player = ai_player
+        o_player = human_player
+
+    game = Game(x_player, o_player)
 
     finished = False
     while not finished:
         # game.play_turn()
-        next_player = game.get_next_player()
-        game.grid.display()
-        played_cell = click.prompt('Please pick a cell', type=click.Choice(["X", "O"], case_sensitive=False), default="X")
-        game.grid.mark_cell(cell=played_cell, player=player)
-        game.grid.display()
-        finished = game.current_player.has_won() or game.grid.is_full()
+        game.switch_player()
+        player = game.get_player()
+        print(game.grid.framed_grid())
 
-    if game.current_player.has_won():
-        print(f"Player {game.current_player} won!")
-    elif game.grid.is_full():
-        print("Player tied!")
+        if player.kind == "Human":
+            played_cell = click.prompt('Please pick a cell (x, y)', type=click.Tuple([int, int]))
+        else:
+            played_cell = player.choose_cell(game.grid)
+
+        game.grid.set_cell(coord=played_cell, value=player.mark)
+
+        if game.grid.is_winning_move(played_cell, player.mark):
+            print(f"Player {player.name} won!")
+            finished = True
+        elif game.grid.is_full():
+            print("Players tied!")
+            finished = True
 
 
 if __name__ == "__main__":

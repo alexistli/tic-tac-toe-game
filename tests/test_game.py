@@ -3,7 +3,6 @@ from tic_tac_toe_game.game import Grid
 
 def test_grid_init_succeeds():
     grid = Grid()
-    # noinspection PyUnresolvedReferences
     assert grid.grid == [[Grid._empty_cell] * 3] * 3
 
 
