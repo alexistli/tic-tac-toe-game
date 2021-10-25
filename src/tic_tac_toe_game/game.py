@@ -48,10 +48,7 @@ class Player:
         return self.mark
 
     def __repr__(self):
-        pass
-
-    def __str__(self):
-        pass
+        return f"{self.__class__.__name__}({self.kind!r}, {self.name!r}, {self.mark!r})"
 
 
 class AIPlayer(Player):
@@ -86,7 +83,7 @@ class Grid:
         return "\n".join(framed)
 
     def __repr__(self):
-        return self.framed_grid()
+        return f"{self.__class__.__name__}({self.grid!r})"
 
 
 class Game:
@@ -108,6 +105,9 @@ class Game:
             return self.player_o
         else:
             return self.player_x
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
 
 
 def play_game():
