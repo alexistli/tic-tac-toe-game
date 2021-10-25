@@ -47,6 +47,12 @@ class Player:
     def get_mark(self):
         return self.mark
 
+    def __repr__(self):
+        pass
+
+    def __str__(self):
+        pass
+
 
 class AIPlayer(Player):
 
@@ -81,9 +87,6 @@ class Grid:
 
     def __repr__(self):
         return self.framed_grid()
-
-    def __str__(self):
-        return self.__repr__()
 
 
 class Game:
