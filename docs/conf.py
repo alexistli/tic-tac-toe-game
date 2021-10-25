@@ -2,7 +2,7 @@
 from datetime import datetime
 
 
-project = "Tic Tac Toe"
+project = "Tic Tac Toe Game"
 author = "Alexis Torelli"
 copyright = f"{datetime.now().year}, {author}"
 extensions = [
