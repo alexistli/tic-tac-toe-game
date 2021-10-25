@@ -1,4 +1,4 @@
-Tic Tac Toe
+Tic Tac Toe Game
 ===========
 
 |PyPI| |Status| |Python Version| |License|
@@ -51,7 +51,7 @@ Requirements
 Installation
 ------------
 
-You can install *Tic Tac Toe* via pip_ from PyPI_:
+You can install *Tic Tac Toe Game* via pip_ from PyPI_:
 
 .. code:: console
 
@@ -75,7 +75,7 @@ License
 -------
 
 Distributed under the terms of the `MIT license`_,
-*Tic Tac Toe* is free and open source software.
+*Tic Tac Toe Game* is free and open source software.
 
 
 Issues

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "tic-tac-toe-game"
 version = "0.0.0"
-description = "Tic Tac Toe"
+description = "Tic Tac Toe Game"
 authors = ["Alexis Torelli <alexis.torelli.treanton@gmail.com>"]
 license = "MIT"
 readme = "README.rst"

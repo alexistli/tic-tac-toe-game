@@ -3,7 +3,7 @@
   "author": "Alexis Torelli",
   "development_status": "Development Status :: 1 - Planning",
   "email": "alexis.torelli.treanton@gmail.com",
-  "friendly_name": "Tic Tac Toe",
+  "friendly_name": "Tic Tac Toe Game",
   "github_user": "alexistli",
   "license": "MIT",
   "package_name": "tic_tac_toe_game",
