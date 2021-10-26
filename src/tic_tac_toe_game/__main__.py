@@ -1,7 +1,7 @@
 """Command-line interface."""
 import click
 
-from tic_tac_toe_game.game import Game, Player, HumanPlayer, AIPlayer, Grid
+from tic_tac_toe_game.game import AIPlayer, Game, HumanPlayer
 
 
 @click.command()
@@ -17,7 +17,11 @@ def main() -> None:
     human_player = HumanPlayer(name="Alexis")
     ai_player = AIPlayer()
 
-    mark = click.prompt('Please pick a mark', type=click.Choice(["X", "O"], case_sensitive=False), default="X")
+    mark = click.prompt(
+        "Please pick a mark",
+        type=click.Choice(["X", "O"], case_sensitive=False),
+        default="X",
+    )
     click.echo(mark)
 
     # set marks
@@ -42,7 +46,9 @@ def main() -> None:
         print(game.grid.framed_grid())
 
         if player.kind == "Human":
-            played_cell = click.prompt('Please pick a cell (x, y)', type=click.Tuple([int, int]))
+            played_cell = click.prompt(
+                "Please pick a cell (x, y)", type=click.Tuple([int, int])
+            )
         else:
             played_cell = player.choose_cell(game.grid)
 

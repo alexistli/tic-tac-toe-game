@@ -1,13 +1,4 @@
-"""Tic Tac Toe Game."""
-import random
-from typing import Tuple, Union, Optional
-
-
-def game():
-    pass
-
-
-"""Tic Tac Toe Game
+"""Tic Tac Toe Game.
 
 Rules:
     The object of Tic Tac Toe is to get three in a row.
@@ -21,19 +12,22 @@ Rules:
 Version 1.0: Player vs Dumb AI
     Human Player decide if he wants to start or not. Then roles are switched for every game.
     Dumb AI will place a mark on a random slot.
-        
-            
+
+
 Version 2.0: Dumb AI + score limit
     Player scores are memorized and displayed.
     Player A starts, player B choose score limit.
 
         # sets score limit
         choose_score_limit(player=ai_player)
-    
+
         game = Game()
         game.score_limit = 123
         game.current_turn = "X"
 """
+
+import random
+from typing import Optional, Tuple, List
 
 
 class Grid:
@@ -45,14 +39,14 @@ class Grid:
     _empty_grid = [["_"] * 3 for row in range(3)]
 
     def __init__(self):
-        self.grid = Grid._empty_grid
+        self.grid: List[List] = Grid._empty_grid
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
         return self.grid[coord[0]][coord[1]]
 
     def set_cell(self, coord: Tuple[int, int], value: str) -> None:
         if self.grid[coord[0]][coord[1]] != Grid._empty_cell:
-            raise ValueError('This cell has already been played!')
+            raise ValueError("This cell has already been played!")
         self.grid[coord[0]][coord[1]] = value
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
@@ -62,13 +56,21 @@ class Grid:
         return all(cell != Grid._empty_cell for row in self.grid for cell in row)
 
     def is_winning_move(self, coord: Tuple[int, int], value: str) -> bool:
+        """Checks if the `coord` lead to a win.
+        Only need to check the rows, columns and diagonals containing the cell with the given coordinates."""
+
         has_winning_row = all(col == value for col in self.grid[coord[0]])
         has_winning_col = all(row[coord[1]] == value for row in self.grid)
+
         has_winning_diag = False
         if coord[0] == coord[1]:
-            has_winning_diag = all(self.grid[irow][irow] == value for irow, row in enumerate(self.grid))
+            has_winning_diag = all(
+                self.grid[irow][irow] == value for irow, row in enumerate(self.grid)
+            )
         if coord[0] + coord[1] == 2:
-            has_winning_diag = has_winning_diag or all(self.grid[2 - irow][irow] == value for irow, row in enumerate(self.grid))
+            has_winning_diag = has_winning_diag or all(
+                self.grid[2 - irow][irow] == value for irow, row in enumerate(self.grid)
+            )
         return has_winning_row or has_winning_col or has_winning_diag
 
     def framed_grid(self) -> str:
@@ -88,12 +90,12 @@ class Player:
     def __init__(self, kind: str, name: str):
         self.kind = kind
         self.name = name
-        self.mark = None
+        self.mark: Optional[str] = None
 
     def set_mark(self, mark: str) -> None:
         self.mark = mark
 
-    def get_mark(self) -> str:
+    def get_mark(self) -> Optional[str]:
         return self.mark
 
     def choose_cell(self, grid: Grid):
@@ -109,8 +111,12 @@ class AIPlayer(Player):
         super().__init__(kind="AI", name=name)
 
     def choose_cell(self, grid: Grid) -> Tuple[int, int]:
-        empty_cells = [(irow, icol) for irow, row in enumerate(grid.grid)
-                       for icol, cell in enumerate(row) if grid.is_empty_cell((irow, icol))]
+        empty_cells = [
+            (irow, icol)
+            for irow, row in enumerate(grid.grid)
+            for icol, cell in enumerate(row)
+            if grid.is_empty_cell((irow, icol))
+        ]
         random_cell = random.choice(empty_cells)
         return random_cell
 
@@ -143,12 +149,9 @@ class Game:
         else:
             self.current_player = self.player_x
 
-    def get_player(self) -> Player:
+    def get_player(self) -> Optional[Player]:
         return self.current_player
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
-
-
-def play_game():
-    pass
+        return f"{self.__class__.__name__}" \
+               f"({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
