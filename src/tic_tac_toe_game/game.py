@@ -25,9 +25,10 @@ Version 2.0: Dumb AI + score limit
         game.score_limit = 123
         game.current_turn = "X"
 """
-
 import random
-from typing import Tuple, List, Optional
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 
 class Grid:
@@ -86,7 +87,6 @@ class Grid:
 
 
 class Player:
-
     def __init__(self, kind: str, name: str) -> None:
         self.kind = kind
         self.name = name
@@ -97,7 +97,7 @@ class Player:
 
     def get_mark(self) -> str:
         if self.mark is None:
-            raise ValueError('Mark was not initialized!')
+            raise ValueError("Mark was not initialized!")
         return self.mark
 
     def choose_cell(self, grid: Grid) -> Tuple[int, int]:
@@ -108,7 +108,6 @@ class Player:
 
 
 class AIPlayer(Player):
-
     def __init__(self, name: str = "Botybot") -> None:
         super().__init__(kind="AI", name=name)
 
@@ -124,13 +123,11 @@ class AIPlayer(Player):
 
 
 class HumanPlayer(Player):
-
     def __init__(self, name: str = "Human") -> None:
         super().__init__(kind="Human", name=name)
 
 
 class Game:
-
     def __init__(self, player_x: Player, player_o: Player) -> None:
         self.grid: Grid = Grid()
         self.player_x = player_x
@@ -151,5 +148,7 @@ class Game:
         return self.current_player
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}" \
-               f"({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
+        return (
+            f"{self.__class__.__name__}"
+            f"({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
+        )

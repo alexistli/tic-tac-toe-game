@@ -1,7 +1,9 @@
 """Command-line interface."""
 import click
 
-from tic_tac_toe_game.game import AIPlayer, Game, HumanPlayer
+from tic_tac_toe_game.game import AIPlayer
+from tic_tac_toe_game.game import Game
+from tic_tac_toe_game.game import HumanPlayer
 
 
 @click.command()
