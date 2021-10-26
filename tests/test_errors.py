@@ -1,13 +1,9 @@
 """Test cases for the errors module."""
-# Standard library imports
 import random
 
 import pytest
 
 from tic_tac_toe_game.errors import NotAvailableCellError
-
-# Third-party imports
-# Local imports
 
 
 RANDOM_ROW = random.randint(0, 2)

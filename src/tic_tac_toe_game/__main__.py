@@ -1,13 +1,9 @@
 """Command-line interface."""
-# Standard library imports
-# Third-party imports
 import click
 
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import HumanPlayer
-
-# Local imports
 
 
 @click.command()

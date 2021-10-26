@@ -1,5 +1,4 @@
 """Test cases for the game module."""
-# Standard library imports
 import random
 
 import pytest
@@ -10,9 +9,6 @@ from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import Grid
 from tic_tac_toe_game.game import HumanPlayer
 from tic_tac_toe_game.game import Player
-
-# Third-party imports
-# Local imports
 
 
 PLAYER_A = HumanPlayer("U-Man")

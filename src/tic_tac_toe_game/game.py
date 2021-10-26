@@ -26,16 +26,12 @@ Version 2.0: Dumb AI + score limit
         game.score_limit = 123
         game.current_turn = "X"
 """
-# Standard library imports
 import random
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from tic_tac_toe_game.errors import NotAvailableCellError
-
-# Third-party imports
-# Local imports
 
 
 class Grid:
