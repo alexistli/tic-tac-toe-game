@@ -13,10 +13,6 @@ def main() -> None:
     if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
 
-    # init players
-    human_player = HumanPlayer(name="Alexis")
-    ai_player = AIPlayer()
-
     mark = click.prompt(
         "Please pick a mark",
         type=click.Choice(["X", "O"], case_sensitive=False),
@@ -24,19 +20,19 @@ def main() -> None:
     )
     click.echo(mark)
 
+    # init players
+    human_player = HumanPlayer(name="Alexis")
+    ai_player = AIPlayer()
+
     # set marks
     if mark == "X":
         human_player.set_mark("X")
         ai_player.set_mark("O")
-        x_player = human_player
-        o_player = ai_player
+        game = Game(human_player, ai_player)
     else:
         ai_player.set_mark("X")
         human_player.set_mark("O")
-        x_player = ai_player
-        o_player = human_player
-
-    game = Game(x_player, o_player)
+        game = Game(ai_player, human_player)
 
     finished = False
     while not finished:
@@ -52,9 +48,9 @@ def main() -> None:
         else:
             played_cell = player.choose_cell(game.grid)
 
-        game.grid.set_cell(coord=played_cell, value=player.mark)
+        game.grid.set_cell(coord=played_cell, value=player.get_mark())
 
-        if game.grid.is_winning_move(played_cell, player.mark):
+        if game.grid.is_winning_move(played_cell, player.get_mark()):
             print(f"Player {player.name} won!")
             finished = True
         elif game.grid.is_full():

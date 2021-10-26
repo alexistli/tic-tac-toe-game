@@ -27,7 +27,7 @@ Version 2.0: Dumb AI + score limit
 """
 
 import random
-from typing import Optional, Tuple, List
+from typing import Tuple, List, Optional
 
 
 class Grid:
@@ -38,8 +38,8 @@ class Grid:
     _intersection = "┼"
     _empty_grid = [["_"] * 3 for row in range(3)]
 
-    def __init__(self):
-        self.grid: List[List] = Grid._empty_grid
+    def __init__(self) -> None:
+        self.grid: List[List[str]] = Grid._empty_grid
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
         return self.grid[coord[0]][coord[1]]
@@ -71,7 +71,7 @@ class Grid:
             has_winning_diag = has_winning_diag or all(
                 self.grid[2 - irow][irow] == value for irow, row in enumerate(self.grid)
             )
-        return has_winning_row or has_winning_col or has_winning_diag
+        return bool(has_winning_row or has_winning_col or has_winning_diag)
 
     def framed_grid(self) -> str:
         framed = []
@@ -87,7 +87,7 @@ class Grid:
 
 class Player:
 
-    def __init__(self, kind: str, name: str):
+    def __init__(self, kind: str, name: str) -> None:
         self.kind = kind
         self.name = name
         self.mark: Optional[str] = None
@@ -95,10 +95,12 @@ class Player:
     def set_mark(self, mark: str) -> None:
         self.mark = mark
 
-    def get_mark(self) -> Optional[str]:
+    def get_mark(self) -> str:
+        if self.mark is None:
+            raise ValueError('Mark was not initialized!')
         return self.mark
 
-    def choose_cell(self, grid: Grid):
+    def choose_cell(self, grid: Grid) -> Tuple[int, int]:
         raise NotImplemented
 
     def __repr__(self) -> str:
@@ -107,7 +109,7 @@ class Player:
 
 class AIPlayer(Player):
 
-    def __init__(self, name: str = "Botybot"):
+    def __init__(self, name: str = "Botybot") -> None:
         super().__init__(kind="AI", name=name)
 
     def choose_cell(self, grid: Grid) -> Tuple[int, int]:
@@ -123,23 +125,17 @@ class AIPlayer(Player):
 
 class HumanPlayer(Player):
 
-    def __init__(self, name: str = "Human"):
+    def __init__(self, name: str = "Human") -> None:
         super().__init__(kind="Human", name=name)
 
 
 class Game:
 
-    def __init__(self, player_x: Player, player_o: Player):
+    def __init__(self, player_x: Player, player_o: Player) -> None:
         self.grid: Grid = Grid()
         self.player_x = player_x
         self.player_o = player_o
-        self.current_player: Optional[Player] = None
-
-    def init_game(self):
-        pass
-
-    def play_turn(self):
-        pass
+        self.current_player: Player = self.player_x
 
     def switch_player(self) -> None:
         if not self.current_player:
@@ -149,7 +145,9 @@ class Game:
         else:
             self.current_player = self.player_x
 
-    def get_player(self) -> Optional[Player]:
+    def get_player(self) -> Player:
+        if self.current_player is None:
+            return self.player_x
         return self.current_player
 
     def __repr__(self) -> str:
