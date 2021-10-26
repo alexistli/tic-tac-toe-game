@@ -152,17 +152,12 @@ class Player:
         """
         self.mark = mark
 
-    def get_mark(self) -> str:
+    def get_mark(self) -> Optional[str]:
         """Returns the player's mark for this game.
 
         Returns:
-            A string with the value of the mark.
-
-        Raises:
-            ValueError: if `mark` is None.
+            A string with the value of the mark or None.
         """
-        if self.mark is None:
-            raise ValueError("Mark was not initialized!")
         return self.mark
 
     def __repr__(self) -> str:

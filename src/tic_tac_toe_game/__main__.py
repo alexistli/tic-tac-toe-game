@@ -1,14 +1,13 @@
 """Command-line interface."""
-
 # Standard library imports
-
 # Third-party imports
 import click
 
-# Local imports
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import HumanPlayer
+
+# Local imports
 
 
 @click.command()
@@ -54,9 +53,13 @@ def main() -> None:
         else:
             played_cell = game.grid.random_available_cell()
 
-        game.grid.set_cell(coord=played_cell, value=player.get_mark())
+        game.grid.set_cell(
+            coord=played_cell, value=player.get_mark()
+        )  # type: ignore[arg-type]
 
-        if game.grid.is_winning_move(played_cell, player.get_mark()):
+        if game.grid.is_winning_move(
+            played_cell, player.get_mark()
+        ):  # type: ignore[arg-type]
             print(f"Player {player.name} won!")
             finished = True
         elif game.grid.is_full():

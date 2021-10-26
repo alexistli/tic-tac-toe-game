@@ -1,9 +1,10 @@
 """Test cases for the game module."""
+# Standard library imports
+# Third-party imports
 from tic_tac_toe_game.game import Grid
+from tic_tac_toe_game.game import Player
 
-
-def test_random_cell() -> None:
-    pass
+# Local imports
 
 
 def test_grid_init_succeeds() -> None:
@@ -22,3 +23,12 @@ def test_grid_frame_succeeds() -> None:
 
     grid: Grid = Grid()
     assert grid.framed_grid() == framed_grid
+
+
+def test_player_handles_mark() -> None:
+    """It handles get and set for marks."""
+    mark = "X"
+    player = Player("Alexis")
+    assert player.get_mark() is None
+    player.set_mark(mark)
+    assert player.get_mark() == mark
