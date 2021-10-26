@@ -3,6 +3,7 @@
 
 class NotAvailableCellError(Exception):
     """Raised when player tries to set a non-empty cell."""
+
     def __init__(self, coord):
         """Constructor.
 

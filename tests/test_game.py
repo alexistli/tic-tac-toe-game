@@ -1,17 +1,29 @@
 """Test cases for the game module."""
 # Standard library imports
-# Third-party imports
+import random
+
+import pytest
+
+from tic_tac_toe_game.errors import NotAvailableCellError
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import Grid
 from tic_tac_toe_game.game import HumanPlayer
 from tic_tac_toe_game.game import Player
 
+# Third-party imports
 # Local imports
 
 
 PLAYER_A = HumanPlayer("U-Man")
 PLAYER_B = AIPlayer("Botybot")
+
+MARK_X = "X"
+MARK_O = "O"
+
+RANDOM_ROW = random.randint(0, 2)
+RANDOM_COL = random.randint(0, 2)
+RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 
 
 def test_grid_init_succeeds() -> None:
@@ -32,17 +44,38 @@ def test_grid_frame_succeeds() -> None:
     assert grid.framed_grid() == framed_grid
 
 
+def test_grid_handles_cell_operations() -> None:
+    """It handles cell operations."""
+    grid = Grid()
+    for row_index, row in enumerate(grid.grid):
+        for col_index, _cell in enumerate(row):
+            coord = (row_index, col_index)
+            assert grid.is_empty_cell(coord)
+            grid.set_cell(coord, MARK_X)
+            assert grid.get_cell(coord) == MARK_X
+            assert not grid.is_empty_cell(coord)
+
+
+def test_grid_handles_cell_override() -> None:
+    """It handles cell overriding attempt."""
+    grid = Grid()
+    assert grid.is_empty_cell(RANDOM_COORD) is True
+    grid.set_cell(RANDOM_COORD, MARK_X)
+    assert grid.get_cell(RANDOM_COORD) == MARK_X
+    with pytest.raises(NotAvailableCellError):
+        grid.set_cell(RANDOM_COORD, MARK_O)
+        assert grid.get_cell(RANDOM_COORD) == MARK_X
+
+
 def test_player_handles_mark() -> None:
     """It handles get and set for marks."""
-    mark_x = "X"
-    mark_o = "O"
     players = (Player("Alexis"), HumanPlayer("U-Man"), AIPlayer("Botybot"))
     for player in players:
         assert player.get_mark() is None
-        player.set_mark(mark_x)
-        assert player.get_mark() == mark_x
-        player.set_mark(mark_o)
-        assert player.get_mark() == mark_o
+        player.set_mark(MARK_X)
+        assert player.get_mark() == MARK_X
+        player.set_mark(MARK_O)
+        assert player.get_mark() == MARK_O
 
 
 def test_game_inits() -> None:

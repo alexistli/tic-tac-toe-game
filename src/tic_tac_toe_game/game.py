@@ -32,8 +32,9 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-# Third-party imports
+from tic_tac_toe_game.errors import NotAvailableCellError
 
+# Third-party imports
 # Local imports
 
 
@@ -62,7 +63,7 @@ class Grid:
         """Sets `value` for cell located at `coord` if cell is empty."""
         coord_x, coord_y = coord
         if not self.is_empty_cell(coord):
-            raise ValueError("This cell has already been played!")
+            raise NotAvailableCellError(coord)
         self.grid[coord_x][coord_y] = value
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:

@@ -1,13 +1,13 @@
 """Test cases for the errors module."""
-
 # Standard library imports
 import random
 
-# Third-party imports
 import pytest
 
-# Local imports
 from tic_tac_toe_game.errors import NotAvailableCellError
+
+# Third-party imports
+# Local imports
 
 
 RANDOM_ROW = random.randint(0, 2)
@@ -28,4 +28,3 @@ def test_not_available_cell_error_prints_info() -> None:
         exc = NotAvailableCellError(RANDOM_COORD)
         raise exc
     assert str(RANDOM_COORD) in str(exc.coord)
-
