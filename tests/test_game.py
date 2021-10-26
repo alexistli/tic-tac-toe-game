@@ -25,7 +25,7 @@ RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 def test_grid_init_succeeds() -> None:
     """It returns an empty grid."""
     empty_grid = [[Grid._empty_cell] * 3] * 3
-    grid: Grid = Grid()
+    grid = Grid()
     assert grid.grid == empty_grid
     assert Grid._empty_grid == empty_grid
 
@@ -36,7 +36,7 @@ def test_grid_frame_succeeds() -> None:
     separator_row_str = Grid._intersection.join([Grid._horizontal_separator] * 3)
     framed_grid = ("\n" + separator_row_str + "\n").join([data_row_str] * 3)
 
-    grid: Grid = Grid()
+    grid = Grid()
     assert grid.framed_grid() == framed_grid
 
 
