@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from tic_tac_toe_game.errors import NotAvailableCellError
+from tic_tac_toe_game.errors import OverwriteCellError
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import Grid
@@ -27,7 +27,6 @@ def test_grid_init_succeeds() -> None:
     empty_grid = [[Grid._empty_cell] * 3] * 3
     grid = Grid()
     assert grid.grid == empty_grid
-    assert Grid._empty_grid == empty_grid
 
 
 def test_grid_frame_succeeds() -> None:
@@ -58,7 +57,7 @@ def test_grid_handles_cell_override() -> None:
     assert grid.is_empty_cell(RANDOM_COORD) is True
     grid.set_cell(RANDOM_COORD, MARK_X)
     assert grid.get_cell(RANDOM_COORD) == MARK_X
-    with pytest.raises(NotAvailableCellError):
+    with pytest.raises(OverwriteCellError):
         grid.set_cell(RANDOM_COORD, MARK_O)
         assert grid.get_cell(RANDOM_COORD) == MARK_X
 

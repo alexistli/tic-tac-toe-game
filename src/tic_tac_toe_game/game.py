@@ -31,7 +31,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from tic_tac_toe_game.errors import NotAvailableCellError
+from tic_tac_toe_game.errors import OverwriteCellError
 
 
 class Grid:
@@ -45,11 +45,10 @@ class Grid:
     _vertical_separator = "│"
     _horizontal_separator = "─"
     _intersection = "┼"
-    _empty_grid = [["_"] * 3 for row in range(3)]
 
     def __init__(self) -> None:
         """Inits Grid with an empty grid."""
-        self.grid: List[List[str]] = Grid._empty_grid
+        self.grid: List[List[str]] = [[Grid._empty_cell] * 3 for _ in range(3)]
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
         """Returns value for cell located at `coord`."""
@@ -59,12 +58,12 @@ class Grid:
         """Sets `value` for cell located at `coord` if cell is empty."""
         coord_x, coord_y = coord
         if not self.is_empty_cell(coord):
-            raise NotAvailableCellError(coord)
+            raise OverwriteCellError(coord)
         self.grid[coord_x][coord_y] = value
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
         """Checks if cell located at `coord` is empty."""
-        return self.get_cell(coord) == Grid._empty_cell
+        return bool(self.get_cell(coord) == Grid._empty_cell)
 
     def is_full(self) -> bool:
         """Checks if grid is full. Gris is full if there is no empty cell left."""
