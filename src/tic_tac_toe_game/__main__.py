@@ -1,7 +1,7 @@
 """Command-line interface."""
 import click
 
-from tic_tac_toe_game.game import AIPlayer
+from tic_tac_toe_game.game import AIPlayer, random_cell
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import HumanPlayer
 
@@ -47,7 +47,7 @@ def main() -> None:
                 "Please pick a cell (x, y)", type=click.Tuple([int, int])
             )
         else:
-            played_cell = player.choose_cell(game.grid)
+            played_cell = random_cell(game.grid)
 
         game.grid.set_cell(coord=played_cell, value=player.get_mark())
 
