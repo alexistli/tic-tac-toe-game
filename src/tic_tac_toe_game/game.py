@@ -112,52 +112,108 @@ class Grid:
 
 
 class Player:
-    def __init__(self, kind: str, name: str) -> None:
-        self.kind = kind
+    """Base Player class.
+
+    Attributes:
+        name: The name of the player.
+        mark: The value of the mark currently used. Must be "X" or "O".
+    """
+
+    def __init__(self, name: str) -> None:
+        """Constructor.
+
+        Args:
+            name: str, name of the player.
+        """
         self.name = name
         self.mark: Optional[str] = None
 
     def set_mark(self, mark: str) -> None:
+        """Sets the player's mark for this game.
+
+        Args:
+            mark: str, player's mark
+        """
         self.mark = mark
 
     def get_mark(self) -> str:
+        """Returns the player's mark for this game.
+
+        Returns:
+            A string with the value of the mark.
+
+        Raises:
+            ValueError: if `mark` is None.
+        """
         if self.mark is None:
             raise ValueError("Mark was not initialized!")
         return self.mark
 
-    def choose_cell(self, grid: Grid) -> Tuple[int, int]:
-        raise NotImplemented
-
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.kind!r}, {self.name!r}, {self.mark!r})"
+        """Returns instance representation."""
+        return f"{self.__class__.__name__}({self.name!r}, {self.mark!r})"
 
 
 class AIPlayer(Player):
-    def __init__(self, name: str = "Botybot") -> None:
-        super().__init__(kind="AI", name=name)
+    """Player class for an AI-managed player."""
 
-    def choose_cell(self, grid: Grid) -> Tuple[int, int]:
+    def __init__(self, name: str = "Botybot") -> None:
+        """Constructor.
+
+        Args:
+            name: str, name of the player.
+        """
+        super().__init__(name=name)
+
+    @staticmethod
+    def choose_cell(grid: Grid) -> Tuple[int, int]:
+        """Returns a randomly picked cell among available cells.
+
+        Args:
+            grid: Grid, grid to choose the cell from
+
+        Returns:
+            A tuple of (row_index, column_index)
+            row_index: int, index of the chosen cell's row
+            column_index: int, index of the chosen cell's column
+        """
         empty_cells = [
             (irow, icol)
             for irow, row in enumerate(grid.grid)
             for icol, cell in enumerate(row)
             if grid.is_empty_cell((irow, icol))
         ]
-        random_cell = random.choice(empty_cells)
-        return random_cell
+        return random.choice(empty_cells)
 
 
 class HumanPlayer(Player):
+    """Player class for an AI-managed player."""
+
     def __init__(self, name: str = "Human") -> None:
-        super().__init__(kind="Human", name=name)
+        """Constructor.
+
+        Args:
+            name: str, name of the player.
+        """
+        super().__init__(name=name)
 
 
 class Game:
     def __init__(self, player_x: Player, player_o: Player) -> None:
-        self.grid: Grid = Grid()
+        """Constructor.
+
+        Args:
+            player_x: Player, Player with the "X" mark. Will begin game.
+            player_o: Player, Player with the "Y" mark.
+        """
         self.player_x = player_x
         self.player_o = player_o
+
+        # Holds the player currently playing.
         self.current_player: Player = self.player_x
+
+        # Initialize an empty grid.
+        self.grid: Grid = Grid()
 
     def switch_player(self) -> None:
         if not self.current_player:

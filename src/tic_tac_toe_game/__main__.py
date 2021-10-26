@@ -42,7 +42,7 @@ def main() -> None:
         player = game.get_player()
         print(game.grid.framed_grid())
 
-        if player.kind == "Human":
+        if isinstance(player, HumanPlayer):
             played_cell = click.prompt(
                 "Please pick a cell (x, y)", type=click.Tuple([int, int])
             )
