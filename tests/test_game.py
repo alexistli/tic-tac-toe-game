@@ -1,7 +1,9 @@
 """Test cases for the game module."""
 # Standard library imports
 # Third-party imports
+from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Grid
+from tic_tac_toe_game.game import HumanPlayer
 from tic_tac_toe_game.game import Player
 
 # Local imports
@@ -27,8 +29,21 @@ def test_grid_frame_succeeds() -> None:
 
 def test_player_handles_mark() -> None:
     """It handles get and set for marks."""
-    mark = "X"
-    player = Player("Alexis")
-    assert player.get_mark() is None
-    player.set_mark(mark)
-    assert player.get_mark() == mark
+    mark_x = "X"
+    mark_o = "O"
+    players = (Player("Alexis"), HumanPlayer("U-Man"), AIPlayer("Botybot"))
+    for player in players:
+        assert player.get_mark() is None
+        player.set_mark(mark_x)
+        assert player.get_mark() == mark_x
+        player.set_mark(mark_o)
+        assert player.get_mark() == mark_o
+
+
+# def test_aiplayer_handles_mark() -> None:
+#     """It handles get and set for marks."""
+#     mark = "X"
+#     player = Player("Alexis")
+#     assert player.get_mark() is None
+#     player.set_mark(mark)
+#     assert player.get_mark() == mark

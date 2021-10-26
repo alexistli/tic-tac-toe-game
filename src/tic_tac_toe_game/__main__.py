@@ -54,12 +54,12 @@ def main() -> None:
             played_cell = game.grid.random_available_cell()
 
         game.grid.set_cell(
-            coord=played_cell, value=player.get_mark()
-        )  # type: ignore[arg-type]
+            coord=played_cell, value=player.get_mark()  # type: ignore[arg-type]
+        )
 
         if game.grid.is_winning_move(
-            played_cell, player.get_mark()
-        ):  # type: ignore[arg-type]
+            played_cell, player.get_mark()  # type: ignore[arg-type]
+        ):
             print(f"Player {player.name} won!")
             finished = True
         elif game.grid.is_full():
