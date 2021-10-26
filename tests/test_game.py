@@ -2,11 +2,16 @@
 # Standard library imports
 # Third-party imports
 from tic_tac_toe_game.game import AIPlayer
+from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import Grid
 from tic_tac_toe_game.game import HumanPlayer
 from tic_tac_toe_game.game import Player
 
 # Local imports
+
+
+PLAYER_A = HumanPlayer("U-Man")
+PLAYER_B = AIPlayer("Botybot")
 
 
 def test_grid_init_succeeds() -> None:
@@ -40,10 +45,23 @@ def test_player_handles_mark() -> None:
         assert player.get_mark() == mark_o
 
 
-# def test_aiplayer_handles_mark() -> None:
-#     """It handles get and set for marks."""
-#     mark = "X"
-#     player = Player("Alexis")
-#     assert player.get_mark() is None
-#     player.set_mark(mark)
-#     assert player.get_mark() == mark
+def test_game_inits() -> None:
+    """It inits and returns expected attribute values."""
+    game = Game(PLAYER_A, PLAYER_B)
+    assert game.player_x == PLAYER_A
+    assert game.player_o == PLAYER_B
+    assert game.current_player == PLAYER_A
+    assert isinstance(game.grid, Grid)
+
+
+def test_game_handles_player_get_and_switch() -> None:
+    """It handles current player get and switch."""
+    game = Game(PLAYER_A, PLAYER_B)
+    assert game.current_player == PLAYER_A
+    assert game.get_player() == PLAYER_A
+    game.switch_player()
+    assert game.current_player == PLAYER_B
+    assert game.get_player() == PLAYER_B
+    game.switch_player()
+    assert game.current_player == PLAYER_A
+    assert game.get_player() == PLAYER_A
