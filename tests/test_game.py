@@ -2,6 +2,10 @@
 from tic_tac_toe_game.game import Grid
 
 
+def test_random_cell() -> None:
+    pass
+
+
 def test_grid_init_succeeds() -> None:
     """It returns an empty grid."""
     empty_grid = [[Grid._empty_cell] * 3] * 3

@@ -4,7 +4,6 @@ import click
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import HumanPlayer
-from tic_tac_toe_game.game import random_cell
 
 
 @click.command()
@@ -48,7 +47,7 @@ def main() -> None:
                 "Please pick a cell (x, y)", type=click.Tuple([int, int])
             )
         else:
-            played_cell = random_cell(game.grid)
+            played_cell = game.grid.random_available_cell()
 
         game.grid.set_cell(coord=played_cell, value=player.get_mark())
 

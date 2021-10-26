@@ -97,6 +97,22 @@ class Grid:
             )
         return bool(has_winning_row or has_winning_col or has_winning_diag)
 
+    def random_available_cell(self) -> Tuple[int, int]:
+        """Returns a randomly picked cell among available cells.
+
+        Returns:
+            A tuple of (row_index, column_index).
+            row_index: int, index of the chosen cell's row.
+            column_index: int, index of the chosen cell's column.
+        """
+        empty_cells = [
+            (irow, icol)
+            for irow, row in enumerate(self.grid)
+            for icol, cell in enumerate(row)
+            if self.is_empty_cell((irow, icol))
+        ]
+        return random.choice(empty_cells)
+
     def framed_grid(self) -> str:
         """Returns the grid with an additional frame to facilitate reading."""
         framed = []
@@ -222,23 +238,3 @@ class Game:
             f"({self.player_x!r}, {self.player_o!r}, {self.current_player!r}, "
             f"{self.grid!r})"
         )
-
-
-def random_cell(grid: Grid) -> Tuple[int, int]:
-    """Returns a randomly picked cell among available cells.
-
-    Args:
-        grid: Grid, grid to choose the cell from.
-
-    Returns:
-        A tuple of (row_index, column_index).
-        row_index: int, index of the chosen cell's row.
-        column_index: int, index of the chosen cell's column.
-    """
-    empty_cells = [
-        (irow, icol)
-        for irow, row in enumerate(grid.grid)
-        for icol, cell in enumerate(row)
-        if grid.is_empty_cell((irow, icol))
-    ]
-    return random.choice(empty_cells)
