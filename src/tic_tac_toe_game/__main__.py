@@ -10,7 +10,6 @@ from tic_tac_toe_game.game import HumanPlayer
 @click.version_option()
 def main() -> None:
     """Tic Tac Toe Game."""
-
     click.secho("hello", fg="green")
     if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
