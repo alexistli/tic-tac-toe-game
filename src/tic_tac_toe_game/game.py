@@ -10,7 +10,8 @@ Rules:
     the stalemate is called a cat game.
 
 Version 1.0: Player vs Dumb AI
-    Human Player decide if he wants to start or not. Then roles are switched for every game.
+    Human Player decide if he wants to start or not.
+    Then roles are switched for every game.
     Dumb AI will place a mark on a random slot.
 
 
@@ -25,13 +26,23 @@ Version 2.0: Dumb AI + score limit
         game.score_limit = 123
         game.current_turn = "X"
 """
+# Standard library imports
 import random
 from typing import List
 from typing import Optional
 from typing import Tuple
 
+# Third-party imports
+
+# Local imports
+
 
 class Grid:
+    """Grid class.
+
+    Attributes:
+        grid: A 3*3 matrix of string values.
+    """
 
     _empty_cell = "_"
     _vertical_separator = "│"
@@ -40,26 +51,38 @@ class Grid:
     _empty_grid = [["_"] * 3 for row in range(3)]
 
     def __init__(self) -> None:
+        """Inits Grid with an empty grid."""
         self.grid: List[List[str]] = Grid._empty_grid
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
+        """Returns value for cell located at `coord`."""
         return self.grid[coord[0]][coord[1]]
 
     def set_cell(self, coord: Tuple[int, int], value: str) -> None:
-        if self.grid[coord[0]][coord[1]] != Grid._empty_cell:
+        """Sets `value` for cell located at `coord` if cell is empty."""
+        coord_x, coord_y = coord
+        if not self.is_empty_cell(coord):
             raise ValueError("This cell has already been played!")
-        self.grid[coord[0]][coord[1]] = value
+        self.grid[coord_x][coord_y] = value
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
+        """Checks if cell located at `coord` is empty."""
         return self.get_cell(coord) == Grid._empty_cell
 
     def is_full(self) -> bool:
-        return all(cell != Grid._empty_cell for row in self.grid for cell in row)
+        """Checks if grid is full. Gris is full if there is no empty cell left."""
+        return not any(
+            self.is_empty_cell((irow, icol))
+            for irow, row in enumerate(self.grid)
+            for icol, col in enumerate(row)
+        )
 
     def is_winning_move(self, coord: Tuple[int, int], value: str) -> bool:
-        """Checks if the `coord` lead to a win.
-        Only need to check the rows, columns and diagonals containing the cell with the given coordinates."""
+        """Checks if playing `value` at `coord` leads to a win.
 
+        Only checks the combinations containing the cell with the given coordinates.
+        Checks the one row, the one column and eventually the two diagonals.
+        """
         has_winning_row = all(col == value for col in self.grid[coord[0]])
         has_winning_col = all(row[coord[1]] == value for row in self.grid)
 
@@ -75,6 +98,7 @@ class Grid:
         return bool(has_winning_row or has_winning_col or has_winning_diag)
 
     def framed_grid(self) -> str:
+        """Returns the grid with an additional frame to facilitate reading."""
         framed = []
         for idx, row in enumerate(self.grid):
             framed.append(Grid._vertical_separator.join(row))
@@ -83,6 +107,7 @@ class Grid:
         return "\n".join(framed)
 
     def __repr__(self) -> str:
+        """Returns instance representation."""
         return f"{self.__class__.__name__}({self.grid!r})"
 
 
