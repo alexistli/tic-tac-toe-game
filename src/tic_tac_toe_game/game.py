@@ -170,12 +170,12 @@ class AIPlayer(Player):
         """Returns a randomly picked cell among available cells.
 
         Args:
-            grid: Grid, grid to choose the cell from
+            grid: Grid, grid to choose the cell from.
 
         Returns:
-            A tuple of (row_index, column_index)
-            row_index: int, index of the chosen cell's row
-            column_index: int, index of the chosen cell's column
+            A tuple of (row_index, column_index).
+            row_index: int, index of the chosen cell's row.
+            column_index: int, index of the chosen cell's column.
         """
         empty_cells = [
             (irow, icol)
@@ -199,6 +199,15 @@ class HumanPlayer(Player):
 
 
 class Game:
+    """Game class.
+
+    Attributes:
+        player_x: Player, Player with the "X" mark. Will begin game.
+        player_o: Player, Player with the "Y" mark.
+        current_player: Player, Holds the player currently playing.
+        grid: Grid, The current grid being played.
+    """
+
     def __init__(self, player_x: Player, player_o: Player) -> None:
         """Constructor.
 
@@ -216,20 +225,20 @@ class Game:
         self.grid: Grid = Grid()
 
     def switch_player(self) -> None:
-        if not self.current_player:
-            self.current_player = self.player_x
-        elif self.current_player == self.player_x:
+        """Updates `current_player` with the other player."""
+        if self.current_player == self.player_x:
             self.current_player = self.player_o
         else:
             self.current_player = self.player_x
 
     def get_player(self) -> Player:
-        if self.current_player is None:
-            return self.player_x
+        """Returns `current_player`."""
         return self.current_player
 
     def __repr__(self) -> str:
+        """Returns instance representation."""
         return (
             f"{self.__class__.__name__}"
-            f"({self.grid!r}, {self.player_x!r}, {self.player_o!r}, {self.current_player!r})"
+            f"({self.player_x!r}, {self.player_o!r}, {self.current_player!r}, "
+            f"{self.grid!r})"
         )
