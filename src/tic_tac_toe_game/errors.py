@@ -1,5 +1,4 @@
 """Error classes used in the project."""
-
 from typing import Tuple
 
 
