@@ -68,9 +68,9 @@ class Grid:
     def is_full(self) -> bool:
         """Checks if grid is full. Gris is full if there is no empty cell left."""
         return not any(
-            self.is_empty_cell((irow, icol))
-            for irow, row in enumerate(self.grid)
-            for icol, col in enumerate(row)
+            self.is_empty_cell((row_id, col_id))
+            for row_id, row in enumerate(self.grid)
+            for col_id, col in enumerate(row)
         )
 
     def is_winning_move(self, coord: Tuple[int, int], value: str) -> bool:
@@ -79,17 +79,19 @@ class Grid:
         Only checks the combinations containing the cell with the given coordinates.
         Checks the one row, the one column and eventually the two diagonals.
         """
-        has_winning_row = all(col == value for col in self.grid[coord[0]])
-        has_winning_col = all(row[coord[1]] == value for row in self.grid)
+        has_winning_row = all([col == value for col in self.grid[coord[0]]])
+        has_winning_col = all([row[coord[1]] == value for row in self.grid])
 
         has_winning_diag = False
         if coord[0] == coord[1]:
             has_winning_diag = all(
-                self.grid[irow][irow] == value for irow, row in enumerate(self.grid)
+                self.grid[row_id][row_id] == value
+                for row_id, row in enumerate(self.grid)
             )
         if coord[0] + coord[1] == 2:
             has_winning_diag = has_winning_diag or all(
-                self.grid[2 - irow][irow] == value for irow, row in enumerate(self.grid)
+                self.grid[2 - row_id][row_id] == value
+                for row_id, row in enumerate(self.grid)
             )
         return bool(has_winning_row or has_winning_col or has_winning_diag)
 
@@ -100,14 +102,21 @@ class Grid:
             A tuple of (row_index, column_index).
             row_index: int, index of the chosen cell's row.
             column_index: int, index of the chosen cell's column.
+
+        Raises:
+            IndexError: if grid is full.
         """
         empty_cells = [
-            (irow, icol)
-            for irow, row in enumerate(self.grid)
-            for icol, cell in enumerate(row)
-            if self.is_empty_cell((irow, icol))
+            (row_id, col_id)
+            for row_id, row in enumerate(self.grid)
+            for col_id, cell in enumerate(row)
+            if self.is_empty_cell((row_id, col_id))
         ]
-        return random.choice(empty_cells)
+        try:
+            random_cell = random.choice(empty_cells)
+        except IndexError:
+            raise IndexError("Grid is full, cannot choose an available cell")
+        return random_cell
 
     def framed_grid(self) -> str:
         """Returns the grid with an additional frame to facilitate reading."""

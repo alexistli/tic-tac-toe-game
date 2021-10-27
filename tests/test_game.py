@@ -26,33 +26,21 @@ RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
 RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 
-FULL_GRID_LOOSE = (
-    f"XOX"
-    f"OOX"
-    f"XXO"
-)
+FULL_GRID_LOOSE = f"XOX" f"OOX" f"XXO"
 
 # X would win turns 7 and 9 if this grid si filled in the read direction.
 WIN_X_MOVES = ((2, 0), (2, 2))
-WIN_X_GRID = (
-    f"XOX"
-    f"OXO"
-    f"XOX"
-)
+WIN_X_GRID = f"XOX" f"OXO" f"XOX"
 
 # O would win turns 7 and 9 if this grid si filled in the read direction.
 WIN_O_MOVES = ((2, 2),)
-WIN_O_GRID = (
-    f"OXX"
-    f"XOX"
-    f"OXO"
-)
+WIN_O_GRID = f"OXX" f"XOX" f"OXO"
 
 
 def load_grid(grid_str: str) -> Grid:
     """Returns a Grid instance by loading a grid passed as a string."""
     n = 3
-    matrix = [list(grid_str[i:i + n]) for i in range(0, len(grid_str), n)]
+    matrix = [list(grid_str[i : i + n]) for i in range(0, len(grid_str), n)]
     grid = Grid()
     grid.grid = matrix
     return grid
@@ -118,6 +106,9 @@ def test_not_full_grid_returns_is_not_full() -> None:
 
 def test_full_grid_returns_is_full() -> None:
     """It returns True when grid is full."""
+    full_grid = load_grid(FULL_GRID_LOOSE)
+    assert full_grid.is_full() is True
+
     for mark in (MARK_X, MARK_O):
         grid = Grid()
         for row_index, row in enumerate(grid.grid):
@@ -154,6 +145,25 @@ def test_is_winning_move() -> None:
                 grid.set_cell(coord, mark)
                 is_winning = bool(coord in win_moves)
                 assert bool(grid.is_winning_move(coord, mark)) == is_winning
+
+
+def test_returns_random_available_cell_succeeds() -> None:
+    """It returns a random available cell."""
+    grid = Grid()
+    for i in range(0, 9):
+        value = random.choice((MARK_X, MARK_O))
+        cell = grid.random_available_cell()
+        assert grid.is_empty_cell(cell) is True
+        grid.set_cell(cell, value)
+    assert grid.is_full() is True
+
+
+def test_handles_random_available_cell_exception() -> None:
+    """It raises `NotAvailableError` if grid is full."""
+    grid = load_grid(FULL_GRID_LOOSE)
+    with pytest.raises(IndexError) as exc:
+        grid.random_available_cell()
+    assert "Grid is full" in str(exc.value)
 
 
 # ================ Test Player ================
