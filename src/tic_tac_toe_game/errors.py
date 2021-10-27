@@ -2,14 +2,10 @@
 from typing import Tuple
 
 
-class GameException(Exception):  # pragma: no cover
-    """Base Exception class for all the classes of this project."""
-
-
-class OverwriteCellError(GameException):
+class OverwriteCellError(Exception):  # pragma: no cover
     """Raised when player tries to overwrite a non-empty cell."""
 
-    def __init__(self, coord: Tuple[int, int]) -> None:  # pragma: no cover
+    def __init__(self, coord: Tuple[int, int]) -> None:
         """Constructor.
 
         Args:
