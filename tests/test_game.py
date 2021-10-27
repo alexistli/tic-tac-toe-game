@@ -27,6 +27,9 @@ RANDOM_COL = random.randint(0, 2)
 RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 
 
+# ================ Test Grid ================
+
+
 def test_grid_init_succeeds() -> None:
     """It returns an empty grid."""
     empty_grid = [[Grid._empty_cell] * 3] * 3
@@ -67,6 +70,9 @@ def test_grid_handles_cell_override() -> None:
         assert grid.get_cell(RANDOM_COORD) == MARK_X
 
 
+# ================ Test Player ================
+
+
 def test_player_handles_mark() -> None:
     """It handles get and set for marks."""
     for player in (
@@ -98,6 +104,9 @@ def test_player_returns_repr() -> None:
     assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, None)"
     player_b.set_mark(MARK_O)
     assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(MARK_O)})"
+
+
+# ================ Test Game ================
 
 
 def test_game_inits() -> None:
