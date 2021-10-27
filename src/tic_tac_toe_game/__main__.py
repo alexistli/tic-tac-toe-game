@@ -38,9 +38,12 @@ def main() -> None:
     finished = False
     while not finished:
         # game.play_turn()
-        game.switch_player()
         player = game.get_player()
-        print(game.grid.framed_grid())
+
+        print("\n\n")
+        print(f"{player.name}, it is your turn!")
+        print("Current grid: \n")
+        print(f"{game.grid.framed_grid()}\n")
 
         if isinstance(player, HumanPlayer):
             played_cell = click.prompt(
@@ -61,6 +64,8 @@ def main() -> None:
         elif game.grid.is_full():
             print("Players tied!")
             finished = True
+        else:
+            game.switch_player()
 
 
 if __name__ == "__main__":
