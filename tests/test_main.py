@@ -2,7 +2,8 @@
 import pytest
 from click.testing import CliRunner
 
-from tic_tac_toe_game.__main__ import main, game_init
+from tic_tac_toe_game.__main__ import game_init
+from tic_tac_toe_game.__main__ import main
 from tic_tac_toe_game.game import Game
 
 
@@ -22,6 +23,7 @@ def test_main_succeeds(runner: CliRunner) -> None:
 
 
 # ================ Test CLI ================
+
 
 def test_game_init_returns_game() -> None:
     """It returns an object of type Game."""

@@ -63,6 +63,7 @@ def main() -> None:
 
 
 def game_init(player_a_mark: str, player_b_type: str) -> Game:
+    """Returns a Game instance initialized with players params."""
     # init players
     if player_b_type == "H":
         player_a = HumanPlayer("Human 1")
