@@ -14,30 +14,24 @@ def main() -> None:
     if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
 
-    mark = click.prompt(
+    player_a_mark = click.prompt(
         "Please pick a mark",
         type=click.Choice(["X", "O"], case_sensitive=False),
         default="X",
     )
-    click.echo(mark)
+    click.echo(player_a_mark)
 
-    # init players
-    human_player = HumanPlayer(name="Alexis")
-    ai_player = AIPlayer()
+    player_b_type = click.prompt(
+        "Second player human or bot?",
+        type=click.Choice(["H", "B"], case_sensitive=False),
+        default="B",
+    )
+    click.echo(player_b_type)
 
-    # set marks
-    if mark == "X":
-        human_player.set_mark("X")
-        ai_player.set_mark("O")
-        game = Game(human_player, ai_player)
-    else:
-        ai_player.set_mark("X")
-        human_player.set_mark("O")
-        game = Game(ai_player, human_player)
+    game = game_init(player_a_mark, player_b_type)
 
     finished = False
     while not finished:
-        # game.play_turn()
         player = game.get_player()
 
         print("\n\n")
@@ -66,6 +60,26 @@ def main() -> None:
             finished = True
         else:
             game.switch_player()
+
+
+def game_init(player_a_mark: str, player_b_type: str) -> Game:
+    # init players
+    if player_b_type == "H":
+        player_a = HumanPlayer("Human 1")
+        player_b = HumanPlayer("Human 2")
+    else:
+        player_a = HumanPlayer()
+        player_b = AIPlayer()
+    # set marks
+    if player_a_mark == "X":
+        player_a.set_mark("X")
+        player_b.set_mark("O")
+        game = Game(player_a, player_b)
+    else:
+        player_b.set_mark("X")
+        player_a.set_mark("O")
+        game = Game(player_b, player_a)
+    return game
 
 
 if __name__ == "__main__":
