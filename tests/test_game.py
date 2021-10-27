@@ -11,8 +11,13 @@ from tic_tac_toe_game.game import HumanPlayer
 from tic_tac_toe_game.game import Player
 
 
-PLAYER_A = HumanPlayer("U-Man")
-PLAYER_B = AIPlayer("Botybot")
+PLAYER_NAME = "Sapiens"
+PLAYER_A_NAME = "U-Man"
+PLAYER_B_NAME = "Botybot"
+
+PLAYER = Player(PLAYER_NAME)
+PLAYER_A = HumanPlayer(PLAYER_A_NAME)
+PLAYER_B = AIPlayer(PLAYER_B_NAME)
 
 MARK_X = "X"
 MARK_O = "O"
@@ -64,8 +69,11 @@ def test_grid_handles_cell_override() -> None:
 
 def test_player_handles_mark() -> None:
     """It handles get and set for marks."""
-    players = (Player("Alexis"), HumanPlayer("U-Man"), AIPlayer("Botybot"))
-    for player in players:
+    for player in (
+        Player(PLAYER_NAME),
+        HumanPlayer(PLAYER_A_NAME),
+        AIPlayer(PLAYER_B_NAME),
+    ):
         assert player.get_mark() is None
         player.set_mark(MARK_X)
         assert player.get_mark() == MARK_X
@@ -73,23 +81,46 @@ def test_player_handles_mark() -> None:
         assert player.get_mark() == MARK_O
 
 
+def test_player_returns_repr() -> None:
+    """It returns expected repr."""
+    player = Player(PLAYER_NAME)
+    player_a = HumanPlayer(PLAYER_A_NAME)
+    player_b = AIPlayer(PLAYER_B_NAME)
+
+    assert repr(player) == f"Player({repr(PLAYER_NAME)}, None)"
+    player.set_mark(MARK_X)
+    assert repr(player) == f"Player({repr(PLAYER_NAME)}, {repr(MARK_X)})"
+
+    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, None)"
+    player_a.set_mark(MARK_X)
+    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(MARK_X)})"
+
+    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, None)"
+    player_b.set_mark(MARK_O)
+    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(MARK_O)})"
+
+
 def test_game_inits() -> None:
     """It inits and returns expected attribute values."""
-    game = Game(PLAYER_A, PLAYER_B)
-    assert game.player_x == PLAYER_A
-    assert game.player_o == PLAYER_B
-    assert game.current_player == PLAYER_A
+    player_a = HumanPlayer(PLAYER_A_NAME)
+    player_b = AIPlayer(PLAYER_B_NAME)
+    game = Game(player_a, player_b)
+    assert game.player_x == player_a
+    assert game.player_o == player_b
+    assert game.current_player == player_a
     assert isinstance(game.grid, Grid)
 
 
 def test_game_handles_player_get_and_switch() -> None:
     """It handles current player get and switch."""
-    game = Game(PLAYER_A, PLAYER_B)
-    assert game.current_player == PLAYER_A
-    assert game.get_player() == PLAYER_A
+    player_a = HumanPlayer(PLAYER_A_NAME)
+    player_b = AIPlayer(PLAYER_B_NAME)
+    game = Game(player_a, player_b)
+    assert game.current_player == player_a
+    assert game.get_player() == player_a
     game.switch_player()
-    assert game.current_player == PLAYER_B
-    assert game.get_player() == PLAYER_B
+    assert game.current_player == player_b
+    assert game.get_player() == player_b
     game.switch_player()
-    assert game.current_player == PLAYER_A
-    assert game.get_player() == PLAYER_A
+    assert game.current_player == player_a
+    assert game.get_player() == player_a
