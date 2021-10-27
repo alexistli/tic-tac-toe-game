@@ -26,6 +26,37 @@ RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
 RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 
+FULL_GRID_LOOSE = (
+    f"XOX"
+    f"OOX"
+    f"XXO"
+)
+
+# X would win turns 7 and 9 if this grid si filled in the read direction.
+WIN_X_MOVES = ((2, 0), (2, 2))
+WIN_X_GRID = (
+    f"XOX"
+    f"OXO"
+    f"XOX"
+)
+
+# O would win turns 7 and 9 if this grid si filled in the read direction.
+WIN_O_MOVES = ((2, 2),)
+WIN_O_GRID = (
+    f"OXX"
+    f"XOX"
+    f"OXO"
+)
+
+
+def load_grid(grid_str: str) -> Grid:
+    """Returns a Grid instance by loading a grid passed as a string."""
+    n = 3
+    matrix = [list(grid_str[i:i + n]) for i in range(0, len(grid_str), n)]
+    grid = Grid()
+    grid.grid = matrix
+    return grid
+
 
 # ================ Test Grid ================
 
@@ -53,10 +84,10 @@ def test_grid_handles_cell_operations() -> None:
     for row_index, row in enumerate(grid.grid):
         for col_index, _cell in enumerate(row):
             coord = (row_index, col_index)
-            assert grid.is_empty_cell(coord)
+            assert grid.is_empty_cell(coord) is True
             grid.set_cell(coord, MARK_X)
             assert grid.get_cell(coord) == MARK_X
-            assert not grid.is_empty_cell(coord)
+            assert grid.is_empty_cell(coord) is False
 
 
 def test_grid_handles_cell_override() -> None:
@@ -68,6 +99,61 @@ def test_grid_handles_cell_override() -> None:
     with pytest.raises(OverwriteCellError):
         grid.set_cell(RANDOM_COORD, MARK_O)
         assert grid.get_cell(RANDOM_COORD) == MARK_X
+
+
+def test_not_full_grid_returns_is_not_full() -> None:
+    """It returns False when grid is not full."""
+    # grid is empty
+    grid = Grid()
+    assert grid.is_full() is False
+
+    # grid is neither empty nor full
+    for mark in (MARK_X, MARK_O):
+        grid = Grid()
+        for row_index, row in enumerate(grid.grid):
+            for col_index, _cell in enumerate(row):
+                assert grid.is_full() is False
+                grid.set_cell((row_index, col_index), mark)
+
+
+def test_full_grid_returns_is_full() -> None:
+    """It returns True when grid is full."""
+    for mark in (MARK_X, MARK_O):
+        grid = Grid()
+        for row_index, row in enumerate(grid.grid):
+            for col_index, _cell in enumerate(row):
+                grid.set_cell((row_index, col_index), mark)
+        assert grid.is_full() is True
+
+
+def test_not_is_winning_move() -> None:
+    """It returns False if move is not a winning move."""
+    loose_grid = load_grid(FULL_GRID_LOOSE)
+    grid = Grid()
+    # Transfers all cells from loosing_grid to the new grid.
+    # Every move should be a loosing move.
+    for row_index, row in enumerate(grid.grid):
+        for col_index, _cell in enumerate(row):
+            coord = (row_index, col_index)
+            mark = loose_grid.get_cell(coord)
+            grid.set_cell(coord, mark)
+            assert grid.is_winning_move(coord, mark) is False
+
+
+def test_is_winning_move() -> None:
+    """It returns True if move is a winning move."""
+    for win_grid, win_moves in ((WIN_X_GRID, WIN_X_MOVES), (WIN_O_GRID, WIN_O_MOVES)):
+        model_grid = load_grid(win_grid)
+        grid = Grid()
+        # Transfers all cells from loosing_grid to the new grid.
+        # Every move should be a loosing move.
+        for row_index, row in enumerate(grid.grid):
+            for col_index, _cell in enumerate(row):
+                coord = (row_index, col_index)
+                mark = model_grid.get_cell(coord)
+                grid.set_cell(coord, mark)
+                is_winning = bool(coord in win_moves)
+                assert bool(grid.is_winning_move(coord, mark)) == is_winning
 
 
 # ================ Test Player ================
