@@ -1,9 +1,8 @@
 """Error classes used in the project."""
-from typing import Optional
 from typing import Tuple
 
 
-class OverwriteCellError(Exception):  # pragma: no cover
+class OverwriteCellError(Exception):
     """Raised when player tries to overwrite a non-empty cell."""
 
     def __init__(self, coord: Tuple[int, int]) -> None:

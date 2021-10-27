@@ -115,7 +115,7 @@ class Grid:
         try:
             random_cell = random.choice(empty_cells)
         except IndexError:
-            raise IndexError("Grid is full, cannot choose an available cell")
+            raise IndexError("Grid is full, cannot choose an available cell") from None
         return random_cell
 
     def framed_grid(self) -> str:

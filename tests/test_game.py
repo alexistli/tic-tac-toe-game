@@ -26,15 +26,15 @@ RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
 RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
 
-FULL_GRID_LOOSE = f"XOX" f"OOX" f"XXO"
+FULL_GRID_LOOSE = "XOXOOXXXO"
 
 # X would win turns 7 and 9 if this grid si filled in the read direction.
 WIN_X_MOVES = ((2, 0), (2, 2))
-WIN_X_GRID = f"XOX" f"OXO" f"XOX"
+WIN_X_GRID = "XOXOXOXOX"
 
 # O would win turns 7 and 9 if this grid si filled in the read direction.
 WIN_O_MOVES = ((2, 2),)
-WIN_O_GRID = f"OXX" f"XOX" f"OXO"
+WIN_O_GRID = "OXXXOXOXO"
 
 
 def load_grid(grid_str: str) -> Grid:
@@ -150,7 +150,7 @@ def test_is_winning_move() -> None:
 def test_returns_random_available_cell_succeeds() -> None:
     """It returns a random available cell."""
     grid = Grid()
-    for i in range(0, 9):
+    for _ in range(0, 9):
         value = random.choice((MARK_X, MARK_O))
         cell = grid.random_available_cell()
         assert grid.is_empty_cell(cell) is True
