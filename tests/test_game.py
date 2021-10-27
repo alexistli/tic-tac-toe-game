@@ -124,3 +124,15 @@ def test_game_handles_player_get_and_switch() -> None:
     game.switch_player()
     assert game.current_player == player_a
     assert game.get_player() == player_a
+
+
+def test_game_returns_repr() -> None:
+    """It returns expected repr."""
+    player_a = HumanPlayer(PLAYER_A_NAME)
+    player_b = AIPlayer(PLAYER_B_NAME)
+    grid = Grid()
+    game = Game(player_a, player_b)
+
+    assert repr(game) == (
+        f"Game({repr(player_a)}, {repr(player_b)}, " f"{repr(player_a)}, {repr(grid)})"
+    )
