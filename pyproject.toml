@@ -45,6 +45,7 @@ pre-commit-hooks = "^4.0.1"
 sphinx-rtd-theme = "^1.0.0"
 sphinx-click = "^3.0.1"
 Pygments = "^2.9.0"
+pytest-mock = "^3.6.1"
 
 [tool.poetry.scripts]
 tic-tac-toe-game = "tic_tac_toe_game.__main__:main"

@@ -2,25 +2,18 @@
 from typing import Tuple
 
 
-class OverwriteCellError(Exception):
-    """Raised when player tries to set a non-empty cell."""
+class GameException(Exception):  # pragma: no cover
+    """Base Exception class for all the classes of this project."""
 
-    def __init__(self, coord: Tuple[int, int]) -> None:
+
+class OverwriteCellError(GameException):
+    """Raised when player tries to overwrite a non-empty cell."""
+
+    def __init__(self, coord: Tuple[int, int]) -> None:  # pragma: no cover
         """Constructor.
 
         Args:
             coord: tuple(int, int), the cell's coordinates.
         """
-        self.coord = coord
-
-    def __str__(self) -> str:
-        """Returns message about exception."""
-        return f"Overwriting a non-empty cell is not allowed: cell at {self.coord}"
-
-
-class OverwriteCellError2(Exception):
-    """Raised when player tries to set a non-empty cell."""
-
-    def __init__(self, coord: Tuple[int, int]) -> None:
         msg = f"Overwriting a non-empty cell is not allowed: cell at {coord}"
-        super(OverwriteCellError2, self).__init__(msg)
+        super(OverwriteCellError, self).__init__(msg)
