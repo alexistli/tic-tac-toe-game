@@ -3,7 +3,6 @@ import pytest
 from click.testing import CliRunner
 
 from tic_tac_toe_game import __main__
-from tic_tac_toe_game import engine
 
 
 @pytest.fixture

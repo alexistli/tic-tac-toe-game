@@ -242,7 +242,6 @@ class Engine:
 
     def __init__(self, player_1_mark: str, player_2_type: str) -> None:
         """Returns a Game instance initialized with players params."""
-
         player_1 = HumanPlayer("Player 1")
 
         if player_2_type == "H":
@@ -264,16 +263,16 @@ class Engine:
         self.grid: Grid = Grid()
 
     def start_game(self):
-        pass
+        """TODO."""
 
     def end_game(self):
-        pass
+        """TODO."""
 
     def start_turn(self):
-        pass
+        """TODO."""
 
     def end_turn(self):
-        pass
+        """TODO."""
 
     def play_turn(self):
-        pass
+        """TODO."""

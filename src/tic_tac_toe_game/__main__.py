@@ -8,7 +8,6 @@ from tic_tac_toe_game import engine
 @click.version_option()
 def main() -> None:
     """Tic Tac Toe Game."""
-
     # Start Game: Start
     click.secho("hello", fg="green")
     if click.confirm("Do you want to play a game?", abort=True):
