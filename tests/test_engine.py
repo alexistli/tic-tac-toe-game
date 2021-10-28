@@ -36,7 +36,7 @@ WIN_O_GRID = "OXXXOXOXO"
 def load_grid(grid_str: str) -> engine.Grid:
     """Returns a Grid instance by loading a grid passed as a string."""
     n = 3
-    matrix = [list(grid_str[i: i + n]) for i in range(0, len(grid_str), n)]
+    matrix = [list(grid_str[i : i + n]) for i in range(0, len(grid_str), n)]
     grid = engine.Grid()
     grid.grid = matrix
     return grid
@@ -237,5 +237,6 @@ def test_game_returns_repr() -> None:
     game = engine.PlayersMatch(player_a, player_b)
 
     assert repr(game) == (
-        f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), " f"{repr(player_a)}, {repr(grid)})"
+        f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), "
+        f"{repr(player_a)}, {repr(grid)})"
     )
