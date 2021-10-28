@@ -1,10 +1,7 @@
 """Command-line interface."""
 import click
 
-from tic_tac_toe_game.game import AIPlayer
-from tic_tac_toe_game.game import Game
-from tic_tac_toe_game.game import HumanPlayer
-from tic_tac_toe_game.game import Player
+from tic_tac_toe_game import engine
 
 
 @click.command()
@@ -40,7 +37,7 @@ def main() -> None:
         print("Current grid: \n")
         print(f"{game.grid.framed_grid()}\n")
 
-        if isinstance(player, HumanPlayer):
+        if isinstance(player, engine.HumanPlayer):
             played_cell = click.prompt(
                 "Please pick a cell (x, y)", type=click.Tuple([int, int])
             )
@@ -63,27 +60,27 @@ def main() -> None:
             game.switch_player()
 
 
-def game_init(player_a_mark: str, player_b_type: str) -> Game:
+def game_init(player_a_mark: str, player_b_type: str) -> engine.Game:
     """Returns a Game instance initialized with players params."""
     # init players
-    player_a: Player
-    player_b: Player
+    player_a: engine.Player
+    player_b: engine.Player
 
     if player_b_type == "H":
-        player_a = HumanPlayer("Human 1")
-        player_b = HumanPlayer("Human 2")
+        player_a = engine.HumanPlayer("Human 1")
+        player_b = engine.HumanPlayer("Human 2")
     else:
-        player_a = HumanPlayer()
-        player_b = AIPlayer()
+        player_a = engine.HumanPlayer()
+        player_b = engine.AIPlayer()
     # set marks
     if player_a_mark == "X":
         player_a.set_mark("X")
         player_b.set_mark("O")
-        game = Game(player_a, player_b)
+        game = engine.Game(player_a, player_b)
     else:
         player_b.set_mark("X")
         player_a.set_mark("O")
-        game = Game(player_b, player_a)
+        game = engine.Game(player_b, player_a)
     return game
 
 
