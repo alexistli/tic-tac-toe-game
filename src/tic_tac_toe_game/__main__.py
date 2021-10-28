@@ -30,7 +30,7 @@ def main() -> None:
 
     finished = False
     while not finished:
-        player = game.get_player()
+        player = game.current()
 
         print("\n\n")
         print(f"{player.name}, it is your turn!")
@@ -57,10 +57,10 @@ def main() -> None:
             print("Players tied!")
             finished = True
         else:
-            game.switch_player()
+            game.switch()
 
 
-def game_init(player_a_mark: str, player_b_type: str) -> engine.Game:
+def game_init(player_a_mark: str, player_b_type: str) -> engine.PlayersMatch:
     """Returns a Game instance initialized with players params."""
     # init players
     player_a: engine.Player
@@ -76,11 +76,11 @@ def game_init(player_a_mark: str, player_b_type: str) -> engine.Game:
     if player_a_mark == "X":
         player_a.set_mark("X")
         player_b.set_mark("O")
-        game = engine.Game(player_a, player_b)
+        game = engine.PlayersMatch(player_a, player_b)
     else:
         player_b.set_mark("X")
         player_a.set_mark("O")
-        game = engine.Game(player_b, player_a)
+        game = engine.PlayersMatch(player_b, player_a)
     return game
 
 

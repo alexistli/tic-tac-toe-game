@@ -36,7 +36,7 @@ WIN_O_GRID = "OXXXOXOXO"
 def load_grid(grid_str: str) -> engine.Grid:
     """Returns a Grid instance by loading a grid passed as a string."""
     n = 3
-    matrix = [list(grid_str[i : i + n]) for i in range(0, len(grid_str), n)]
+    matrix = [list(grid_str[i: i + n]) for i in range(0, len(grid_str), n)]
     grid = engine.Grid()
     grid.grid = matrix
     return grid
@@ -207,9 +207,9 @@ def test_game_inits() -> None:
     """It inits and returns expected attribute values."""
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
-    game = engine.Game(player_a, player_b)
-    assert game.player_x == player_a
-    assert game.player_o == player_b
+    game = engine.PlayersMatch(player_a, player_b)
+    assert bool(player_a in game.players) is True
+    assert bool(player_b in game.players) is True
     assert game.current_player == player_a
     assert isinstance(game.grid, engine.Grid)
 
@@ -218,15 +218,15 @@ def test_game_handles_player_get_and_switch() -> None:
     """It handles current player get and switch."""
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
-    game = engine.Game(player_a, player_b)
+    game = engine.PlayersMatch(player_a, player_b)
     assert game.current_player == player_a
-    assert game.get_player() == player_a
-    game.switch_player()
+    assert game.current() == player_a
+    game.switch()
     assert game.current_player == player_b
-    assert game.get_player() == player_b
-    game.switch_player()
+    assert game.current() == player_b
+    game.switch()
     assert game.current_player == player_a
-    assert game.get_player() == player_a
+    assert game.current() == player_a
 
 
 def test_game_returns_repr() -> None:
@@ -234,8 +234,8 @@ def test_game_returns_repr() -> None:
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
     grid = engine.Grid()
-    game = engine.Game(player_a, player_b)
+    game = engine.PlayersMatch(player_a, player_b)
 
     assert repr(game) == (
-        f"Game({repr(player_a)}, {repr(player_b)}, " f"{repr(player_a)}, {repr(grid)})"
+        f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), " f"{repr(player_a)}, {repr(grid)})"
     )

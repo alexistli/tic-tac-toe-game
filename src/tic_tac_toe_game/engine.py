@@ -194,8 +194,8 @@ class HumanPlayer(Player):
         super().__init__(name=name)
 
 
-class Game:
-    """Game class.
+class PlayersMatch:
+    """Matches players together and manages turns.
 
     Attributes:
         player_x: Player, Player with the "X" mark. Will begin game.
@@ -204,30 +204,29 @@ class Game:
         grid: Grid, The current grid being played.
     """
 
-    def __init__(self, player_x: Player, player_o: Player) -> None:
+    def __init__(self, player_x: Player, player_o: Player, start: str = "X") -> None:
         """Constructor.
 
         Args:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
+            start: str, Mark starting the game.
         """
-        self.player_x = player_x
-        self.player_o = player_o
+        self.players = (player_x, player_o)
 
-        # Holds the player currently playing.
-        self.current_player: Player = self.player_x
+        # Holds the player currently playing. Rules dictate that "X" starts the game.
+        self.current_player: Player = player_x if start == "X" else player_o
 
         # Initialize an empty grid.
         self.grid: Grid = Grid()
 
-    def switch_player(self) -> None:
+    def switch(self) -> None:
         """Updates `current_player` with the other player."""
-        if self.current_player == self.player_x:
-            self.current_player = self.player_o
-        else:
-            self.current_player = self.player_x
+        self.current_player = next(
+            player for player in self.players if player != self.current_player
+        )
 
-    def get_player(self) -> Player:
+    def current(self) -> Player:
         """Returns `current_player`."""
         return self.current_player
 
@@ -235,6 +234,6 @@ class Game:
         """Returns instance representation."""
         return (
             f"{self.__class__.__name__}"
-            f"({self.player_x!r}, {self.player_o!r}, {self.current_player!r}, "
+            f"({self.players!r}, {self.current_player!r}, "
             f"{self.grid!r})"
         )
