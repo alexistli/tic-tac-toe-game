@@ -8,29 +8,34 @@ from tic_tac_toe_game import engine
 @click.version_option()
 def main() -> None:
     """Tic Tac Toe Game."""
+
+    # Start Game: Start
     click.secho("hello", fg="green")
     if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
 
-    player_a_mark = click.prompt(
-        "Please pick a mark",
+    player_1_mark = click.prompt(
+        "Player 1, please pick your mark",
         type=click.Choice(["X", "O"], case_sensitive=False),
         default="X",
     )
-    click.echo(player_a_mark)
 
-    player_b_type = click.prompt(
-        "Second player human or bot?",
+    player_2_type = click.prompt(
+        "Player 2, are you Human (H) or a Bot (B)?",
         type=click.Choice(["H", "B"], case_sensitive=False),
         default="B",
     )
-    click.echo(player_b_type)
 
-    game = game_init(player_a_mark, player_b_type)
+    game = engine.Engine(player_1_mark, player_2_type)
 
     finished = False
+
+    # Start Game: End
+
     while not finished:
-        player = game.current()
+
+        # Start Turn: Start
+        player = game.players_match.current()
 
         print("\n\n")
         print(f"{player.name}, it is your turn!")
@@ -57,31 +62,7 @@ def main() -> None:
             print("Players tied!")
             finished = True
         else:
-            game.switch()
-
-
-def game_init(player_a_mark: str, player_b_type: str) -> engine.PlayersMatch:
-    """Returns a Game instance initialized with players params."""
-    # init players
-    player_a: engine.Player
-    player_b: engine.Player
-
-    if player_b_type == "H":
-        player_a = engine.HumanPlayer("Human 1")
-        player_b = engine.HumanPlayer("Human 2")
-    else:
-        player_a = engine.HumanPlayer()
-        player_b = engine.AIPlayer()
-    # set marks
-    if player_a_mark == "X":
-        player_a.set_mark("X")
-        player_b.set_mark("O")
-        game = engine.PlayersMatch(player_a, player_b)
-    else:
-        player_b.set_mark("X")
-        player_a.set_mark("O")
-        game = engine.PlayersMatch(player_b, player_a)
-    return game
+            game.players_match.switch()
 
 
 if __name__ == "__main__":

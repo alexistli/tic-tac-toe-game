@@ -24,9 +24,9 @@ def test_main_succeeds(runner: CliRunner) -> None:
 # ================ Test CLI ================
 
 
-def test_game_init_returns_game() -> None:
-    """It returns an object of type Game."""
-    player_a_mark = "X"
-    player_b_type = "H"
-    game = __main__.game_init(player_a_mark, player_b_type)
-    assert isinstance(game, engine.PlayersMatch)
+# def test_game_init_returns_game() -> None:
+#     """It returns an object of type Game."""
+#     player_a_mark = "X"
+#     player_b_type = "H"
+#     game = __main__.game_init(player_a_mark, player_b_type)
+#     assert isinstance(game, engine.PlayersMatch)

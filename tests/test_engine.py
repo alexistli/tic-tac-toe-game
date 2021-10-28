@@ -200,43 +200,40 @@ def test_player_returns_repr() -> None:
     assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(MARK_O)})"
 
 
-# ================ Test Game ================
+# ================ Test PlayersMatch ================
 
 
-def test_game_inits() -> None:
+def test_players_match_inits() -> None:
     """It inits and returns expected attribute values."""
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
-    game = engine.PlayersMatch(player_a, player_b)
-    assert bool(player_a in game.players) is True
-    assert bool(player_b in game.players) is True
-    assert game.current_player == player_a
-    assert isinstance(game.grid, engine.Grid)
+    players_match = engine.PlayersMatch(player_a, player_b)
+    assert bool(player_a in players_match.players) is True
+    assert bool(player_b in players_match.players) is True
+    assert players_match.current_player == player_a
 
 
-def test_game_handles_player_get_and_switch() -> None:
+def test_players_match_player_get_and_switch() -> None:
     """It handles current player get and switch."""
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
-    game = engine.PlayersMatch(player_a, player_b)
-    assert game.current_player == player_a
-    assert game.current() == player_a
-    game.switch()
-    assert game.current_player == player_b
-    assert game.current() == player_b
-    game.switch()
-    assert game.current_player == player_a
-    assert game.current() == player_a
+    players_match = engine.PlayersMatch(player_a, player_b)
+    assert players_match.current_player == player_a
+    assert players_match.current() == player_a
+    players_match.switch()
+    assert players_match.current_player == player_b
+    assert players_match.current() == player_b
+    players_match.switch()
+    assert players_match.current_player == player_a
+    assert players_match.current() == player_a
 
 
-def test_game_returns_repr() -> None:
+def test_players_match_returns_repr() -> None:
     """It returns expected repr."""
     player_a = engine.HumanPlayer(PLAYER_A_NAME)
     player_b = engine.AIPlayer(PLAYER_B_NAME)
-    grid = engine.Grid()
-    game = engine.PlayersMatch(player_a, player_b)
+    players_match = engine.PlayersMatch(player_a, player_b)
 
-    assert repr(game) == (
-        f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), "
-        f"{repr(player_a)}, {repr(grid)})"
+    assert repr(players_match) == (
+        f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), {repr(player_a)})"
     )
