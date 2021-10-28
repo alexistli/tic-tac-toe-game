@@ -44,7 +44,7 @@ def main() -> None:
 
         if isinstance(player, engine.HumanPlayer):
             played_cell = click.prompt(
-                "Please pick a cell (x, y)", type=click.Tuple([int, int])
+                "Please pick a cell xy", type=click.Tuple([int, int])
             )
         else:
             played_cell = game.grid.random_available_cell()
