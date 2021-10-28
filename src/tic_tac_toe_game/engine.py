@@ -198,8 +198,7 @@ class PlayersMatch:
     """Matches players together and manages turns.
 
     Attributes:
-        player_x: Player, Player with the "X" mark. Will begin game.
-        player_o: Player, Player with the "Y" mark.
+        players: tuple(Player, Player), Players playing against each other.
         current_player: Player, Holds the player currently playing.
         grid: Grid, The current grid being played.
     """
