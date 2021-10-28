@@ -230,9 +230,7 @@ class PlayersMatch:
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return (
-            f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
-        )
+        return f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
 
 
 class Engine:

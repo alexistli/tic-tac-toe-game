@@ -164,6 +164,13 @@ def test_handles_random_available_cell_exception() -> None:
     assert "Grid is full" in str(exc.value)
 
 
+def test_grid_returns_repr() -> None:
+    """It returns expected repr."""
+    grid = engine.Grid()
+
+    assert repr(grid) == f"Grid({repr(grid.grid)})"
+
+
 # ================ Test Player ================
 
 
