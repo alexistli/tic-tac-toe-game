@@ -4,6 +4,7 @@ import click
 from tic_tac_toe_game.game import AIPlayer
 from tic_tac_toe_game.game import Game
 from tic_tac_toe_game.game import HumanPlayer
+from tic_tac_toe_game.game import Player
 
 
 @click.command()
@@ -65,6 +66,9 @@ def main() -> None:
 def game_init(player_a_mark: str, player_b_type: str) -> Game:
     """Returns a Game instance initialized with players params."""
     # init players
+    player_a: Player
+    player_b: Player
+
     if player_b_type == "H":
         player_a = HumanPlayer("Human 1")
         player_b = HumanPlayer("Human 2")
