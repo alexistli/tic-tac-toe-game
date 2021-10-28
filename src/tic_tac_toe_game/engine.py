@@ -218,7 +218,7 @@ class PlayersMatch:
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self.current_player: Player = player_x if start == "X" else player_o
 
-    def switch(self) -> None:
+    def switch(self) -> None:  # pragma: no cover
         """Updates `current_player` with the other player."""
         self.current_player = next(
             player for player in self.players if player != self.current_player
