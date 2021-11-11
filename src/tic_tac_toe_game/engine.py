@@ -262,17 +262,17 @@ class Engine:
         # Initialize an empty grid.
         self.grid: Grid = Grid()
 
-    def start_game(self):
+    def start_game(self) -> None:
         """TODO."""
 
-    def end_game(self):
+    def end_game(self) -> None:
         """TODO."""
 
-    def start_turn(self):
+    def start_turn(self) -> None:
         """TODO."""
 
-    def end_turn(self):
+    def end_turn(self) -> None:
         """TODO."""
 
-    def play_turn(self):
+    def play_turn(self) -> None:
         """TODO."""
