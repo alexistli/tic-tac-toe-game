@@ -1,0 +1,50 @@
+'PlantUML class diagram for the Tic Tac Toe Game.'
+
+@startuml
+!theme spacelab
+hide empty members
+
+class Player {
+    name
+    symbol
+
+    nextMove(theBoard : Board)
+}
+
+class Board {
+    getCell(position)
+    setCell(position, symbol)
+    isFull()
+}
+
+class Strategy {
+
+}
+
+class Referee {
+    validate(selectedMove, theBoard : Board)
+    checkForWin(theBoard: Board)
+    checkForLoss(theBoard: Board)
+    checkForStalemate(theBoard: Board)
+}
+
+class Game {
+    player1: Player
+    player2: Player
+
+    getWinner() : Player
+    getLoser() : Player
+    playOneRound()
+    isOver()
+    endedWithWin()
+    endedWithLoss()
+    endedWithStalemate()
+}
+
+Player --> Strategy: employs
+Referee --> Board: examines
+Game *-- Board
+Referee --> "2" Player : keeps honest
+Referee --> "1" Game : assigned to
+
+@enduml
