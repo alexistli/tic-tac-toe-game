@@ -9,6 +9,14 @@ class Player {
     symbol
 
     nextMove(theBoard : Board)
+    isHuman()
+    isComputer()
+}
+
+class HumanPlayer {
+}
+
+class ComputerPlayer {
 }
 
 class Board {
@@ -42,6 +50,8 @@ class Game {
 }
 
 Player --> Strategy: employs
+Player <|-- HumanPlayer
+Player <|-- ComputerPlayer
 Referee --> Board: examines
 Game *-- Board
 Referee --> "2" Player : keeps honest
