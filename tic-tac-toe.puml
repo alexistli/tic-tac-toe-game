@@ -9,14 +9,6 @@ class Player {
     symbol
 
     nextMove(theBoard : Board)
-    isHuman()
-    isComputer()
-}
-
-class HumanPlayer {
-}
-
-class ComputerPlayer {
 }
 
 class Board {
@@ -49,12 +41,7 @@ class Game {
     endedWithStalemate()
 }
 
-Player --> Strategy: employs
-Player <|-- HumanPlayer
-Player <|-- ComputerPlayer
-Referee --> Board: examines
-Game *-- Board
-Referee --> "2" Player : keeps honest
-Referee --> "1" Game : assigned to
+Player <|---- HumanPlayer
+Player <|---- ComputerPlayer
 
 @enduml
