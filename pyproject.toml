@@ -10,16 +10,13 @@ repository = "https://github.com/alexistli/tic-tac-toe-game"
 documentation = "https://tic-tac-toe-game.readthedocs.io"
 classifiers = [
     "Development Status :: 1 - Planning",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
 ]
 
 [tool.poetry.urls]
 Changelog = "https://github.com/alexistli/tic-tac-toe-game/releases"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 click = "^8.0.1"
 cruft = "^2.10.1"
 
@@ -39,23 +36,26 @@ flake8-bandit = "^2.1.2"
 flake8-bugbear = "^21.11.29"
 flake8-docstrings = "^1.6.0"
 flake8-rst-docstrings = "^0.2.5"
-pep8-naming = "^0.12.0"
-darglint = "^1.8.0"
-reorder-python-imports = "^2.5.0"
+pep8-naming = "^0.12.1"
+darglint = "^1.8.1"
+reorder-python-imports = "^2.6.0"
 pre-commit-hooks = "^4.0.1"
 sphinx-rtd-theme = "^1.0.0"
 sphinx-click = "^3.0.2"
-Pygments = "^2.9.0"
+Pygments = "^2.10.0"
+pyupgrade = "^2.29.1"
+furo = ">=2021.11.12"
 
 [tool.poetry.scripts]
 tic-tac-toe-game = "tic_tac_toe_game.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
+tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["tic_tac_toe_game"]
+source = ["tic_tac_toe_game", "tests"]
 
 [tool.coverage.report]
 show_missing = true
@@ -63,6 +63,7 @@ fail_under = 100
 
 [tool.mypy]
 strict = true
+warn_unreachable = true
 pretty = true
 show_column_numbers = true
 show_error_codes = true

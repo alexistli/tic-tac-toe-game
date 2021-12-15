@@ -98,5 +98,5 @@ This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter
 .. _file an issue: https://github.com/alexistli/tic-tac-toe-game/issues
 .. _pip: https://pip.pypa.io/
 .. github-only
-.. _Contributor Guide: CONTRIBUTING.rst
+.. _Contributor Guide: https://tic-tac-toe-game.readthedocs.io/en/latest/contributing.html
 .. _Usage: https://tic-tac-toe-game.readthedocs.io/en/latest/usage.html
