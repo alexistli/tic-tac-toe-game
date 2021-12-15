@@ -1,5 +1,5 @@
 {
-  "template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python",
+  "template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python/",
   "commit": "66fdf7cb4a0167eebc98bee820a85b52d3b5c3bf",
   "context": {
     "cookiecutter": {
@@ -12,7 +12,7 @@
       "version": "0.0.0",
       "license": "MIT",
       "development_status": "Development Status :: 1 - Planning",
-      "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python"
+      "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python/"
     }
   },
   "directory": null
