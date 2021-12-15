@@ -33,6 +33,13 @@ repos:
         language: system
         types: [python]
         require_serial: true
+      - id: pyupgrade
+        name: pyupgrade
+        description: Automatically upgrade syntax for newer versions.
+        entry: pyupgrade
+        language: system
+        types: [python]
+        args: [--py37-plus]
       - id: reorder-python-imports
         name: Reorder python imports
         entry: reorder-python-imports
@@ -46,6 +53,6 @@ repos:
         types: [text]
         stages: [commit, push, manual]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: prettier

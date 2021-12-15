@@ -1,6 +1,6 @@
 {
-  "template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python/",
-  "commit": "66fdf7cb4a0167eebc98bee820a85b52d3b5c3bf",
+  "template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python",
+  "commit": "8c4410feb2b2f42888a26108d5062461d2ad02a2",
   "context": {
     "cookiecutter": {
       "project_name": "tic-tac-toe-game",
@@ -12,8 +12,9 @@
       "version": "0.0.0",
       "license": "MIT",
       "development_status": "Development Status :: 1 - Planning",
-      "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python/"
+      "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python"
     }
   },
-  "directory": null
+  "directory": null,
+  "checkout": null
 }
