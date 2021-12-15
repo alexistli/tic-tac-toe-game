@@ -12,4 +12,4 @@ class OverwriteCellError(Exception):
             coord: tuple(int, int), the cell's coordinates.
         """
         msg = f"Overwriting a non-empty cell is not allowed: cell at {coord}"
-        super(OverwriteCellError, self).__init__(msg)
+        super().__init__(msg)
