@@ -25,14 +25,15 @@
         {% for j in range(3) %}
         <td>
           {% if game[i][j] %} {{ game[i][j] }} {% else %}
-          <a href="{{ url_for('main.play', row=i, col=j) }}"
-            >Play {{ turn }} here.</a
-          >
+          <a href="{{ url_for('main.play', row=i, col=j) }}">
+            Play {{ turn }} here.
+          </a>
           {% endif %}
         </td>
         {% endfor %}
       </tr>
       {% endfor %}
     </table>
+    {{session}}
   </body>
 </html>
