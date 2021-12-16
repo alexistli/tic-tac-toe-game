@@ -20,4 +20,5 @@ def index():
 @bp.route("/play/<int:row>/<int:col>")
 def play(row, col):
     """Gets the coordinates of the played cell."""
+    session["board"][row][col] = session["turn"]
     return redirect(url_for("main.index"))
