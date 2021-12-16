@@ -22,6 +22,8 @@ cruft = "^2.10.1"
 Flask = "^2.0.2"
 python-dotenv = "^0.19.2"
 Flask-Session = "^0.4.0"
+Flask-SocketIO = "^5.1.1"
+eventlet = "^0.33.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
@@ -51,6 +53,7 @@ furo = ">=2021.11.12"
 
 [tool.poetry.scripts]
 tic-tac-toe-game = "tic_tac_toe_game.__main__:main"
+flask-game = "app.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
