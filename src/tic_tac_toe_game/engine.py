@@ -49,6 +49,7 @@ class Grid:
     def __init__(self) -> None:
         """Inits Grid with an empty grid."""
         self.grid: List[List[str]] = [[Grid._empty_cell] * 3 for _ in range(3)]
+        self.plays: List[Optional[Tuple[str, Tuple[int, int]]]] = []
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
         """Returns value for cell located at `coord`."""
@@ -60,6 +61,11 @@ class Grid:
         if not self.is_empty_cell(coord):
             raise OverwriteCellError(coord)
         self.grid[coord_x][coord_y] = value
+        self.plays.append((value, coord))
+
+    def get_last_play(self) -> Tuple[str, Tuple[int, int]]:
+        """Returns last played cell and associated mark or None."""
+        return self.plays[-1] if len(self.plays) else (None, None)
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
         """Checks if cell located at `coord` is empty."""
@@ -140,14 +146,15 @@ class Player:
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, mark: Optional[str] = None) -> None:
         """Constructor.
 
         Args:
             name: str, name of the player.
+            mark: str, player's mark
         """
         self.name = name
-        self.mark: Optional[str] = None
+        self.mark = mark
 
     def set_mark(self, mark: str) -> None:
         """Sets the player's mark for this game.
@@ -173,68 +180,105 @@ class Player:
 class AIPlayer(Player):
     """Player class for an AI-managed player."""
 
-    def __init__(self, name: str = "Botybot") -> None:
+    def __init__(self, name: str = "Botybot", mark: Optional[str] = None) -> None:
         """Constructor.
 
         Args:
             name: str, name of the player.
+            mark: str, player's mark
         """
-        super().__init__(name=name)
+        super().__init__(name=name, mark=mark)
 
 
 class HumanPlayer(Player):
     """Player class for an AI-managed player."""
 
-    def __init__(self, name: str = "Human") -> None:
+    def __init__(self, name: str = "Human", mark: Optional[str] = None) -> None:
         """Constructor.
 
         Args:
             name: str, name of the player.
+            mark: str, player's mark
         """
-        super().__init__(name=name)
+        super().__init__(name=name, mark=mark)
 
 
-class Game:
-    """Game class.
+class PlayersMatch:
+    """Matches players together and manages turns.
 
     Attributes:
-        player_x: Player, Player with the "X" mark. Will begin game.
-        player_o: Player, Player with the "Y" mark.
+        players: tuple(Player, Player), Players playing against each other.
         current_player: Player, Holds the player currently playing.
-        grid: Grid, The current grid being played.
     """
 
-    def __init__(self, player_x: Player, player_o: Player) -> None:
+    def __init__(self, player_x: Player, player_o: Player, start: str = "X") -> None:
         """Constructor.
 
         Args:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
+            start: str, Mark starting the game.
         """
-        self.player_x = player_x
-        self.player_o = player_o
+        self.players = (player_x, player_o)
 
-        # Holds the player currently playing.
-        self.current_player: Player = self.player_x
+        # Holds the player currently playing. Rules dictate that "X" starts the game.
+        self.current_player: Player = player_x if start == "X" else player_o
 
-        # Initialize an empty grid.
-        self.grid: Grid = Grid()
-
-    def switch_player(self) -> None:
+    def switch(self) -> None:  # pragma: no cover
         """Updates `current_player` with the other player."""
-        if self.current_player == self.player_x:
-            self.current_player = self.player_o
-        else:
-            self.current_player = self.player_x
+        self.current_player = next(
+            player for player in self.players if player != self.current_player
+        )
 
-    def get_player(self) -> Player:
+    def current(self) -> Player:
         """Returns `current_player`."""
         return self.current_player
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return (
-            f"{self.__class__.__name__}"
-            f"({self.player_x!r}, {self.player_o!r}, {self.current_player!r}, "
-            f"{self.grid!r})"
-        )
+        return f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
+
+
+class Engine:
+    """Engine.
+
+    Attributes:
+        grid: Grid, The current grid being played.
+    """
+
+    def __init__(self, player_1_mark: str, player_2_type: str) -> None:
+        """Returns a Game instance initialized with players params."""
+        player_1 = HumanPlayer("Player 1")
+
+        if player_2_type == "H":
+            player_2 = HumanPlayer("Player 2")
+        else:
+            player_2 = AIPlayer()
+
+        # set marks
+        if player_1_mark == "X":
+            player_1.set_mark("X")
+            player_2.set_mark("O")
+            self.players_match = PlayersMatch(player_1, player_2)
+        else:
+            player_1.set_mark("O")
+            player_2.set_mark("X")
+            self.players_match = PlayersMatch(player_2, player_1)
+
+        # Initialize an empty grid.
+        self.grid: Grid = Grid()
+
+    def start_game(self) -> None:
+        """TODO."""
+
+    def end_game(self) -> None:
+        """TODO."""
+
+    def start_turn(self) -> None:
+        """TODO."""
+
+    def end_turn(self) -> None:
+        """TODO."""
+
+    def play_turn(self) -> None:
+        """TODO."""

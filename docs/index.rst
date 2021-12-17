@@ -11,6 +11,5 @@
    usage
    reference
    contributing
-   Code of Conduct <codeofconduct>
    License <license>
    Changelog <https://github.com/alexistli/tic-tac-toe-game/releases>
