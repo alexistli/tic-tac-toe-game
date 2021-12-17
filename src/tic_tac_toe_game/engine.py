@@ -49,7 +49,7 @@ class Grid:
     def __init__(self) -> None:
         """Inits Grid with an empty grid."""
         self.grid: List[List[str]] = [[Grid._empty_cell] * 3 for _ in range(3)]
-        self.plays = []
+        self.plays: List[Optional[Tuple[str, Tuple[int, int]]]] = []
 
     def get_cell(self, coord: Tuple[int, int]) -> str:
         """Returns value for cell located at `coord`."""
@@ -64,8 +64,8 @@ class Grid:
         self.plays.append((value, coord))
 
     def get_last_play(self) -> Tuple[str, Tuple[int, int]]:
-        """Returns last played cell and associated mark."""
-        return self.plays[-1]
+        """Returns last played cell and associated mark or None."""
+        return self.plays[-1] if len(self.plays) else (None, None)
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
         """Checks if cell located at `coord` is empty."""
