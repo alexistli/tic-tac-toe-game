@@ -23,6 +23,7 @@ python-dotenv = "^0.19.2"
 Flask-Session = "^0.4.0"
 Flask-SocketIO = "^5.1.1"
 eventlet = "^0.33.0"
+mctspy = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 cruft = "^2.10.1"
