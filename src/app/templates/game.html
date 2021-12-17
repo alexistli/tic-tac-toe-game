@@ -24,7 +24,7 @@
       <tr>
         {% for j in range(3) %}
         <td>
-          {% if game[i][j] != "_" %} {{ game[i][j] }} {% elif turn == "O" %} _
+          {% if board[i][j] != "_" %} {{ board[i][j] }} {% elif turn == "O" %} _
           {% else %}
           <a href="{{ url_for('main.play', row=i, col=j) }}"
             >Play {{ turn }} here.</a
@@ -35,6 +35,6 @@
       </tr>
       {% endfor %}
     </table>
-    {{session}}
+    {{ board }}
   </body>
 </html>
