@@ -1,13 +1,18 @@
 """Flask app routes."""
+import numpy as np
 from flask import redirect
 from flask import render_template
 from flask import session
 from flask import url_for
+from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
+from mctspy.tree.search import MonteCarloTreeSearch
 
 from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
 from tic_tac_toe_game.engine import Grid
+from tic_tac_toe_game.engine import MARKING_CORRESPONDENCE
+from tic_tac_toe_game.tictactoe import TicTacToeGameState
 
 
 @bp.route("/")
@@ -43,7 +48,23 @@ def game():
 
     # session["turn"] = current_game.players_match.current().get_mark()
     if turn == "O":
-        chosen_cell = grid.random_available_cell()
+        next_to_move = MARKING_CORRESPONDENCE[turn]
+
+        state = np.array(current_game.grid.dump_to_int_array())
+        initial_board_state = TicTacToeGameState(state=state, next_to_move=next_to_move)
+        root = TwoPlayersGameMonteCarloTreeSearchNode(state=initial_board_state)
+        mcts = MonteCarloTreeSearch(root)
+        best_node = mcts.best_action(10000)
+
+        print("\nSub:")
+        sub = best_node.state.board - best_node.parent.state.board
+        print(sub)
+
+        x_coords, y_coords = np.where(sub == next_to_move)
+        print(x_coords, y_coords)
+        print(x_coords[0], y_coords[0])
+        chosen_cell = (x_coords[0], y_coords[0])
+
         row, col = chosen_cell
         return redirect(url_for("main.play", row=row, col=col))
 
