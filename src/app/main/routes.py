@@ -7,6 +7,7 @@ from flask import url_for
 from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
+from tic_tac_toe_game.engine import Grid
 
 
 @bp.route("/")
@@ -20,6 +21,7 @@ def game():
     """Shows the current game."""
     if "game" not in session:
         current_game = engine.Engine("X", "B")
+        current_game.grid = Grid()
 
         session["game"] = current_game
         # session["turn"] = current_game.players_match.current().get_mark()
