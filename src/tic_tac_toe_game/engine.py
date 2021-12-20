@@ -33,6 +33,27 @@ from typing import Tuple
 
 from tic_tac_toe_game.errors import OverwriteCellError
 
+MARKING_CORRESPONDENCE = {"X": 1.0, "O": -1.0, "_": 0.0, 1: "X", -1: "O", 0: "_"}
+
+
+class Move:
+    """Move performed by a Player on the Grid."""
+
+    def __init__(self, x_coordinate, y_coordinate, value):
+        """Inits."""
+        self.x_coordinate = x_coordinate
+        self.y_coordinate = y_coordinate
+        self.value = value
+
+    def __repr__(self):
+        """Repr."""
+        return (
+            f"{self.__class__.__name__}"
+            f"(x_coordinate: {self.x_coordinate}, "
+            f"y_coordinate: {self.y_coordinate}, "
+            f"value: {self.value})"
+        )
+
 
 class Grid:
     """Grid class.
@@ -132,6 +153,20 @@ class Grid:
             if idx != len(self.grid) - 1:
                 framed.append(Grid._intersection.join(Grid._horizontal_separator * 3))
         return "\n".join(framed)
+
+    @staticmethod
+    def load_from_int_array(list_grid: List[List[int]]):
+        """Loads grid from a list of int."""
+        grid = Grid()
+        grid.grid = [
+            [MARKING_CORRESPONDENCE[elem] for elem in row] for row in list_grid
+        ]
+        return grid
+
+    def dump_to_int_array(self):
+        """Dumps grid to list of int."""
+        grid = [[MARKING_CORRESPONDENCE[elem] for elem in row] for row in self.grid]
+        return grid
 
     def __repr__(self) -> str:
         """Returns instance representation."""
@@ -246,7 +281,9 @@ class Engine:
         grid: Grid, The current grid being played.
     """
 
-    def __init__(self, player_1_mark: str, player_2_type: str) -> None:
+    def __init__(
+        self, player_1_mark: str, player_2_type: str, grid: Grid = None
+    ) -> None:
         """Returns a Game instance initialized with players params."""
         player_1 = HumanPlayer("Player 1")
 
@@ -266,7 +303,7 @@ class Engine:
             self.players_match = PlayersMatch(player_2, player_1)
 
         # Initialize an empty grid.
-        self.grid: Grid = Grid()
+        self.grid = grid
 
     def start_game(self) -> None:
         """TODO."""
