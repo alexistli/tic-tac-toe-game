@@ -6,7 +6,7 @@ from mctspy.tree.search import MonteCarloTreeSearch
 
 from tic_tac_toe_game import engine
 from tic_tac_toe_game.engine import Grid
-from tic_tac_toe_game.tictactoe import TicTacToeGameState
+from tic_tac_toe_game.mcts_ai import TicTacToeGameState
 
 
 @click.command()

@@ -32,8 +32,7 @@ from typing import Optional
 from typing import Tuple
 
 from tic_tac_toe_game.errors import OverwriteCellError
-
-MARKING_CORRESPONDENCE = {"X": 1.0, "O": -1.0, "_": 0.0, 1: "X", -1: "O", 0: "_"}
+from tic_tac_toe_game.mcts_ai import MARKING_CORRESPONDENCE
 
 
 class Move:

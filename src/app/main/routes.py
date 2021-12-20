@@ -11,8 +11,8 @@ from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
 from tic_tac_toe_game.engine import Grid
-from tic_tac_toe_game.engine import MARKING_CORRESPONDENCE
-from tic_tac_toe_game.tictactoe import TicTacToeGameState
+from tic_tac_toe_game.mcts_ai import MARKING_CORRESPONDENCE
+from tic_tac_toe_game.mcts_ai import TicTacToeGameState
 
 
 @bp.route("/")

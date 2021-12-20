@@ -132,3 +132,6 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
             Move(coords[0], coords[1], self.next_to_move)
             for coords in list(zip(indices[0], indices[1]))
         ]
+
+
+MARKING_CORRESPONDENCE = {"X": 1.0, "O": -1.0, "_": 0.0, 1: "X", -1: "O", 0: "_"}
