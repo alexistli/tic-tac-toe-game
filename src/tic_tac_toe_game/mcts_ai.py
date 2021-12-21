@@ -1,4 +1,4 @@
-"""Implementation of the mctspy lib for Tic Tac Toe Game."""
+"""Implementation of the MCTS algorithm for Tic Tac Toe Game."""
 import numpy as np
 from mctspy.games.common import TwoPlayersAbstractGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
@@ -136,25 +136,23 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         ]
 
 
-MARKING_CORRESPONDENCE = {"X": 1.0, "O": -1.0, "_": 0.0, 1: "X", -1: "O", 0: "_"}
+FROM_MARK = {"X": 1.0, "O": -1.0, "_": 0.0}
+TO_MARK = {-1: "O", 0: "_", 1: "X"}
 
 
-def compute_best_move(mark, list_grid):
+def compute_best_move(mark, grid):
     """Computes best move."""
-    next_to_move = MARKING_CORRESPONDENCE[mark]
+    list_grid = grid.dump_to_int_array(FROM_MARK)
+    player = FROM_MARK[mark]
 
     state = np.array(list_grid)
-    initial_board_state = TicTacToeGameState(state=state, next_to_move=next_to_move)
+    initial_board_state = TicTacToeGameState(state=state, next_to_move=player)
     root = TwoPlayersGameMonteCarloTreeSearchNode(state=initial_board_state)
     mcts = MonteCarloTreeSearch(root)
     best_node = mcts.best_action(10000)
 
-    print("\nSub:")
-    sub = best_node.state.board - best_node.parent.state.board
-    print(sub)
+    board_diff = best_node.state.board - best_node.parent.state.board
 
-    x_coords, y_coords = np.where(sub == next_to_move)
-    print(x_coords, y_coords)
-    print(x_coords[0], y_coords[0])
+    x_coords, y_coords = np.where(board_diff == player)
     chosen_cell = (x_coords[0], y_coords[0])
     return chosen_cell
