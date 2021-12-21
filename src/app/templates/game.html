@@ -42,16 +42,16 @@
     <h2>{{msg}}</h2>
     <form action="" method="POST">
       <table>
-        {% for j in range(3) %}
+        {% for i in range(3) %}
         <tr>
-          {% for i in range(3) %}
+          {% for j in range(3) %}
           <td>
             {% set disable_value = "disabled" if board[i][j] != "_" else "" %}
             <!--suppress HtmlUnknownAttribute -->
             <button
               type="submit"
               name="choice"
-              value="{{j}} {{i}}"
+              value="{{i}} {{j}}"
               {{
               disable_value
               }}
