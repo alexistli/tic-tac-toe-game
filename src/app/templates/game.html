@@ -46,14 +46,14 @@
         <tr>
           {% for j in range(3) %}
           <td>
-            {% set disable_value = "disabled" if board[i][j] != "_" else "" %}
+            {% set disabled = "disabled" if board[i][j] != "_" else "" %}
             <!--suppress HtmlUnknownAttribute -->
             <button
               type="submit"
               name="choice"
               value="{{i}} {{j}}"
               {{
-              disable_value
+              disabled
               }}
             >
               {{board[i][j]}}
