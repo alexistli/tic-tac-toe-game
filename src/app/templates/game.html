@@ -51,7 +51,7 @@
             <button
               type="submit"
               name="choice"
-              value="{{j}},{{i}}"
+              value="{{j}} {{i}}"
               {{
               disable_value
               }}
@@ -63,7 +63,12 @@
         </tr>
         {% endfor %}
       </table>
-      <button type="submit" name="new_game">Start Over</button>
+      <button
+        type="button"
+        onclick="window.location.href='{{ url_for('main.new_game') }}';"
+      >
+        Start Over
+      </button>
     </form>
   </body>
 </html>

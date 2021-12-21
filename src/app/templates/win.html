@@ -6,6 +6,11 @@
   <body>
     Player {{ mark }} won!
     <a href="{{ url_for('main.game') }}">Start a new game.</a>
-    <button type="submit" name="new_game">Start Over</button>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start Over
+    </button>
   </body>
 </html>
