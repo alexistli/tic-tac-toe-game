@@ -53,24 +53,6 @@ def game():
     return render_template("game.html", board=grid.grid, turn=turn, session=session)
 
 
-@bp.route("/play/<int:row>/<int:col>")
-def play(row, col):
-    """Gets the coordinates of the played cell."""
-    # session["board"][row][col] = session["turn"]
-
-    current_game = session["game"]
-    grid = current_game.grid
-    turn = current_game.players_match.current().get_mark()
-
-    grid.set_cell(coord=(row, col), value=turn)  # type: ignore[arg-type]
-
-    # current_game.players_match.switch()
-    # session["turn"] = current_game.players_match.current().get_mark()
-    current_game.players_match.switch()
-
-    return redirect(url_for("main.game"))
-
-
 @bp.route("/win/<string:mark>")
 def win(mark):
     """Announces the winning player."""
