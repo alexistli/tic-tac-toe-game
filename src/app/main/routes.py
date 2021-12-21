@@ -11,6 +11,8 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game.engine import Grid
 from tic_tac_toe_game.mcts_ai import compute_best_move
 
+# from tic_tac_toe_game.negamax_ai import compute_best_move
+
 
 @bp.route("/")
 def index():
@@ -34,10 +36,9 @@ def game():
 
         current_game.players_match.switch()
 
-        if not grid.is_full():
+        if not grid.is_full() and not grid.is_winning_move(chosen_cell, turn):
             turn = current_game.players_match.current().get_mark()
-            list_grid = current_game.grid.dump_to_int_array()
-            chosen_cell = compute_best_move(turn, list_grid)
+            chosen_cell = compute_best_move(turn, grid)
 
             grid.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
 
