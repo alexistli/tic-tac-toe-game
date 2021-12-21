@@ -32,7 +32,6 @@ from typing import Optional
 from typing import Tuple
 
 from tic_tac_toe_game.errors import OverwriteCellError
-from tic_tac_toe_game.mcts_ai import MARKING_CORRESPONDENCE
 
 
 class Move:
@@ -154,17 +153,15 @@ class Grid:
         return "\n".join(framed)
 
     @staticmethod
-    def load_from_int_array(list_grid: List[List[int]]):
+    def load_from_int_array(list_grid: List[List[int]], mapping):
         """Loads grid from a list of int."""
         grid = Grid()
-        grid.grid = [
-            [MARKING_CORRESPONDENCE[elem] for elem in row] for row in list_grid
-        ]
+        grid.grid = [[mapping[elem] for elem in row] for row in list_grid]
         return grid
 
-    def dump_to_int_array(self):
+    def dump_to_int_array(self, mapping):
         """Dumps grid to list of int."""
-        grid = [[MARKING_CORRESPONDENCE[elem] for elem in row] for row in self.grid]
+        grid = [[mapping[elem] for elem in row] for row in self.grid]
         return grid
 
     def __repr__(self) -> str:
