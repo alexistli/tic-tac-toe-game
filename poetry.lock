@@ -324,6 +324,17 @@ toml = "*"
 pipenv = ["pipenv"]
 
 [[package]]
+name = "easyai"
+version = "2.0.12"
+description = "Easy-to-use game AI algorithms (Negamax etc. )"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+numpy = "*"
+
+[[package]]
 name = "eventlet"
 version = "0.33.0"
 description = "Highly concurrent networking library"
@@ -1372,7 +1383,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "9fca1c88a0bc1edbe738de714a74fd148e4e5c965a4ecea96d521987d82fc232"
+content-hash = "3cf00c527ae6bf7fb7a6797048d39490223314f3f2138c160909395cc3b105d8"
 
 [metadata.files]
 alabaster = [
@@ -1531,6 +1542,10 @@ docutils = [
 dparse = [
     {file = "dparse-0.5.1-py3-none-any.whl", hash = "sha256:e953a25e44ebb60a5c6efc2add4420c177f1d8404509da88da9729202f306994"},
     {file = "dparse-0.5.1.tar.gz", hash = "sha256:a1b5f169102e1c894f9a7d5ccf6f9402a836a5d24be80a986c7ce9eaed78f367"},
+]
+easyai = [
+    {file = "easyAI-2.0.12-py3-none-any.whl", hash = "sha256:9ad5444bdc729b60baa39c60d28dd9c677aaec12e27b7972183859f1a0946ee1"},
+    {file = "easyAI-2.0.12.tar.gz", hash = "sha256:8c4d2d488bcd81578e1b48d38158bc50353dfd4ab3ab04e4ddac637e08378fbe"},
 ]
 eventlet = [
     {file = "eventlet-0.33.0-py2.py3-none-any.whl", hash = "sha256:d10a8fcc9e33381905d9873303fde96ebe3541c03fb795055d2c7347dce0639c"},
