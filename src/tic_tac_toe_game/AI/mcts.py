@@ -140,9 +140,9 @@ FROM_MARK = {"X": 1.0, "O": -1.0, "_": 0.0}
 TO_MARK = {-1: "O", 0: "_", 1: "X"}
 
 
-def compute_best_move(mark, grid):
+def mcts_best_move(board, mark):
     """Computes best move."""
-    list_grid = grid.dump_to_int_array(FROM_MARK)
+    list_grid = board.dump_to_int_array(FROM_MARK)
     player = FROM_MARK[mark]
 
     state = np.array(list_grid)

@@ -27,7 +27,7 @@
         <tr>
           {% for j in range(3) %}
           <td>
-            {% set disabled = "disabled" if board[i][j] != "_" else "" %}
+            {% set disabled = "disabled" if board[i][j] != "_" %}
             <!--suppress HtmlUnknownAttribute -->
             <button
               type="submit"
@@ -44,12 +44,24 @@
         </tr>
         {% endfor %}
       </table>
-      <button
-        type="button"
-        onclick="window.location.href='{{ url_for('main.new_game') }}';"
-      >
-        Start Over
-      </button>
+    </form>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start Over
+    </button>
+    <h2>AI choice</h2>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start Over
+    </button>
+    <form action="" method="POST">
+      <button type="submit" name="AI_random">Random move</button>
+      <button type="submit" name="AI_mcts">AI MCTS</button>
+      <button type="submit" name="AI_negamax">AI Negamax</button>
     </form>
   </body>
 </html>

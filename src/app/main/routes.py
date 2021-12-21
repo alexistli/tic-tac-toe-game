@@ -8,11 +8,10 @@ from flask import url_for
 from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
-from tic_tac_toe_game.engine import Grid
-from tic_tac_toe_game.mcts_ai import compute_best_move
-
-# TODO: Add dynamic strategy selection
-# from tic_tac_toe_game.negamax_ai import compute_best_move
+from tic_tac_toe_game.AI.mcts import mcts_best_move
+from tic_tac_toe_game.AI.negamax import negamax_best_move
+from tic_tac_toe_game.AI.random import random_move
+from tic_tac_toe_game.engine import Board
 
 
 @bp.route("/")
@@ -25,7 +24,7 @@ def index():
 def game():
     """Shows the current game."""
     current_game = session["game"]
-    grid = current_game.grid
+    board = current_game.board
     turn = current_game.players_match.current().get_mark()
     chosen_cell = None
 
@@ -33,26 +32,35 @@ def game():
         row_str, col_str = request.form["choice"].split()
         chosen_cell = int(row_str), int(col_str)
 
-        grid.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
+        board.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
 
         current_game.players_match.switch()
 
-        if not grid.is_full() and not grid.is_winning_move(chosen_cell, turn):
+        if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
             turn = current_game.players_match.current().get_mark()
-            chosen_cell = compute_best_move(turn, grid)
+            chosen_cell = current_game.get_move()
+            # chosen_cell = negamax_move(turn, board)
 
-            grid.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
+            board.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
 
             current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif grid.is_winning_move(chosen_cell, turn):  # type: ignore[arg-type]
+    elif board.is_winning_move(chosen_cell, turn):  # type: ignore[arg-type]
         return redirect(url_for("main.win", mark=turn))
-    elif grid.is_full():
+    elif board.is_full():
         return redirect(url_for("main.tie"))
 
-    return render_template("game.html", board=grid.grid, turn=turn, session=session)
+    if "AI_random" in request.form:
+        current_game.players_match.update_ai_algorithm(random_move)
+    elif "AI_mcts" in request.form:
+        current_game.players_match.update_ai_algorithm(mcts_best_move)
+    elif "AI_negamax" in request.form:
+        current_game.players_match.update_ai_algorithm(negamax_best_move)
+    print(current_game.players_match.players)
+
+    return render_template("game.html", board=board.grid, turn=turn, session=session)
 
 
 @bp.route("/win/<string:mark>")
@@ -70,10 +78,15 @@ def tie():
 @bp.route("/new_game")
 def new_game():
     """Initializes a new game."""
-    current_game = engine.Engine("X", "B")
-    current_game.grid = Grid()
+    if "game" not in session:
+        current_game = engine.Engine("X", "B")
+        current_game.players_match.update_ai_algorithm(random_move)
+        session["game"] = current_game
+    else:
+        current_game = session["game"]
+        current_game.players_match.switch()
 
-    session["game"] = current_game
+    current_game.board = Board()
 
     return redirect(url_for("main.game"))
 

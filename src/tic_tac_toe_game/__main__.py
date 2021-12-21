@@ -2,7 +2,7 @@
 import click
 
 from tic_tac_toe_game import engine
-from tic_tac_toe_game.engine import Grid
+from tic_tac_toe_game.engine import Board
 
 
 @click.command()
@@ -26,7 +26,7 @@ def main() -> None:
     )
 
     game = engine.Engine(player_1_mark, player_2_type)
-    game.grid = Grid()
+    game.board = Board()
 
     finished = False
 
@@ -36,7 +36,7 @@ def main() -> None:
         print("\n\n")
         print(f"{player.name}, it is your turn!")
         print("Current grid: \n")
-        print(f"{game.grid.framed_grid()}\n")
+        print(f"{game.board.framed_grid()}\n")
 
         if isinstance(player, engine.HumanPlayer):
             played_cell = click.prompt(
@@ -44,18 +44,18 @@ def main() -> None:
             )
         else:
             # TODO: Upgrade with any possible strategy
-            played_cell = game.grid.random_available_cell()
+            played_cell = game.board.random_available_cell()
 
-        game.grid.set_cell(
+        game.board.set_cell(
             coord=played_cell, value=player.get_mark()  # type: ignore[arg-type]
         )
 
-        if game.grid.is_winning_move(
+        if game.board.is_winning_move(
             played_cell, player.get_mark()  # type: ignore[arg-type]
         ):
             print(f"Player {player.name} won!")
             finished = True
-        elif game.grid.is_full():
+        elif game.board.is_full():
             print("Players tied!")
             finished = True
         else:

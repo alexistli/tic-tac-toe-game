@@ -117,9 +117,9 @@ GRID_CORRESPONDENCE = {
 }
 
 
-def compute_best_move(mark, grid):
+def negamax_best_move(board, mark):
     """Computes best move."""
-    list_grid = grid.dump_to_int_array(FROM_MARK)
+    list_grid = board.dump_to_int_array(FROM_MARK)
     player = FROM_MARK[mark]
 
     ttt = TicTacToe([Human_Player(), AI_Player(Negamax(6))])
