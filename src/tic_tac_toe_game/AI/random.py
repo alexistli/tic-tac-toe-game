@@ -2,8 +2,10 @@
 import random
 from typing import Tuple
 
+from tic_tac_toe_game.engine import Board
 
-def random_move(board, *args) -> Tuple[int, int]:
+
+def random_move(board: Board, *args: str) -> Tuple[int, int]:
     """Returns a randomly picked cell among available cells."""
     empty_cells = [
         (row_id, col_id)

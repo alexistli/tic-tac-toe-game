@@ -1,20 +1,26 @@
 """Implementation of the MCTS algorithm for Tic Tac Toe Game."""
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 import numpy as np
 from mctspy.games.common import TwoPlayersAbstractGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
 from mctspy.tree.search import MonteCarloTreeSearch
 
+from tic_tac_toe_game.engine import Board
+
 
 class Move:
     """Move class."""
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, value: int):
+    def __init__(self, x_coordinate: int, y_coordinate: int, value: int) -> None:
         """Inits."""
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return f"x:{self.x_coordinate} y:{self.y_coordinate} v:{self.value}"
 
@@ -25,7 +31,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
     x = 1
     o = -1
 
-    def __init__(self, state: np.ndarray, next_to_move: int = 1):
+    def __init__(self, state: np.ndarray, next_to_move: int = 1) -> None:
         """Inits."""
         if len(state.shape) != 2 or state.shape[0] != state.shape[1]:
             raise ValueError("Only 2D square boards allowed")
@@ -34,7 +40,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         self.next_to_move = next_to_move
 
     @property
-    def game_result(self):
+    def game_result(self) -> Optional[float]:
         """Returns game result.
 
         This property should return:
@@ -74,7 +80,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         # if not over - no result
         return None
 
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
         """Returns boolean indicating if the game is over.
 
         Simplest implementation may just be
@@ -85,7 +91,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         """
         return self.game_result is not None
 
-    def is_move_legal(self, move):
+    def is_move_legal(self, move: Move) -> bool:
         """Checks if move is legal."""
         # check if correct player moves
         if move.value != self.next_to_move:
@@ -104,7 +110,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         # finally check if board field not occupied yet
         return self.board[move.x_coordinate, move.y_coordinate] == 0
 
-    def move(self, move):
+    def move(self, move: Move) -> "TicTacToeGameState":
         """Consumes action and returns resulting TwoPlayersAbstractGameState.
 
         Returns
@@ -122,7 +128,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
 
         return TicTacToeGameState(new_board, next_to_move)
 
-    def get_legal_actions(self):
+    def get_legal_actions(self) -> List[Move]:
         """Returns list of legal action at current game state.
 
         Returns
@@ -140,7 +146,7 @@ FROM_MARK = {"X": 1.0, "O": -1.0, "_": 0.0}
 TO_MARK = {-1: "O", 0: "_", 1: "X"}
 
 
-def mcts_best_move(board, mark):
+def mcts_best_move(board: Board, mark: str) -> Tuple[int, int]:
     """Computes best move."""
     list_grid = board.dump_to_int_array(FROM_MARK)
     player = FROM_MARK[mark]

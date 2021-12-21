@@ -1,8 +1,15 @@
 """Implementation of the negamax algorithm for Tic Tac Toe Game."""
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 from easyAI import AI_Player
 from easyAI import Human_Player
 from easyAI import Negamax
 from easyAI import TwoPlayerGame
+
+from tic_tac_toe_game.engine import Board
 
 
 class TicTacToe(TwoPlayerGame):
@@ -14,26 +21,26 @@ class TicTacToe(TwoPlayerGame):
     7 8 9
     """
 
-    def __init__(self, players):
+    def __init__(self, players: List[Union[AI_Player, Human_Player]]) -> None:
         """Inits."""
         self.players = players
         self.board = [0 for i in range(9)]
         self.current_player = 1  # player 1 starts.
 
-    def load_board(self, array_board):
+    def load_board(self, array_board: List[List[int]]) -> None:
         """Loads board from 2D array."""
         board = [element for row in array_board for element in row]
         self.board = board
 
-    def possible_moves(self):
+    def possible_moves(self) -> List[int]:
         """Returns possible moves."""
         return [i + 1 for i, e in enumerate(self.board) if e == 0]
 
-    def make_move(self, move):
+    def make_move(self, move: Union[int, str]) -> None:
         """Make move."""
         self.board[int(move) - 1] = self.current_player
 
-    def unmake_move(self, move):
+    def unmake_move(self, move: Union[int, str]) -> None:
         """Unmake move.
 
         Optional method (speeds up the AI)
@@ -51,7 +58,7 @@ class TicTacToe(TwoPlayerGame):
         [3, 5, 7],  # diagonal
     ]
 
-    def lose(self, who=None):
+    def lose(self, who: Optional[int] = None) -> bool:
         """Has the opponent "three in line?"."""
         if who is None:
             who = self.opponent_index
@@ -60,7 +67,7 @@ class TicTacToe(TwoPlayerGame):
         ]
         return any(wins)
 
-    def is_over(self):
+    def is_over(self) -> bool:
         """Returns boolean indicating if the game is over."""
         return (
             (self.possible_moves() == [])
@@ -68,7 +75,7 @@ class TicTacToe(TwoPlayerGame):
             or self.lose(who=self.current_player)
         )
 
-    def show(self):
+    def show(self) -> None:
         """Prints the board."""
         print(
             "\n"
@@ -80,11 +87,11 @@ class TicTacToe(TwoPlayerGame):
             )
         )
 
-    def spot_string(self, i, j):
+    def spot_string(self, i: int, j: int) -> str:
         """Returns sign associated to the cell state."""
         return ["_", "O", "X"][self.board[3 * j + i]]
 
-    def scoring(self):
+    def scoring(self) -> int:
         """Returns scoring."""
         opp_won = self.lose()
         i_won = self.lose(who=self.current_player)
@@ -94,7 +101,7 @@ class TicTacToe(TwoPlayerGame):
             return 100
         return 0
 
-    def winner(self):
+    def winner(self) -> str:
         """Returns winner or tie status."""
         if self.lose(who=2):
             return "AI Wins"
@@ -117,7 +124,7 @@ GRID_CORRESPONDENCE = {
 }
 
 
-def negamax_best_move(board, mark):
+def negamax_best_move(board: Board, mark: str) -> Tuple[int, int]:
     """Computes best move."""
     list_grid = board.dump_to_int_array(FROM_MARK)
     player = FROM_MARK[mark]
