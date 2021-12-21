@@ -20,25 +20,6 @@
   </head>
   <body>
     <h1>Tic Tac Toe</h1>
-    <table>
-      {% for i in range(3) %}
-      <tr>
-        {% for j in range(3) %}
-        <td>
-          {% if board[i][j] != "_" %} {{ board[i][j] }} {% elif turn == "O" %} _
-          {% else %}
-          <a href="{{ url_for('main.play', row=i, col=j) }}"
-            >Play {{ turn }} here.</a
-          >
-          {% endif %}
-        </td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
-    {{ board }}
-
-    <h1>Tic Tac Toe</h1>
     <h2>{{msg}}</h2>
     <form action="" method="POST">
       <table>
