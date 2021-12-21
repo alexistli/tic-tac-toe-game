@@ -9,7 +9,7 @@ homepage = "https://github.com/alexistli/tic-tac-toe-game"
 repository = "https://github.com/alexistli/tic-tac-toe-game"
 documentation = "https://tic-tac-toe-game.readthedocs.io"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
@@ -55,9 +55,7 @@ furo = ">=2021.11.12"
 
 [tool.poetry.scripts]
 tic-tac-toe-game = "tic_tac_toe_game.__main__:main"
-tic-tac-toe-game-2 = "tic_tac_toe_game.__main__:main2"
 flask-game = "app.__main__:main"
-mctspy = "tic_tac_toe_game.__main__:mctspy"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
