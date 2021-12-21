@@ -19,6 +19,7 @@
     </style>
   </head>
   <body>
+    <h1>Tic Tac Toe</h1>
     <table>
       {% for i in range(3) %}
       <tr>
@@ -36,5 +37,31 @@
       {% endfor %}
     </table>
     {{ board }}
+
+    <form action="" method="POST">
+      <table>
+        {% for j in range(3) %}
+        <tr>
+          {% for i in range(3) %}
+          <td>
+            {% set disable_value = "disabled" if board[i][j] != "_" else "" %}
+            <!--suppress HtmlUnknownAttribute -->
+            <button
+              type="submit"
+              name="choice"
+              value="{{j*3+i+1}}"
+              {{
+              disable_value
+              }}
+            >
+              {{board[i][j]}}
+            </button>
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+      <button type="submit" name="reset">Start Over</button>
+    </form>
   </body>
 </html>
