@@ -2,6 +2,7 @@
 import click
 
 from tic_tac_toe_game import engine
+from tic_tac_toe_game.AI.random import random_move
 from tic_tac_toe_game.engine import Board
 
 
@@ -27,6 +28,8 @@ def main() -> None:
 
     game = engine.Engine(player_1_mark, player_2_type)
     game.board = Board()
+    # TODO: Upgrade with any possible strategy
+    game.players_match.update_ai_algorithm(random_move)
 
     finished = False
 
@@ -43,8 +46,7 @@ def main() -> None:
                 "Please pick a cell xy", type=click.Tuple([int, int])
             )
         else:
-            # TODO: Upgrade with any possible strategy
-            played_cell = game.board.random_available_cell()
+            played_cell = game.get_move()
 
         game.board.set_cell(
             coord=played_cell, value=player.get_mark()  # type: ignore[arg-type]
