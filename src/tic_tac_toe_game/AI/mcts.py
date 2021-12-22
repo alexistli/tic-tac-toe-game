@@ -4,6 +4,7 @@ from typing import Optional
 from typing import Tuple
 
 import numpy as np
+import numpy.typing as npt
 from mctspy.games.common import TwoPlayersAbstractGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
 from mctspy.tree.search import MonteCarloTreeSearch
@@ -14,7 +15,7 @@ from tic_tac_toe_game.engine import Board
 class Move:
     """Move class."""
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, value: int) -> None:
+    def __init__(self, x_coordinate: int, y_coordinate: int, value: float) -> None:
         """Inits."""
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
@@ -25,18 +26,18 @@ class Move:
         return f"x:{self.x_coordinate} y:{self.y_coordinate} v:{self.value}"
 
 
-class TicTacToeGameState(TwoPlayersAbstractGameState):
+class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
     """TicTacToeGameState class."""
 
     x = 1
     o = -1
 
-    def __init__(self, state: np.ndarray, next_to_move: int = 1) -> None:
+    def __init__(self, state: npt.NDArray[np.float64], next_to_move: float = 1) -> None:
         """Inits."""
         if len(state.shape) != 2 or state.shape[0] != state.shape[1]:
             raise ValueError("Only 2D square boards allowed")
         self.board = state
-        self.board_size = state.shape[0]
+        self.board_size: int = state.shape[0]
         self.next_to_move = next_to_move
 
     @property
@@ -59,7 +60,8 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         diag_sum_tr = self.board[::-1].trace()
 
         player_one_wins = any(rowsum == self.board_size)
-        player_one_wins += any(colsum == self.board_size)
+        # uses fact that python booleans are considered numeric type
+        player_one_wins += any(colsum == self.board_size)  # type: ignore[assignment]
         player_one_wins += diag_sum_tl == self.board_size
         player_one_wins += diag_sum_tr == self.board_size
 
@@ -67,7 +69,8 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
             return self.x
 
         player_two_wins = any(rowsum == -self.board_size)
-        player_two_wins += any(colsum == -self.board_size)
+        # uses fact that python booleans are considered numeric type
+        player_two_wins += any(colsum == -self.board_size)  # type: ignore[assignment]
         player_two_wins += diag_sum_tl == -self.board_size
         player_two_wins += diag_sum_tr == -self.board_size
 
@@ -108,7 +111,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
             return False
 
         # finally check if board field not occupied yet
-        return self.board[move.x_coordinate, move.y_coordinate] == 0
+        return bool(self.board[move.x_coordinate, move.y_coordinate] == 0)
 
     def move(self, move: Move) -> "TicTacToeGameState":
         """Consumes action and returns resulting TwoPlayersAbstractGameState.
@@ -119,7 +122,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
         """
         if not self.is_move_legal(move):
             raise ValueError(f"move {move} on board {self.board} is not legal")
-        new_board = np.copy(self.board)
+        new_board = np.copy(self.board)  # type: ignore[no-untyped-call]
         new_board[move.x_coordinate, move.y_coordinate] = move.value
         if self.next_to_move == TicTacToeGameState.x:
             next_to_move = TicTacToeGameState.o

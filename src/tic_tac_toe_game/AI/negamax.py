@@ -12,7 +12,7 @@ from easyAI import TwoPlayerGame
 from tic_tac_toe_game.engine import Board
 
 
-class TicTacToe(TwoPlayerGame):
+class TicTacToe(TwoPlayerGame):  # type: ignore[misc]
     """TicTacToe class.
 
     The board positions are numbered as follows:
