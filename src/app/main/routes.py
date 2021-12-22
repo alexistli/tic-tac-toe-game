@@ -1,9 +1,14 @@
 """Flask app routes."""
+from typing import Any
+from typing import Dict
+from typing import Union
+
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from werkzeug import Response
 
 from app import socketio
 from app.main import bp
@@ -15,13 +20,13 @@ from tic_tac_toe_game.engine import Board
 
 
 @bp.route("/")
-def index():
+def index() -> str:
     """Shows the website index."""
     return render_template("index_socket.html", headline="Tic Tac Toe Game")
 
 
 @bp.route("/game", methods=["GET", "POST"])
-def game():
+def game() -> Union[str, Response]:
     """Shows the current game."""
     current_game = session["game"]
     board = current_game.board
@@ -31,23 +36,18 @@ def game():
     if "choice" in request.form:
         row_str, col_str = request.form["choice"].split()
         chosen_cell = int(row_str), int(col_str)
-
-        board.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
-
+        board.set_cell(coord=chosen_cell, value=turn)
         current_game.players_match.switch()
 
         if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
             turn = current_game.players_match.current().get_mark()
             chosen_cell = current_game.get_move()
-            # chosen_cell = negamax_move(turn, board)
-
-            board.set_cell(coord=chosen_cell, value=turn)  # type: ignore[arg-type]
-
+            board.set_cell(coord=chosen_cell, value=turn)
             current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, turn):  # type: ignore[arg-type]
+    elif board.is_winning_move(chosen_cell, turn):
         return redirect(url_for("main.win", mark=turn))
     elif board.is_full():
         return redirect(url_for("main.tie"))
@@ -64,19 +64,19 @@ def game():
 
 
 @bp.route("/win/<string:mark>")
-def win(mark):
+def win(mark: str) -> str:
     """Announces the winning player."""
     return render_template("win.html", mark=mark)
 
 
 @bp.route("/tie")
-def tie():
+def tie() -> str:
     """Announces players are tied."""
     return render_template("tie.html")
 
 
 @bp.route("/new_game")
-def new_game():
+def new_game() -> Response:
     """Initializes a new game."""
     if "game" not in session:
         current_game = engine.Engine("X", "B")
@@ -91,7 +91,7 @@ def new_game():
     return redirect(url_for("main.game"))
 
 
-@socketio.on("my event")
-def handle_my_custom_event(json):
+@socketio.on("my event")  # type: ignore[misc]
+def handle_my_custom_event(json: Dict[str, Any]) -> None:
     """Handles socketio custom event."""
     print("received json: " + str(json))

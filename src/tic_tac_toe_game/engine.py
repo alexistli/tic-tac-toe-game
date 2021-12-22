@@ -29,9 +29,11 @@ Version 2.0: Dumb AI + score limit
 from abc import ABC
 from abc import abstractmethod
 from typing import Callable
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import TypeVar
 
 from tic_tac_toe_game.errors import OverwriteCellError
 
@@ -39,13 +41,13 @@ from tic_tac_toe_game.errors import OverwriteCellError
 class Move:
     """Move performed by a Player on the Grid."""
 
-    def __init__(self, x_coordinate, y_coordinate, value):
+    def __init__(self, x_coordinate: int, y_coordinate: int, value: str) -> None:
         """Inits."""
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return (
             f"{self.__class__.__name__}"
@@ -53,6 +55,9 @@ class Move:
             f"y_coordinate: {self.y_coordinate}, "
             f"value: {self.value})"
         )
+
+
+T = TypeVar("T", int, float)
 
 
 class Board:
@@ -84,9 +89,9 @@ class Board:
         self.grid[coord_x][coord_y] = value
         self.history.append((value, coord))
 
-    def get_last_play(self) -> Tuple[str, Tuple[int, int]]:
+    def get_last_play(self) -> Optional[Tuple[str, Tuple[int, int]]]:
         """Returns last played cell and associated mark or None."""
-        return self.history[-1] if len(self.history) else (None, None)
+        return self.history[-1] if len(self.history) else None
 
     def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
         """Checks if cell located at `coord` is empty."""
@@ -132,13 +137,13 @@ class Board:
         return "\n".join(framed)
 
     @staticmethod
-    def load_from_int_array(list_grid: List[List[int]], mapping):
+    def load_from_int_array(list_grid: List[List[T]], mapping: Dict[T, str]) -> "Board":
         """Loads grid from a list of int."""
-        grid = Board()
-        grid.grid = [[mapping[elem] for elem in row] for row in list_grid]
-        return grid
+        board = Board()
+        board.grid = [[mapping[elem] for elem in row] for row in list_grid]
+        return board
 
-    def dump_to_int_array(self, mapping):
+    def dump_to_int_array(self, mapping: Dict[str, T]) -> List[List[T]]:
         """Dumps grid to list of int."""
         grid = [[mapping[elem] for elem in row] for row in self.grid]
         return grid
@@ -157,7 +162,10 @@ class Player(ABC):
     """
 
     def __init__(
-        self, name: str, mark: Optional[str] = None, moves: Optional[Callable] = None
+        self,
+        name: str,
+        mark: Optional[str] = None,
+        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -187,7 +195,7 @@ class Player(ABC):
         return self.mark
 
     @abstractmethod
-    def ask_move(self, board) -> Tuple[int, int]:
+    def ask_move(self, board: Board) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
         raise NotImplementedError
 
@@ -205,7 +213,7 @@ class AIPlayer(Player):
         self,
         name: str = "Botybot",
         mark: Optional[str] = None,
-        moves: Optional[Callable] = None,
+        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -216,10 +224,11 @@ class AIPlayer(Player):
         """
         super().__init__(name=name, mark=mark, moves=moves)
 
-    def ask_move(self, board) -> Tuple[int, int]:
+    def ask_move(self, board: Board) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
-            return self.moves(board, self.get_mark())
+            # type ignore: undefined mark should not exist
+            return self.moves(board, self.get_mark())  # type: ignore[arg-type]
         return None
 
 
@@ -230,7 +239,7 @@ class HumanPlayer(Player):
         self,
         name: str = "Human",
         mark: Optional[str] = None,
-        moves: Optional[Callable] = None,
+        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -241,10 +250,11 @@ class HumanPlayer(Player):
         """
         super().__init__(name=name, mark=mark, moves=moves)
 
-    def ask_move(self, board) -> Tuple[int, int]:
+    def ask_move(self, board: Board) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
-            return self.moves(board, self.get_mark())
+            # type ignore: undefined mark should not exist
+            return self.moves(board, self.get_mark())  # type: ignore[arg-type]
         return None
 
 
@@ -264,12 +274,14 @@ class PlayersMatch:
             player_o: Player, Player with the "Y" mark.
             start: str, Mark starting the game.
         """
-        self.players = (player_x, player_o)
+        self.players: Tuple[Player, Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self.current_player: Player = player_x if start == "X" else player_o
 
-    def update_ai_algorithm(self, algorithm):
+    def update_ai_algorithm(
+        self, algorithm: Callable[[Board, str], Tuple[int, int]]
+    ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(
             player for player in self.players if isinstance(player, AIPlayer)
@@ -299,11 +311,12 @@ class Engine:
     """
 
     def __init__(
-        self, player_1_mark: str, player_2_type: str, board: Board = None
+        self, player_1_mark: str, player_2_type: str, board: Optional[Board] = None
     ) -> None:
         """Returns a Game instance initialized with players params."""
-        player_1 = HumanPlayer("Player 1")
+        player_1: Player = HumanPlayer("Player 1")
 
+        player_2: Player
         if player_2_type == "H":
             player_2 = HumanPlayer("Player 2")
         else:
@@ -322,7 +335,7 @@ class Engine:
         # Initialize an empty grid.
         self.board = board
 
-    def get_move(self) -> Tuple[int, int]:
+    def get_move(self) -> Optional[Tuple[int, int]]:
         """Gets a move from the current player.
 
         If the player is an
@@ -330,7 +343,10 @@ class Engine:
         move. If the player is a Human_Player, then the interaction with the
         human is via the text terminal.
         """
-        return self.players_match.current().ask_move(self.board)
+        # type ignore: NoneType self.board should not be a valid state
+        return self.players_match.current().ask_move(
+            self.board  # type: ignore[arg-type]
+        )
 
     def start_game(self) -> None:
         """TODO."""
