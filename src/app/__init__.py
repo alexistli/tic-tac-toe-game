@@ -1,4 +1,6 @@
 """Application factory."""
+from typing import Type
+
 from config import Config
 from flask import Flask
 from flask_session import Session
@@ -8,9 +10,9 @@ session = Session()
 socketio = SocketIO(logger=True, engineio_logger=False)
 
 
-def create_app(config_class=Config):
+def create_app(config_class: Type[Config] = Config) -> Flask:
     """Creates the core application."""
-    app = Flask(__name__)
+    app: Flask = Flask(__name__)
     app.config.from_object(config_class)
 
     session.init_app(app)
