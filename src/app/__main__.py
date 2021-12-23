@@ -9,12 +9,9 @@ from app import socketio
 @click.version_option()
 def main() -> None:
     """Tic Tac Toe Game."""
-    # Start Game: Start
-
     app = create_app()
-
     socketio.run(app, log_output=True)  # pragma: no cover
 
 
 if __name__ == "__main__":
-    main(prog_name="tic-tac-toe-game")  # pragma: no cover
+    main(prog_name="flask-game")  # pragma: no cover

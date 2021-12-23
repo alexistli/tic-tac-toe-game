@@ -9,7 +9,7 @@ homepage = "https://github.com/alexistli/tic-tac-toe-game"
 repository = "https://github.com/alexistli/tic-tac-toe-game"
 documentation = "https://tic-tac-toe-game.readthedocs.io"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
@@ -23,6 +23,8 @@ python-dotenv = "^0.19.2"
 Flask-Session = "^0.4.0"
 Flask-SocketIO = "^5.1.1"
 eventlet = "^0.33.0"
+mctspy = "^0.1.1"
+easyAI = "^2.0.12"
 
 [tool.poetry.dev-dependencies]
 cruft = "^2.10.1"
@@ -74,6 +76,15 @@ pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
+
+[[tool.mypy.overrides]]
+module = [
+    "easyAI.*",
+    "mctspy.*",
+    "flask_session.*",
+    "flask_socketio.*"
+]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

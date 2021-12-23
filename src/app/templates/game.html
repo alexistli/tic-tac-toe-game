@@ -19,22 +19,49 @@
     </style>
   </head>
   <body>
-    <table>
-      {% for i in range(3) %}
-      <tr>
-        {% for j in range(3) %}
-        <td>
-          {% if board[i][j] != "_" %} {{ board[i][j] }} {% elif turn == "O" %} _
-          {% else %}
-          <a href="{{ url_for('main.play', row=i, col=j) }}"
-            >Play {{ turn }} here.</a
-          >
-          {% endif %}
-        </td>
+    <h1>Tic Tac Toe</h1>
+    <h2>{{msg}}</h2>
+    <form action="" method="POST">
+      <table>
+        {% for i in range(3) %}
+        <tr>
+          {% for j in range(3) %}
+          <td>
+            {% set disabled = "disabled" if board[i][j] != "_" %}
+            <!--suppress HtmlUnknownAttribute -->
+            <button
+              type="submit"
+              name="choice"
+              value="{{i}} {{j}}"
+              {{
+              disabled
+              }}
+            >
+              {{board[i][j]}}
+            </button>
+          </td>
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
-    {{ board }}
+      </table>
+    </form>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start Over
+    </button>
+    <h2>AI choice</h2>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start Over
+    </button>
+    <form action="" method="POST">
+      <button type="submit" name="AI_random">Random move</button>
+      <button type="submit" name="AI_mcts">AI MCTS</button>
+      <button type="submit" name="AI_negamax">AI Negamax</button>
+    </form>
   </body>
 </html>
