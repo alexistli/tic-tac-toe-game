@@ -52,11 +52,11 @@ def game() -> Union[str, Response]:
         return redirect(url_for("main.tie"))
 
     if "AI_random" in request.form:
-        current_game.players_match.update_ai_algorithm(naive.move)
+        current_game.players_match.update_ai_algorithm(naive.naive_move)
     elif "AI_mcts" in request.form:
-        current_game.players_match.update_ai_algorithm(mcts.move)
+        current_game.players_match.update_ai_algorithm(mcts.mcts_move)
     elif "AI_negamax" in request.form:
-        current_game.players_match.update_ai_algorithm(negamax.move)
+        current_game.players_match.update_ai_algorithm(negamax.negamax_move)
     print(current_game.players_match.players)
 
     return render_template("game.html", board=board.grid, turn=turn, session=session)

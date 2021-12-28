@@ -220,8 +220,9 @@ class Player(ABC):
 
     def __repr__(self) -> str:
         """Returns instance representation."""
+        repr_moves = self.moves.__name__ if self.moves is not None else self.moves
         return (
-            f"{self.__class__.__name__}({self.name!r}, {self.mark!r}, {self.moves!r})"
+            f"{self.__class__.__name__}({self.name!r}, {self.mark!r}, {repr_moves!r})"
         )
 
 
@@ -230,7 +231,7 @@ class AIPlayer(Player):
 
     moves_handler: Optional[
         Callable[[List[List[int]], str], Tuple[int, int]]
-    ] = naive.move
+    ] = naive.naive_move
 
     def __init__(
         self,

@@ -135,7 +135,7 @@ def to_negamax_grid_format(grid: List[List[int]]) -> List[int]:
     return [elem if elem != -1 else 2 for row in grid for elem in row]
 
 
-def move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
+def negamax_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
     """Computes best move."""
     board = to_negamax_grid_format(grid)
     current_player = mark if mark != -1 else 2

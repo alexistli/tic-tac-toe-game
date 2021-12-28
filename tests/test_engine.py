@@ -194,9 +194,11 @@ def test_player_returns_repr() -> None:
     player_a.set_mark(-1)
     assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(-1)}, None)"
 
-    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(-1)}, None)"
+    assert (
+        repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(-1)}, 'naive_move')"
+    )
     player_b.set_mark(1)
-    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(1)}, None)"
+    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(1)}, 'naive_move')"
 
 
 # ================ Test PlayersMatch ================

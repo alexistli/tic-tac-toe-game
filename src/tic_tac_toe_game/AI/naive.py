@@ -4,7 +4,7 @@ from typing import List
 from typing import Tuple
 
 
-def move(grid: List[List[int]], *args: str) -> Tuple[int, int]:
+def naive_move(grid: List[List[int]], *args: str) -> Tuple[int, int]:
     """Returns a randomly picked cell among available cells."""
     empty_cells = [
         (row_id, col_id)
