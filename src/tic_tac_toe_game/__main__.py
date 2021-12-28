@@ -9,7 +9,7 @@ from tic_tac_toe_game import engine
 def main() -> None:
     """Tic Tac Toe Game."""
     click.secho("hello", fg="green")
-    if click.confirm("Do you want to play a game?", abort=False):
+    if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
 
     # player_1_mark = click.prompt(
