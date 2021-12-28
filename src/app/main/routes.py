@@ -59,7 +59,9 @@ def game() -> Union[str, Response]:
         current_game.players_match.update_ai_algorithm(negamax.negamax_move)
     print(current_game.players_match.players)
 
-    return render_template("game.html", board=board.grid, turn=turn, session=session)
+    return render_template(
+        "game.html", board=board.display(), turn=turn, session=session
+    )
 
 
 @bp.route("/win/<string:mark>")
