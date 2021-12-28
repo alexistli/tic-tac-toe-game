@@ -6,8 +6,6 @@ from typing import Tuple
 
 def naive_move(grid: List[List[int]], *args: int) -> Tuple[int, int]:
     """Returns a randomly picked cell among available cells."""
-    print(grid)
-    print(args)
     empty_cells = [
         (row_id, col_id)
         for row_id, row in enumerate(grid)
