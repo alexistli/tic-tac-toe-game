@@ -178,8 +178,6 @@ class Player(ABC):
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
-    moves_handler: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None
-
     def __init__(
         self,
         mark: int,
@@ -195,7 +193,7 @@ class Player(ABC):
         """
         self.name = name
         self.mark = mark
-        self.moves = moves or self.moves_handler
+        self.moves = moves
 
     def set_mark(self, mark: int) -> None:
         """Sets the player's mark for this game.
@@ -229,15 +227,13 @@ class Player(ABC):
 class AIPlayer(Player):
     """Player class for an AI-managed player."""
 
-    moves_handler: Optional[
-        Callable[[List[List[int]], int], Tuple[int, int]]
-    ] = naive.naive_move
-
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        moves: Optional[
+            Callable[[List[List[int]], int], Tuple[int, int]]
+        ] = naive.naive_move,
     ) -> None:
         """Constructor.
 
@@ -257,8 +253,6 @@ class AIPlayer(Player):
 
 class HumanPlayer(Player):
     """Player class for a Human-managed player."""
-
-    moves_handler: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None
 
     def __init__(
         self,
