@@ -178,13 +178,13 @@ class Player(ABC):
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
-    moves_handler: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None
+    moves_handler: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -230,14 +230,14 @@ class AIPlayer(Player):
     """Player class for an AI-managed player."""
 
     moves_handler: Optional[
-        Callable[[List[List[int]], str], Tuple[int, int]]
+        Callable[[List[List[int]], int], Tuple[int, int]]
     ] = naive.naive_move
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -251,21 +251,20 @@ class AIPlayer(Player):
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
-            # type ignore: undefined mark should not exist
-            return self.moves(grid, self.get_mark())  # type: ignore[arg-type]
+            return self.moves(grid, self.get_mark())
         return None
 
 
 class HumanPlayer(Player):
     """Player class for a Human-managed player."""
 
-    moves_handler: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None
+    moves_handler: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -279,8 +278,7 @@ class HumanPlayer(Player):
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
-            # type ignore: undefined mark should not exist
-            return self.moves(grid, self.get_mark())  # type: ignore[arg-type]
+            return self.moves(grid, self.get_mark())
         return None
 
 
@@ -305,7 +303,7 @@ class PlayersMatch:
         self.current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[List[List[int]], str], Tuple[int, int]]
+        self, algorithm: Callable[[List[List[int]], int], Tuple[int, int]]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(
@@ -348,7 +346,6 @@ class Engine:
         move. If the player is a Human_Player, then the interaction with the
         human is via the text terminal.
         """
-        # type ignore: NoneType self.board should not be a valid state
         return self.players_match.current().ask_move(self.board.grid)
 
 

@@ -153,7 +153,7 @@ def to_mcts_grid_format(grid: List[List[int]]) -> List[List[float]]:
     return [[float(elem) for elem in row] for row in grid]
 
 
-def mcts_move(grid: List[List[int]], mark: str) -> Tuple[int, int]:
+def mcts_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
     """Computes best move."""
     board = to_mcts_grid_format(grid)
     player = float(mark)
