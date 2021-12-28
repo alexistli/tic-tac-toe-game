@@ -13,10 +13,9 @@ from werkzeug import Response
 from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
-from tic_tac_toe_game.AI.mcts import mcts_best_move
-from tic_tac_toe_game.AI.negamax import negamax_best_move
-from tic_tac_toe_game.AI.random import random_move
-from tic_tac_toe_game.engine import Board
+from tic_tac_toe_game.AI import mcts
+from tic_tac_toe_game.AI import naive
+from tic_tac_toe_game.AI import negamax
 
 
 @bp.route("/")
@@ -53,11 +52,11 @@ def game() -> Union[str, Response]:
         return redirect(url_for("main.tie"))
 
     if "AI_random" in request.form:
-        current_game.players_match.update_ai_algorithm(random_move)
+        current_game.players_match.update_ai_algorithm(naive.move)
     elif "AI_mcts" in request.form:
-        current_game.players_match.update_ai_algorithm(mcts_best_move)
+        current_game.players_match.update_ai_algorithm(mcts.move)
     elif "AI_negamax" in request.form:
-        current_game.players_match.update_ai_algorithm(negamax_best_move)
+        current_game.players_match.update_ai_algorithm(negamax.move)
     print(current_game.players_match.players)
 
     return render_template("game.html", board=board.grid, turn=turn, session=session)
@@ -79,14 +78,15 @@ def tie() -> str:
 def new_game() -> Response:
     """Initializes a new game."""
     if "game" not in session:
-        current_game = engine.Engine("X", "B")
-        current_game.players_match.update_ai_algorithm(random_move)
+        current_game = engine.build_game()
+        # current_game = engine.Engine("X", "B")
+        # current_game.players_match.update_ai_algorithm(move)
         session["game"] = current_game
     else:
         current_game = session["game"]
         current_game.players_match.switch()
 
-    current_game.board = Board()
+    current_game.board = engine.Board()
 
     return redirect(url_for("main.game"))
 
