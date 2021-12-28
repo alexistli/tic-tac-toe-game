@@ -9,8 +9,6 @@ from mctspy.games.common import TwoPlayersAbstractGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
 from mctspy.tree.search import MonteCarloTreeSearch
 
-from tic_tac_toe_game.engine import Board
-
 
 class Move:
     """Move class."""
@@ -145,23 +143,29 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
         ]
 
 
-FROM_MARK = {"X": 1.0, "O": -1.0, "_": 0.0}
-TO_MARK = {-1: "O", 0: "_", 1: "X"}
+def from_mcts_grid_format(grid: List[List[float]]) -> List[List[int]]:
+    """Loads grid from a list of int."""
+    return [[int(elem) for elem in row] for row in grid]
 
 
-def mcts_best_move(board: Board, mark: str) -> Tuple[int, int]:
+def to_mcts_grid_format(grid: List[List[int]]) -> List[List[float]]:
+    """Dumps grid to list of int."""
+    return [[float(elem) for elem in row] for row in grid]
+
+
+def mcts_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
     """Computes best move."""
-    list_grid = board.dump_to_int_array(FROM_MARK)
-    player = FROM_MARK[mark]
+    board = to_mcts_grid_format(grid)
+    current_player = float(mark)
 
-    state = np.array(list_grid)
-    initial_board_state = TicTacToeGameState(state=state, next_to_move=player)
+    state = np.array(board)
+    initial_board_state = TicTacToeGameState(state=state, next_to_move=current_player)
     root = TwoPlayersGameMonteCarloTreeSearchNode(state=initial_board_state)
     mcts = MonteCarloTreeSearch(root)
     best_node = mcts.best_action(10000)
 
     board_diff = best_node.state.board - best_node.parent.state.board
 
-    x_coords, y_coords = np.where(board_diff == player)
+    x_coords, y_coords = np.where(board_diff == current_player)
     chosen_cell = (x_coords[0], y_coords[0])
     return chosen_cell

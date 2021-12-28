@@ -9,8 +9,6 @@ from easyAI import Human_Player
 from easyAI import Negamax
 from easyAI import TwoPlayerGame
 
-from tic_tac_toe_game.engine import Board
-
 
 class TicTacToe(TwoPlayerGame):  # type: ignore[misc]
     """TicTacToe class.
@@ -21,16 +19,18 @@ class TicTacToe(TwoPlayerGame):  # type: ignore[misc]
     7 8 9
     """
 
-    def __init__(self, players: List[Union[AI_Player, Human_Player]]) -> None:
+    def __init__(
+        self,
+        players: List[Union[AI_Player, Human_Player]],
+        board: Optional[List[int]] = None,
+        current_player: int = 1,
+    ) -> None:
         """Inits."""
         self.players = players
-        self.board = [0 for i in range(9)]
-        self.current_player = 1  # player 1 starts.
-
-    def load_board(self, array_board: List[List[int]]) -> None:
-        """Loads board from 2D array."""
-        board = [element for row in array_board for element in row]
+        if board is None:
+            board = [0 for _ in range(9)]
         self.board = board
+        self.current_player = current_player  # player 1 starts.
 
     def possible_moves(self) -> List[int]:
         """Returns possible moves."""
@@ -108,9 +108,6 @@ class TicTacToe(TwoPlayerGame):  # type: ignore[misc]
         return "Tie"
 
 
-FROM_MARK = {"X": 1, "O": 2, "_": 0}
-TO_MARK = {0: "_", 1: "X", 2: "O"}
-
 GRID_CORRESPONDENCE = {
     1: (0, 0),
     2: (0, 1),
@@ -124,14 +121,26 @@ GRID_CORRESPONDENCE = {
 }
 
 
-def negamax_best_move(board: Board, mark: str) -> Tuple[int, int]:
-    """Computes best move."""
-    list_grid = board.dump_to_int_array(FROM_MARK)
-    player = FROM_MARK[mark]
+def from_negamax_grid_format(grid: List[int]) -> List[List[int]]:
+    """Loads grid from a list of int."""
+    # return [[elem if elem != 2 else -1 for elem in row] for row in grid]
+    return [
+        [elem if elem != 2 else -1 for elem in grid[i : i + 3]]
+        for i in range(0, len(grid), 3)
+    ]
 
-    ttt = TicTacToe([Human_Player(), AI_Player(Negamax(6))])
-    ttt.load_board(list_grid)
-    ttt.current_player = player
+
+def to_negamax_grid_format(grid: List[List[int]]) -> List[int]:
+    """Dumps grid to list of int."""
+    return [elem if elem != -1 else 2 for row in grid for elem in row]
+
+
+def negamax_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
+    """Computes best move."""
+    board = to_negamax_grid_format(grid)
+    current_player = mark if mark != -1 else 2
+
+    ttt = TicTacToe([Human_Player(), AI_Player(Negamax(6))], board, current_player)
 
     ai_move = ttt.get_move()
     chosen_cell = GRID_CORRESPONDENCE[ai_move]

@@ -2,8 +2,6 @@
 import click
 
 from tic_tac_toe_game import engine
-from tic_tac_toe_game.AI.random import random_move
-from tic_tac_toe_game.engine import Board
 
 
 @click.command()
@@ -14,22 +12,24 @@ def main() -> None:
     if click.confirm("Do you want to play a game?", abort=True):
         click.echo("Let's play a game...")
 
-    player_1_mark = click.prompt(
-        "Player 1, please pick your mark",
-        type=click.Choice(["X", "O"], case_sensitive=False),
-        default="X",
-    )
+    # player_1_mark = click.prompt(
+    #     "Player 1, please pick your mark",
+    #     type=click.Choice(["X", "O"], case_sensitive=False),
+    #     default="X",
+    # )
+    #
+    # player_2_type = click.prompt(
+    #     "Player 2, are you Human (H) or a Bot (B)?",
+    #     type=click.Choice(["H", "B"], case_sensitive=False),
+    #     default="B",
+    # )
 
-    player_2_type = click.prompt(
-        "Player 2, are you Human (H) or a Bot (B)?",
-        type=click.Choice(["H", "B"], case_sensitive=False),
-        default="B",
-    )
+    game = engine.build_game()
 
-    game = engine.Engine(player_1_mark, player_2_type)
-    game.board = Board()
+    # game = engine.Engine(player_1_mark, player_2_type)
+    # game.board = Board()
     # TODO: Upgrade with any possible strategy
-    game.players_match.update_ai_algorithm(random_move)
+    # game.players_match.update_ai_algorithm(move)
 
     finished = False
 
@@ -48,13 +48,9 @@ def main() -> None:
         else:
             played_cell = game.get_move()
 
-        game.board.set_cell(
-            coord=played_cell, value=player.get_mark()  # type: ignore[arg-type]
-        )
+        game.board.set_cell(coord=played_cell, value=player.get_mark())
 
-        if game.board.is_winning_move(
-            played_cell, player.get_mark()  # type: ignore[arg-type]
-        ):
+        if game.board.is_winning_move(played_cell, player.get_mark()):
             print(f"Player {player.name} won!")
             finished = True
         elif game.board.is_full():
