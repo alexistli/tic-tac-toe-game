@@ -178,13 +178,13 @@ class Player(ABC):
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
-    moves_handler: Optional[Callable[[Board, str], Tuple[int, int]]] = None
+    moves_handler: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -228,13 +228,15 @@ class Player(ABC):
 class AIPlayer(Player):
     """Player class for an AI-managed player."""
 
-    moves_handler: Optional[Callable[[Board, str], Tuple[int, int]]] = naive.move
+    moves_handler: Optional[
+        Callable[[List[List[int]], str], Tuple[int, int]]
+    ] = naive.move
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -256,13 +258,13 @@ class AIPlayer(Player):
 class HumanPlayer(Player):
     """Player class for a Human-managed player."""
 
-    moves_handler: Optional[Callable[[Board, str], Tuple[int, int]]] = None
+    moves_handler: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None
 
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[Board, str], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], str], Tuple[int, int]]] = None,
     ) -> None:
         """Constructor.
 
@@ -302,7 +304,7 @@ class PlayersMatch:
         self.current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[Board, str], Tuple[int, int]]
+        self, algorithm: Callable[[List[List[int]], str], Tuple[int, int]]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(

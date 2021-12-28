@@ -155,10 +155,10 @@ def to_mcts_grid_format(grid: List[List[int]]) -> List[List[float]]:
 
 def move(grid: List[List[int]], mark: str) -> Tuple[int, int]:
     """Computes best move."""
-    grid = to_mcts_grid_format(grid)
+    board = to_mcts_grid_format(grid)
     player = float(mark)
 
-    state = np.array(grid)
+    state = np.array(board)
     initial_board_state = TicTacToeGameState(state=state, next_to_move=player)
     root = TwoPlayersGameMonteCarloTreeSearchNode(state=initial_board_state)
     mcts = MonteCarloTreeSearch(root)

@@ -137,10 +137,10 @@ def to_negamax_grid_format(grid: List[List[int]]) -> List[int]:
 
 def move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
     """Computes best move."""
-    grid = to_negamax_grid_format(grid)
-    player = mark if mark != -1 else 2
+    board = to_negamax_grid_format(grid)
+    current_player = mark if mark != -1 else 2
 
-    ttt = TicTacToe([Human_Player(), AI_Player(Negamax(6))], grid, player)
+    ttt = TicTacToe([Human_Player(), AI_Player(Negamax(6))], board, current_player)
 
     ai_move = ttt.get_move()
     chosen_cell = GRID_CORRESPONDENCE[ai_move]
