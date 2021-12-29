@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My Website!</title>
-  </head>
-  <body>
-    <h1>{{ headline }}</h1>
-    <a href="{{ url_for('main.game') }}">Start a game.</a>
-    <button type="submit" name="new_game">Start Over</button>
-  </body>
-</html>
+{% extends "layout.html" %} {% block title %} Tic Tac Toe Game {% endblock %} {%
+block head %} {{ super() }} {% endblock %} {% block content %}
+<div>
+  <header>
+    <h1>Tic Tac Toe Game</h1>
+  </header>
+  <main>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start a game
+    </button>
+  </main>
+</div>
+{% endblock %} {% block scripts %}{% endblock %}
