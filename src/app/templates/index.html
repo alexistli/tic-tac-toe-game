@@ -5,9 +5,12 @@ block head %} {{ super() }} {% endblock %} {% block content %}
     <h1>Tic Tac Toe Game</h1>
   </header>
   <main>
-    <a href="{{ url_for('main.game') }}">Start a game.</a>
-    <button type="submit" name="new_game">Start Over</button>
+    <button
+      type="button"
+      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+    >
+      Start a game
+    </button>
   </main>
 </div>
-<footer><a href="/admin">Create a game</a></footer>
 {% endblock %} {% block scripts %}{% endblock %}
