@@ -38,7 +38,7 @@ rooms = {}
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
-    return render_template("index_socket.html", headline="Tic Tac Toe Game")
+    return render_template("index.html", headline="Tic Tac Toe Game")
 
 
 @bp.route("/game", methods=["GET", "POST"])
@@ -98,14 +98,10 @@ def new_game() -> Response:
     """Initializes a new game."""
     if "game" not in session:
         current_game = engine.build_game()
-        # current_game = engine.Engine("X", "B")
-        # current_game.players_match.update_ai_algorithm(move)
         session["game"] = current_game
     else:
         current_game = session["game"]
         current_game.players_match.switch()
-
-    current_game.board = engine.Board()
 
     return redirect(url_for("main.game"))
 
