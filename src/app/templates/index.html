@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My Website!</title>
-  </head>
-  <body>
-    <h1>{{ headline }}</h1>
+{% extends "layout.html" %} {% block title %} Tic Tac Toe Game {% endblock %} {%
+block head %} {{ super() }} {% endblock %} {% block content %}
+<div>
+  <header>
+    <h1>Tic Tac Toe Game</h1>
+  </header>
+  <main>
     <a href="{{ url_for('main.game') }}">Start a game.</a>
     <button type="submit" name="new_game">Start Over</button>
-  </body>
-</html>
+  </main>
+</div>
+<footer><a href="/admin">Create a game</a></footer>
+{% endblock %} {% block scripts %}{% endblock %}
