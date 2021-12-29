@@ -342,6 +342,10 @@ class Engine:
         """
         return self.players_match.current().ask_move(self.board.grid)
 
+    def __repr__(self) -> str:
+        """Returns instance representation."""
+        return f"{self.__class__.__name__}({self.players_match!r}, {self.board!r})"
+
 
 MODE = Literal["single", "multi"]
 
