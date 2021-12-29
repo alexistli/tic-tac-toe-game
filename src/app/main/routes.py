@@ -1,4 +1,6 @@
 """Flask app routes."""
+import logging
+import sys
 from typing import Any
 from typing import Dict
 from typing import Union
@@ -16,6 +18,21 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
+
+
+FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(FORMATTER)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+logger.addHandler(console_handler)
+
+
+# dictionary pairing room name to admin socket id
+rooms = {}
 
 
 @bp.route("/")
