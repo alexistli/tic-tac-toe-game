@@ -1,26 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Tic Tac Toe</title>
-    <style>
-      table {
-        border-collapse: collapse;
-      }
-      td {
-        border: 1px solid black;
-        width: 150px;
-        height: 150px;
-        font-size: 30px;
-        text-align: center;
-      }
-      td > a {
-        font-size: 18px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Tic Tac Toe</h1>
-    <h2>{{msg}}</h2>
+{% extends "layout.html" %} {% block title %} Tic Tac Toe - Play {% endblock %}
+{% block head %} {{ super() }} {% endblock %} {% block content %}
+<div>
+  <main>
+    <div class="panel__label">Score &mdash; <span id="score">0</span></div>
     <form action="" method="POST">
       <table>
         {% for i in range(3) %}
@@ -52,16 +34,17 @@
       Start Over
     </button>
     <h2>AI choice</h2>
-    <button
-      type="button"
-      onclick="window.location.href='{{ url_for('main.new_game') }}';"
-    >
-      Start Over
-    </button>
     <form action="" method="POST">
       <button type="submit" name="AI_random">Random move</button>
       <button type="submit" name="AI_mcts">AI MCTS</button>
       <button type="submit" name="AI_negamax">AI Negamax</button>
     </form>
-  </body>
-</html>
+  </main>
+  {% endblock %} {% block scripts %}
+  <script>
+    window.onbeforeunload = function () {
+      return "Are you sure you want to close the window?";
+    };
+  </script>
+  {% endblock %}
+</div>
