@@ -1,8 +1,6 @@
 """Flask app routes."""
 import logging
 import sys
-from typing import Any
-from typing import Dict
 from typing import Union
 
 from flask import redirect
@@ -12,7 +10,6 @@ from flask import session
 from flask import url_for
 from werkzeug import Response
 
-from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
@@ -29,10 +26,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 logger.addHandler(console_handler)
-
-
-# dictionary pairing room name to admin socket id
-rooms = {}
 
 
 @bp.route("/")
@@ -104,9 +97,3 @@ def new_game() -> Response:
         current_game.players_match.switch()
 
     return redirect(url_for("main.game"))
-
-
-@socketio.on("my event")  # type: ignore[misc]
-def handle_my_custom_event(json: Dict[str, Any]) -> None:
-    """Handles socketio custom event."""
-    print("received json: " + str(json))
