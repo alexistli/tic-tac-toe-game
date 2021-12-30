@@ -94,6 +94,7 @@ def new_game() -> Response:
         session["game"] = current_game
     else:
         current_game = session["game"]
+        current_game.board = engine.Board()
         current_game.players_match.switch()
 
     return redirect(url_for("main.game"))
