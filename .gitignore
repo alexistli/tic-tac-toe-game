@@ -12,3 +12,4 @@ __pycache__/
 /htmlcov/
 /node_modules/
 /src/app/static/.webassets-cache/
+/src/app/static/dist/
