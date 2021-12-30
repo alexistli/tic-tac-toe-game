@@ -1,32 +1,49 @@
 {% extends "layout.html" %} {% block title %} Tic Tac Toe - Play {% endblock %}
 {% block head %} {{ super() }} {% endblock %} {% block content %}
+
 <div>
   <main>
     <div class="panel__label">Score &mdash; <span id="score">0</span></div>
-    <form action="" method="POST">
-      <table>
-        {% for i in range(3) %}
-        <tr>
-          {% for j in range(3) %}
-          <td>
-            {% set disabled = "disabled" if board[i][j] != "_" %}
-            <!--suppress HtmlUnknownAttribute -->
-            <button
-              type="submit"
-              name="choice"
-              value="{{i}} {{j}}"
-              {{
-              disabled
-              }}
-            >
-              {{board[i][j]}}
-            </button>
-          </td>
+    <div
+      id="main"
+      class="max-w-screen-md m-8 grid grid-cols-3 gap-1 justify-evenly"
+    >
+      <div class="bg-green-300 w-full pb-full h-0">0 0</div>
+      <div class="bg-green-300 w-full pb-full h-0">0 1</div>
+      <div class="bg-green-300 w-full pb-full h-0">0 2</div>
+      <div class="bg-green-300 w-full pb-full h-0">1 0</div>
+      <div class="bg-green-300 w-full pb-full h-0">1 1</div>
+      <div class="bg-green-300 w-full pb-full h-0">1 2</div>
+      <div class="bg-green-300 w-full pb-full h-0">2 0</div>
+      <div class="bg-green-300 w-full pb-full h-0">2 1</div>
+      <div class="bg-green-300 w-full pb-full h-0">2 2</div>
+    </div>
+    <div class="grid">
+      <form action="" method="POST">
+        <table>
+          {% for i in range(3) %}
+          <tr>
+            {% for j in range(3) %}
+            <td>
+              {% set disabled = "disabled" if board[i][j] != "_" %}
+              <!--suppress HtmlUnknownAttribute -->
+              <button
+                type="submit"
+                name="choice"
+                value="{{i}} {{j}}"
+                {{
+                disabled
+                }}
+              >
+                {{board[i][j]}}
+              </button>
+            </td>
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
-    </form>
+        </table>
+      </form>
+    </div>
     <button
       type="button"
       onclick="window.location.href='{{ url_for('main.new_game') }}';"
