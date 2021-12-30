@@ -3,6 +3,8 @@ from typing import Type
 
 from config import Config
 from flask import Flask
+from flask_assets import Bundle
+from flask_assets import Environment
 from flask_session import Session
 
 session = Session()
@@ -14,6 +16,11 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app.config.from_object(config_class)
 
     session.init_app(app)
+
+    assets = Environment(app)
+    css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
+    assets.register("css", css)
+    css.build()
 
     from app.main import bp as main_bp
 
