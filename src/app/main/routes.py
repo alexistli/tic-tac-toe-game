@@ -117,4 +117,27 @@ def move():
     board.set_cell(coord=chosen_cell, value=turn)
     current_game.players_match.switch()
 
-    return render_template("board.html", board=board.display())
+    if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
+        turn = current_game.players_match.current().get_mark()
+        chosen_cell = current_game.get_move()
+        board.set_cell(coord=chosen_cell, value=turn)
+        current_game.players_match.switch()
+
+    if chosen_cell is None:
+        pass
+    elif board.is_winning_move(chosen_cell, turn):
+        return redirect(url_for("main.win", mark=turn))
+    elif board.is_full():
+        return redirect(url_for("main.tie"))
+
+    if "AI_random" in request.form:
+        current_game.players_match.update_ai_algorithm(naive.naive_move)
+    elif "AI_mcts" in request.form:
+        current_game.players_match.update_ai_algorithm(mcts.mcts_move)
+    elif "AI_negamax" in request.form:
+        current_game.players_match.update_ai_algorithm(negamax.negamax_move)
+    print(current_game.players_match.players)
+
+    return render_template(
+        "board.html", board=board.display(), turn=turn, session=session
+    )

@@ -11,35 +11,6 @@
       </div>
     </div>
 
-    <div
-      id="main"
-      class="
-        max-w-screen-md
-        m-8
-        grid grid-cols-3
-        justify-evenly
-        border border-black
-      "
-    >
-      {% for i in range(3) %} {% for j in range(3) %}
-      <div class="w-full pb-full h-0 border border-black">
-        {% set disabled = "disabled" if board[i][j] != "_" %}
-        <!--suppress HtmlUnknownAttribute -->
-        <input
-          type="text"
-          name="search"
-          hx-post="/search"
-          hx-trigger="keyup changed delay:250ms"
-          hx-indicator=".htmx-indicator"
-          hx-target="#todo-results"
-          placeholder="Search"
-          class="h-10 px-5 pr-10 rounded-full text-2xl focus:outline-none"
-        />
-      </div>
-
-      {% endfor %} {% endfor %}
-    </div>
-
     <button
       type="button"
       onclick="window.location.href='{{ url_for('main.new_game') }}';"
