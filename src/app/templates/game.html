@@ -4,6 +4,13 @@
 <div>
   <main>
     <div class="panel__label">Score &mdash; <span id="score">0</span></div>
+
+    <div class="max-w-screen-lg mx-auto p-4">
+      <div id="board" class="grid grid-cols-5 mt-12">
+        {% include 'board.html' %}
+      </div>
+    </div>
+
     <div
       id="main"
       class="
@@ -14,42 +21,25 @@
         border border-black
       "
     >
-      <div class="w-full pb-full h-0 border border-black">0 0</div>
-      <div class="w-full pb-full h-0 border border-black">0 1</div>
-      <div class="w-full pb-full h-0 border border-black">0 2</div>
-      <div class="w-full pb-full h-0 border border-black">1 0</div>
-      <div class="w-full pb-full h-0 border border-black">1 1</div>
-      <div class="w-full pb-full h-0 border border-black">1 2</div>
-      <div class="w-full pb-full h-0 border border-black">2 0</div>
-      <div class="w-full pb-full h-0 border border-black">2 1</div>
-      <div class="w-full pb-full h-0 border border-black">2 2</div>
+      {% for i in range(3) %} {% for j in range(3) %}
+      <div class="w-full pb-full h-0 border border-black">
+        {% set disabled = "disabled" if board[i][j] != "_" %}
+        <!--suppress HtmlUnknownAttribute -->
+        <input
+          type="text"
+          name="search"
+          hx-post="/search"
+          hx-trigger="keyup changed delay:250ms"
+          hx-indicator=".htmx-indicator"
+          hx-target="#todo-results"
+          placeholder="Search"
+          class="h-10 px-5 pr-10 rounded-full text-2xl focus:outline-none"
+        />
+      </div>
+
+      {% endfor %} {% endfor %}
     </div>
-    <div class="grid">
-      <form action="" method="POST">
-        <table>
-          {% for i in range(3) %}
-          <tr>
-            {% for j in range(3) %}
-            <td>
-              {% set disabled = "disabled" if board[i][j] != "_" %}
-              <!--suppress HtmlUnknownAttribute -->
-              <button
-                type="submit"
-                name="choice"
-                value="{{i}} {{j}}"
-                {{
-                disabled
-                }}
-              >
-                {{board[i][j]}}
-              </button>
-            </td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </table>
-      </form>
-    </div>
+
     <button
       type="button"
       onclick="window.location.href='{{ url_for('main.new_game') }}';"

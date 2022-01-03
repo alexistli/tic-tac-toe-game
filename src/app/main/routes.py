@@ -98,3 +98,23 @@ def new_game() -> Response:
         current_game.players_match.switch()
 
     return redirect(url_for("main.game"))
+
+
+@bp.route("/move", methods=["POST"])
+def move():
+    """Processes a player's move."""
+    player_move = request.form.get("move")
+
+    print("/move")
+    print(request.form)
+
+    current_game = session["game"]
+    board = current_game.board
+    turn = current_game.players_match.current().get_mark()
+
+    row_str, col_str = player_move.split()
+    chosen_cell = int(row_str), int(col_str)
+    board.set_cell(coord=chosen_cell, value=turn)
+    current_game.players_match.switch()
+
+    return render_template("board.html", board=board.display())
