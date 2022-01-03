@@ -1,8 +1,5 @@
-{% for i in range(3) %}
-<div class="w-0 pb-full"></div>
-
-{% for j in range(3) %} {% set disabled = "disabled" if board[i][j] != "_" else
-"" %}
+{% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled" if
+board[i][j] != "_" else "" %}
 <form action="" method="POST">
   <div class="h-full text-center border border-black">
     <input type="hidden" name="move" value="{{i}} {{j}}" />
@@ -20,6 +17,4 @@
   </div>
 </form>
 
-{% endfor %}
-<div class="w-0 pb-full"></div>
-{% endfor %}
+{% endfor %} {% endfor %}
