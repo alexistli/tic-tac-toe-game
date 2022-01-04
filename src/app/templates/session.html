@@ -1,0 +1,6 @@
+{% extends "layout.html" %} {% block title %} Tic Tac Toe Game {% endblock %} {%
+block head %} {{ super() }} {% endblock %} {% block content %}
+<div class="flex flex-col h-screen justify-center items-center">
+  {{ session_variable }} {{ sid }}
+</div>
+{% endblock %} {% block scripts %}{% endblock %}
