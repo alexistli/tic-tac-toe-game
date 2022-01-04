@@ -59,6 +59,7 @@ def game() -> Union[str, Response]:
     if chosen_cell is None:
         pass
     elif board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
         return redirect(url_for("main.win", mark=player.display_mark()))
     elif board.is_full():
         return redirect(url_for("main.tie"))
@@ -72,7 +73,11 @@ def game() -> Union[str, Response]:
     print(current_game.players_match.players)
 
     return render_template(
-        "game.html", board=board.display(), turn=player.display_mark(), session=session
+        "game.html",
+        board=board.display(),
+        turn=player.display_mark(),
+        session=session,
+        scores=current_game.get_scores(),
     )
 
 
@@ -130,6 +135,7 @@ def move():
     if chosen_cell is None:
         pass
     elif board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
         return redirect(url_for("main.win", mark=player.display_mark()))
     elif board.is_full():
         return redirect(url_for("main.tie"))

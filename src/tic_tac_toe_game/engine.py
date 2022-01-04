@@ -194,6 +194,7 @@ class Player(ABC):
         self.name = name
         self.mark = mark
         self.moves = moves
+        self.score = 0
 
     def set_mark(self, mark: int) -> None:
         """Sets the player's mark for this game.
@@ -219,6 +220,18 @@ class Player(ABC):
         """
         return "X" if self.mark == 1 else "O"
 
+    def record_win(self) -> None:
+        """Records player's win and updates score."""
+        self.score += 1
+
+    def get_score(self) -> int:
+        """Returns the player's score for this game.
+
+        Returns:
+            An integer with the value of the score.
+        """
+        return self.score
+
     @abstractmethod
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
@@ -228,7 +241,8 @@ class Player(ABC):
         """Returns instance representation."""
         repr_moves = self.moves.__name__ if self.moves is not None else self.moves
         return (
-            f"{self.__class__.__name__}({self.name!r}, {self.mark!r}, {repr_moves!r})"
+            f"{self.__class__.__name__}("
+            f"{self.name!r}, {self.mark!r}, {repr_moves!r}, {self.score!r})"
         )
 
 
@@ -349,6 +363,14 @@ class Engine:
         human is via the text terminal.
         """
         return self.players_match.current().ask_move(self.board.grid)
+
+    def get_scores(self) -> List[Tuple[str, int]]:
+        """Returns the scores."""
+        scores = [
+            (player.display_mark(), player.get_score())
+            for player in self.players_match.players
+        ]
+        return scores
 
     def __repr__(self) -> str:
         """Returns instance representation."""

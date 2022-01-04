@@ -5,7 +5,14 @@
   <div class="text-7xl font font-extrabold tracking-tight text-gray-900">
     Tic Tac Toe Game
   </div>
-  <div class="mt-4">Score &mdash; <span id="score">0</span></div>
+  <div class="mt-4 text-2xl font font-extrabold tracking-tight text-gray-900">
+    Scores
+  </div>
+  {% for score in scores %}
+  <div>
+    Player {{ score[0] }} &mdash; <span id="score">{{ score[1] }}</span>
+  </div>
+  {% endfor %}
 
   <div id="board" class="mt-8">{% include 'board.html' %}</div>
 
@@ -23,7 +30,7 @@
     "
     >Start over</a
   >
-  <div class="m-8 text-4xl font font-extrabold tracking-tight text-gray-900">
+  <div class="m-4 text-2xl font font-extrabold tracking-tight text-gray-900">
     AI choice
   </div>
   <form action="" method="POST">
