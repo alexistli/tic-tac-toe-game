@@ -7,11 +7,7 @@
   </div>
   <div class="mt-4">Score &mdash; <span id="score">0</span></div>
 
-  <div class="mt-8">
-    <div id="board" class="grid grid-cols-3 w-96 h-96">
-      {% include 'board.html' %}
-    </div>
-  </div>
+  <div id="board" class="mt-8">{% include 'board.html' %}</div>
 
   <a
     href="{{ url_for('main.new_game') }}"

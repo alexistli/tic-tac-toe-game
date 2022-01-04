@@ -1,20 +1,22 @@
-{% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled" if
-board[i][j] != "_" else "" %}
-<form action="" method="POST">
-  <div class="h-full text-center border border-black">
-    <input type="hidden" name="move" value="{{i}} {{j}}" />
-    <!--suppress HtmlUnknownAttribute -->
+<div class="grid grid-cols-3 w-96 h-96">
+  {% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled"
+  if board[i][j] != "_" else "" %}
+  <form action="" method="POST">
+    <div class="h-full text-center border border-black">
+      <input type="hidden" name="move" value="{{i}} {{j}}" />
+      <!--suppress HtmlUnknownAttribute -->
 
-    <button
-      type="submit"
-      class="w-full h-full text-4xl"
-      hx-post="/move"
-      hx-target="#board"
-      {{disabled}}
-    >
-      {{board[i][j]}}
-    </button>
-  </div>
-</form>
+      <button
+        type="submit"
+        class="w-full h-full text-4xl"
+        hx-post="/move"
+        hx-target="#board"
+        {{disabled}}
+      >
+        {{board[i][j]}}
+      </button>
+    </div>
+  </form>
 
-{% endfor %} {% endfor %}
+  {% endfor %} {% endfor %}
+</div>
