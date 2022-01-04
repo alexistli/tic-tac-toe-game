@@ -39,25 +39,27 @@ def game() -> Union[str, Response]:
     """Shows the current game."""
     current_game = session["game"]
     board = current_game.board
-    turn = current_game.players_match.current().get_mark()
+    player = current_game.players_match.current()
     chosen_cell = None
 
     if "choice" in request.form:
         row_str, col_str = request.form["choice"].split()
         chosen_cell = int(row_str), int(col_str)
-        board.set_cell(coord=chosen_cell, value=turn)
+        board.set_cell(coord=chosen_cell, value=player.get_mark())
         current_game.players_match.switch()
 
-        if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
-            turn = current_game.players_match.current().get_mark()
+        if not board.is_full() and not board.is_winning_move(
+            chosen_cell, player.get_mark()
+        ):
+            player = current_game.players_match.current()
             chosen_cell = current_game.get_move()
-            board.set_cell(coord=chosen_cell, value=turn)
+            board.set_cell(coord=chosen_cell, value=player.get_mark())
             current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, turn):
-        return redirect(url_for("main.win", mark=turn))
+    elif board.is_winning_move(chosen_cell, player.get_mark()):
+        return redirect(url_for("main.win", mark=player.display_mark()))
     elif board.is_full():
         return redirect(url_for("main.tie"))
 
@@ -70,7 +72,7 @@ def game() -> Union[str, Response]:
     print(current_game.players_match.players)
 
     return render_template(
-        "game.html", board=board.display(), turn=turn, session=session
+        "game.html", board=board.display(), turn=player.display_mark(), session=session
     )
 
 
@@ -110,23 +112,25 @@ def move():
 
     current_game = session["game"]
     board = current_game.board
-    turn = current_game.players_match.current().get_mark()
+    player = current_game.players_match.current()
 
     row_str, col_str = player_move.split()
     chosen_cell = int(row_str), int(col_str)
-    board.set_cell(coord=chosen_cell, value=turn)
+    board.set_cell(coord=chosen_cell, value=player.get_mark())
     current_game.players_match.switch()
 
-    if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
-        turn = current_game.players_match.current().get_mark()
+    if not board.is_full() and not board.is_winning_move(
+        chosen_cell, player.get_mark()
+    ):
+        player = current_game.players_match.current()
         chosen_cell = current_game.get_move()
-        board.set_cell(coord=chosen_cell, value=turn)
+        board.set_cell(coord=chosen_cell, value=player.get_mark())
         current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, turn):
-        return redirect(url_for("main.win", mark=turn))
+    elif board.is_winning_move(chosen_cell, player.get_mark()):
+        return redirect(url_for("main.win", mark=player.display_mark()))
     elif board.is_full():
         return redirect(url_for("main.tie"))
 
@@ -139,5 +143,5 @@ def move():
     print(current_game.players_match.players)
 
     return render_template(
-        "board.html", board=board.display(), turn=turn, session=session
+        "board.html", board=board.display(), turn=player.display_mark(), session=session
     )

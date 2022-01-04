@@ -199,7 +199,7 @@ class Player(ABC):
         """Sets the player's mark for this game.
 
         Args:
-            mark: str, player's mark
+            mark: int, player's mark
         """
         self.mark = mark
 
@@ -207,9 +207,17 @@ class Player(ABC):
         """Returns the player's mark for this game.
 
         Returns:
-            A string with the value of the mark or None.
+            An integer with the value of the mark.
         """
         return self.mark
+
+    def display_mark(self) -> str:
+        """Returns the pretty print mark for the player.
+
+        Returns:
+            A string with the value of the mark.
+        """
+        return "X" if self.mark == 1 else "O"
 
     @abstractmethod
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
