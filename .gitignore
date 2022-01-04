@@ -10,3 +10,6 @@
 __pycache__/
 **/.pytest_cache/
 /htmlcov/
+/node_modules/
+/src/app/static/.webassets-cache/
+/src/app/static/dist/

@@ -1,44 +1,84 @@
 {% extends "layout.html" %} {% block title %} Tic Tac Toe - Play {% endblock %}
 {% block head %} {{ super() }} {% endblock %} {% block content %}
-<div>
-  <main>
-    <div class="panel__label">Score &mdash; <span id="score">0</span></div>
-    <form action="" method="POST">
-      <table>
-        {% for i in range(3) %}
-        <tr>
-          {% for j in range(3) %}
-          <td>
-            {% set disabled = "disabled" if board[i][j] != "_" %}
-            <!--suppress HtmlUnknownAttribute -->
-            <button
-              type="submit"
-              name="choice"
-              value="{{i}} {{j}}"
-              {{
-              disabled
-              }}
-            >
-              {{board[i][j]}}
-            </button>
-          </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
-    </form>
+
+<div class="flex flex-col h-screen justify-center items-center">
+  <div class="text-7xl font font-extrabold tracking-tight text-gray-900">
+    Tic Tac Toe Game
+  </div>
+  <div class="mt-4 text-2xl font font-extrabold tracking-tight text-gray-900">
+    Scores
+  </div>
+  {% for score in scores %}
+  <div>
+    Player {{ score[0] }} &mdash; <span id="score">{{ score[1] }}</span>
+  </div>
+  {% endfor %}
+
+  <div id="board" class="mt-8">{% include 'board.html' %}</div>
+
+  <a
+    href="{{ url_for('main.new_game') }}"
+    class="
+      mt-10
+      bg-blue-600
+      rounded-md
+      py-3
+      px-8
+      font-medium
+      text-white
+      hover:bg-blue-700
+    "
+    >Start over</a
+  >
+  <div class="m-4 text-2xl font font-extrabold tracking-tight text-gray-900">
+    AI choice
+  </div>
+  <form action="" method="POST">
     <button
-      type="button"
-      onclick="window.location.href='{{ url_for('main.new_game') }}';"
+      type="submit"
+      name="AI_random"
+      class="
+        bg-blue-600
+        rounded-md
+        py-3
+        px-8
+        font-medium
+        text-white
+        hover:bg-blue-700
+      "
     >
-      Start Over
+      Random move
     </button>
-    <h2>AI choice</h2>
-    <form action="" method="POST">
-      <button type="submit" name="AI_random">Random move</button>
-      <button type="submit" name="AI_mcts">AI MCTS</button>
-      <button type="submit" name="AI_negamax">AI Negamax</button>
-    </form>
-  </main>
+    <button
+      type="submit"
+      name="AI_mcts"
+      class="
+        bg-blue-600
+        rounded-md
+        py-3
+        px-8
+        font-medium
+        text-white
+        hover:bg-blue-700
+      "
+    >
+      AI MCTS
+    </button>
+    <button
+      type="submit"
+      name="AI_negamax"
+      class="
+        bg-blue-600
+        rounded-md
+        py-3
+        px-8
+        font-medium
+        text-white
+        hover:bg-blue-700
+      "
+    >
+      AI Negamax
+    </button>
+  </form>
   {% endblock %} {% block scripts %} {% endblock %}
 </div>

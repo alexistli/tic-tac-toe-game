@@ -1,16 +1,22 @@
 {% extends "layout.html" %} {% block title %} Tic Tac Toe Game {% endblock %} {%
 block head %} {{ super() }} {% endblock %} {% block content %}
-<div>
-  <header>
-    <h1>Tic Tac Toe Game</h1>
-  </header>
-  <main>
-    <button
-      type="button"
-      onclick="window.location.href='{{ url_for('main.new_game') }}';"
-    >
-      Start a game
-    </button>
-  </main>
+<div class="flex flex-col h-screen justify-center items-center">
+  <div class="text-7xl font font-extrabold tracking-tight text-gray-900">
+    Tic Tac Toe Game
+  </div>
+  <a
+    href="{{ url_for('main.new_game') }}"
+    class="
+      mt-10
+      bg-blue-600
+      rounded-md
+      py-3
+      px-8
+      font-medium
+      text-white
+      hover:bg-blue-700
+    "
+    >Start a game</a
+  >
 </div>
 {% endblock %} {% block scripts %}{% endblock %}

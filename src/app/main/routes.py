@@ -1,8 +1,6 @@
 """Flask app routes."""
 import logging
 import sys
-from typing import Any
-from typing import Dict
 from typing import Union
 
 from flask import redirect
@@ -12,7 +10,6 @@ from flask import session
 from flask import url_for
 from werkzeug import Response
 
-from app import socketio
 from app.main import bp
 from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
@@ -31,10 +28,6 @@ logger.setLevel(logging.DEBUG)
 logger.addHandler(console_handler)
 
 
-# dictionary pairing room name to admin socket id
-rooms = {}
-
-
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
@@ -46,25 +39,28 @@ def game() -> Union[str, Response]:
     """Shows the current game."""
     current_game = session["game"]
     board = current_game.board
-    turn = current_game.players_match.current().get_mark()
+    player = current_game.players_match.current()
     chosen_cell = None
 
     if "choice" in request.form:
         row_str, col_str = request.form["choice"].split()
         chosen_cell = int(row_str), int(col_str)
-        board.set_cell(coord=chosen_cell, value=turn)
+        board.set_cell(coord=chosen_cell, value=player.get_mark())
         current_game.players_match.switch()
 
-        if not board.is_full() and not board.is_winning_move(chosen_cell, turn):
-            turn = current_game.players_match.current().get_mark()
+        if not board.is_full() and not board.is_winning_move(
+            chosen_cell, player.get_mark()
+        ):
+            player = current_game.players_match.current()
             chosen_cell = current_game.get_move()
-            board.set_cell(coord=chosen_cell, value=turn)
+            board.set_cell(coord=chosen_cell, value=player.get_mark())
             current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, turn):
-        return redirect(url_for("main.win", mark=turn))
+    elif board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
+        return redirect(url_for("main.win", mark=player.display_mark()))
     elif board.is_full():
         return redirect(url_for("main.tie"))
 
@@ -77,7 +73,11 @@ def game() -> Union[str, Response]:
     print(current_game.players_match.players)
 
     return render_template(
-        "game.html", board=board.display(), turn=turn, session=session
+        "game.html",
+        board=board.display(),
+        turn=player.display_mark(),
+        session=session,
+        scores=current_game.get_scores(),
     )
 
 
@@ -101,12 +101,53 @@ def new_game() -> Response:
         session["game"] = current_game
     else:
         current_game = session["game"]
+        current_game.board = engine.Board()
         current_game.players_match.switch()
 
     return redirect(url_for("main.game"))
 
 
-@socketio.on("my event")  # type: ignore[misc]
-def handle_my_custom_event(json: Dict[str, Any]) -> None:
-    """Handles socketio custom event."""
-    print("received json: " + str(json))
+@bp.route("/move", methods=["POST"])
+def move():
+    """Processes a player's move."""
+    player_move = request.form.get("move")
+
+    print("/move")
+    print(request.form)
+
+    current_game = session["game"]
+    board = current_game.board
+    player = current_game.players_match.current()
+
+    row_str, col_str = player_move.split()
+    chosen_cell = int(row_str), int(col_str)
+    board.set_cell(coord=chosen_cell, value=player.get_mark())
+    current_game.players_match.switch()
+
+    if not board.is_full() and not board.is_winning_move(
+        chosen_cell, player.get_mark()
+    ):
+        player = current_game.players_match.current()
+        chosen_cell = current_game.get_move()
+        board.set_cell(coord=chosen_cell, value=player.get_mark())
+        current_game.players_match.switch()
+
+    if chosen_cell is None:
+        pass
+    elif board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
+        return redirect(url_for("main.win", mark=player.display_mark()))
+    elif board.is_full():
+        return redirect(url_for("main.tie"))
+
+    if "AI_random" in request.form:
+        current_game.players_match.update_ai_algorithm(naive.naive_move)
+    elif "AI_mcts" in request.form:
+        current_game.players_match.update_ai_algorithm(mcts.mcts_move)
+    elif "AI_negamax" in request.form:
+        current_game.players_match.update_ai_algorithm(negamax.negamax_move)
+    print(current_game.players_match.players)
+
+    return render_template(
+        "board.html", board=board.display(), turn=player.display_mark(), session=session
+    )
