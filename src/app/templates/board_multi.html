@@ -1,0 +1,50 @@
+<div class="grid grid-cols-3 w-96 h-96">
+  {% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled"
+  if board[i][j] != "_" else "" %}
+  <!--suppress HtmlUnknownAttribute -->
+  <form
+    id="move-{{i}}{{j}}"
+    hx-post="/move_multi"
+    hx-target="#board"
+    hx-trigger="click"
+  >
+    <div class="h-full text-center border border-black">
+      <input
+        type="hidden"
+        name="coord"
+        id="coord-{{i}}{{j}}"
+        value="{{i}} {{j}}"
+      />
+      <input
+        type="hidden"
+        name="player_mark"
+        id="player_mark-{{i}}{{j}}"
+        value="{{turn}}"
+      />
+      <input
+        type="hidden"
+        name="room_name"
+        id="room_name-{{i}}{{j}}"
+        value="{{room}}"
+      />
+      <!--suppress HtmlUnknownAttribute -->
+      <button
+        type="submit"
+        id="button-{{i}}{{j}}"
+        class="w-full h-full text-4xl"
+        {{disabled}}
+      >
+        {{board[i][j]}}
+      </button>
+      <!--suppress HtmlUnknownAttribute -->
+      <input
+        type="submit"
+        id="real-button-{{i}}{{j}}"
+        hx-post="/move_multi"
+        hx-target="#board"
+        style="display: none"
+      />
+    </div>
+  </form>
+  {% endfor %} {% endfor %}
+</div>
