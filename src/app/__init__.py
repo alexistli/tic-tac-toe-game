@@ -19,7 +19,7 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app.config.from_object(config_class)
 
     session.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app, manage_session=False)
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
