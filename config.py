@@ -15,5 +15,5 @@ class Config:
 
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
     SESSION_FILE_DIR = mkdtemp()
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
     SESSION_TYPE = "filesystem"
