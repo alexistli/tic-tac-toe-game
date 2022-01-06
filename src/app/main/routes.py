@@ -9,9 +9,11 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from flask_socketio import close_room
+from flask_socketio import emit
 from flask_socketio import join_room
 from flask_socketio import leave_room
-from flask_socketio import send
+from flask_socketio import rooms
 from werkzeug import Response
 
 from app import socketio
@@ -43,7 +45,6 @@ def session_view():
         title="Flask-Session Tutorial.",
         template="dashboard-template",
         session_variable=str(session),
-        sid=request.s,
     )
 
 
@@ -129,8 +130,19 @@ def new_game() -> Response:
 @bp.route("/multi_game/<string:room>")
 def multi_game(room: str) -> str:
     """Initializes a new game."""
-    print(room)
-    return render_template("multi_game.html")
+    logger.debug(f"multi_game - session: {session}")
+    current_game = session["game"]
+    board = current_game.board
+    player = current_game.players_match.current()
+
+    return render_template(
+        "game_multi.html",
+        board=board.display(),
+        turn=player.display_mark(),
+        session=session,
+        scores=current_game.get_scores(),
+        room=room,
+    )
 
 
 @bp.route("/join_game", methods=["GET", "POST"])
@@ -140,7 +152,19 @@ def join_game() -> Union[str, Response]:
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
         print(form.game_name.data)
-        return redirect(url_for("main.multi_game", room=form.game_name.data))
+
+        current_game = engine.build_game(mode="multi")
+        session["game"] = current_game
+        current_game.players_match.switch()
+        session["my_id"] = current_game.players_match.current().get_mark()
+        session["my_mark"] = current_game.players_match.current().display_mark()
+        current_game.players_match.switch()
+
+        logger.debug(f"join_game - session: {session}")
+
+        return redirect(
+            url_for("main.multi_game", room=form.game_name.data, session=session)
+        )
     return render_template("join_game.html", form=form)
 
 
@@ -151,8 +175,51 @@ def new_multi_game() -> Union[str, Response]:
     if form.validate_on_submit():
         flash(f"New multi game requested: {form.game_name.data}")
         print(form.game_name.data)
-        return redirect(url_for("main.multi_game", room=form.game_name.data))
+
+        current_game = engine.build_game(mode="multi")
+        session["game"] = current_game
+        session["my_id"] = current_game.players_match.current().get_mark()
+        session["my_mark"] = current_game.players_match.current().display_mark()
+
+        logger.debug(f"new_multi_game - session: {session}")
+
+        return redirect(
+            url_for("main.multi_game", room=form.game_name.data, session=session)
+        )
     return render_template("new_multi_game.html", form=form)
+
+
+@bp.route("/move_multi", methods=["POST"])
+def move_multi():
+    """Processes a player's move."""
+    player_move = request.form.get("coord")
+
+    print("/move")
+    print(request.form)
+
+    current_game = session["game"]
+    board = current_game.board
+    player = current_game.players_match.current()
+
+    row_str, col_str = player_move.split()
+    logger.debug(f"row_str, col_str: {row_str} {col_str}")
+    chosen_cell = int(row_str), int(col_str)
+    logger.debug(f"chosen_cell: {chosen_cell}")
+    board.set_cell(coord=chosen_cell, value=player.get_mark())
+    current_game.players_match.switch()
+
+    if board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
+        return redirect(url_for("main.win", mark=player.display_mark()))
+    elif board.is_full():
+        return redirect(url_for("main.tie"))
+
+    return render_template(
+        "board_multi.html",
+        board=board.display(),
+        turn=player.display_mark(),
+        session=session,
+    )
 
 
 @bp.route("/move", methods=["POST"])
@@ -201,19 +268,80 @@ def move():
     )
 
 
-@socketio.on("join")
-def on_join(data):
+@socketio.event
+def my_event(message):
     """TODO."""
-    username = data["username"]
-    room = data["room"]
-    join_room(room)
-    send(username + " has entered the room.", to=room)
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit("my_response", {"data": message["data"], "count": session["receive_count"]})
 
 
-@socketio.on("leave")
-def on_leave(data):
+@socketio.event
+def my_broadcast_event(message):
     """TODO."""
-    username = data["username"]
-    room = data["room"]
-    leave_room(room)
-    send(username + " has left the room.", to=room)
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit(
+        "my_response",
+        {"data": message["data"], "count": session["receive_count"]},
+        broadcast=True,
+    )
+
+
+@socketio.event
+def join(message):
+    """TODO."""
+    join_room(message["room"])
+    logger.debug(f"room joined: {message}")
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    logger.debug("emit my_response")
+    emit(
+        "my_response",
+        {"data": "In rooms: " + ", ".join(rooms()), "count": session["receive_count"]},
+    )
+
+    logger.debug("emit my_room_event")
+    emit("my_room_event", {"room": message["room"], "data": message["room"]})
+
+
+@socketio.event
+def leave(message):
+    """TODO."""
+    leave_room(message["room"])
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit(
+        "my_response",
+        {"data": "In rooms: " + ", ".join(rooms()), "count": session["receive_count"]},
+    )
+
+
+@socketio.on("close_room")
+def on_close_room(message):
+    """TODO."""
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit(
+        "my_response",
+        {
+            "data": "Room " + message["room"] + " is closing.",
+            "count": session["receive_count"],
+        },
+        to=message["room"],
+    )
+    close_room(message["room"])
+
+
+@socketio.event
+def my_room_event(message):
+    """TODO."""
+    logger.debug(f"my_room_event: {message}")
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit(
+        "my_response",
+        {"data": message["data"], "count": session["receive_count"]},
+        to=message["room"],
+        include_self=False,
+    )
+
+
+@socketio.event
+def my_ping():
+    """TODO."""
+    emit("my_pong")
