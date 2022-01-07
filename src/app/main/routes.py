@@ -37,17 +37,6 @@ logger.setLevel(logging.DEBUG)
 logger.addHandler(console_handler)
 
 
-@bp.route("/session", methods=["GET"])
-def session_view():
-    """Display session variable value."""
-    return render_template(
-        "session.html",
-        title="Flask-Session Tutorial.",
-        template="dashboard-template",
-        session_variable=str(session),
-    )
-
-
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
@@ -139,7 +128,7 @@ def multi_game(room: str) -> str:
         "game_multi.html",
         board=board.display(),
         turn=player.display_mark(),
-        session=session,
+        my_mark=session["my_mark"],
         scores=current_game.get_scores(),
         room=room,
     )
@@ -162,9 +151,7 @@ def join_game() -> Union[str, Response]:
 
         logger.debug(f"join_game - session: {session}")
 
-        return redirect(
-            url_for("main.multi_game", room=form.game_name.data, session=session)
-        )
+        return redirect(url_for("main.multi_game", room=form.game_name.data))
     return render_template("join_game.html", form=form)
 
 
@@ -183,9 +170,7 @@ def new_multi_game() -> Union[str, Response]:
 
         logger.debug(f"new_multi_game - session: {session}")
 
-        return redirect(
-            url_for("main.multi_game", room=form.game_name.data, session=session)
-        )
+        return redirect(url_for("main.multi_game", room=form.game_name.data))
     return render_template("new_multi_game.html", form=form)
 
 
@@ -206,7 +191,6 @@ def move_multi():
     chosen_cell = int(row_str), int(col_str)
     logger.debug(f"chosen_cell: {chosen_cell}")
     board.set_cell(coord=chosen_cell, value=player.get_mark())
-    current_game.players_match.switch()
 
     if board.is_winning_move(chosen_cell, player.get_mark()):
         player.record_win()
@@ -214,11 +198,11 @@ def move_multi():
     elif board.is_full():
         return redirect(url_for("main.tie"))
 
+    current_game.players_match.switch()
+    player = current_game.players_match.current()
+
     return render_template(
-        "board_multi.html",
-        board=board.display(),
-        turn=player.display_mark(),
-        session=session,
+        "board_multi.html", board=board.display(), turn=player.display_mark()
     )
 
 
