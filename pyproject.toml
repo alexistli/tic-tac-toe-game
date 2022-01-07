@@ -83,8 +83,11 @@ show_error_context = true
 module = [
     "easyAI.*",
     "mctspy.*",
+    "flask_assets.*",
     "flask_session.*",
-    "flask_socketio.*"
+    "flask_socketio.*",
+    "flask_wtf.*",
+    "wtforms.*",
 ]
 ignore_missing_imports = true
 
