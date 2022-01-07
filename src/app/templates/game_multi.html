@@ -125,32 +125,36 @@
         return false;
       });
 
-      socket.on("move", function (data) {
-        console.log("socket.on.move");
+      socket.on("receive_move", function (data) {
+        console.log("socket.on.receive_move");
+        console.log(data);
         form_id = data.form_id;
         $("#room_name-" + form_id).val(data.room);
         $("#player_mark-" + form_id).val(data.player_mark);
         $("#coord-" + form_id).val(data.coord);
-        $("#button-" + form_id).attr("hx-post", "/move_multi");
-        $("#button-" + form_id).attr("hx-target", "#board");
-        $("form#move-" + form_id).submit();
+        var my_form = "#move-" + form_id;
+        console.log(my_form);
+        $(my_form).attr("hx-trigger", "click");
+        console.log(htmx.find(my_form));
+        htmx.trigger(htmx.find(my_form), "click", {});
       });
 
-      $("#board").on("submit", $("form[id|='move']"), function (event) {
+      $("#board").on("submit", ".form", function (event) {
         event.preventDefault();
         console.log("form.move.submit");
         var form_id = this.id.split("-")[1];
         var cell = form_id.split("").join(" ");
         console.log(cell);
-        socket.emit("move", {
+        socket.emit("emit_move", {
           room: "{{room}}",
           player_mark: "{{turn}}",
           form_id: form_id,
           coord: cell,
         });
-        var my_form = "#form-" + form_id;
+        var my_form = "#move-" + form_id;
         console.log(my_form);
-        htmx.trigger(htmx.find(my_form), "submit", {});
+        $(my_form).attr("hx-trigger", "click");
+        return false;
       });
     });
   </script>
