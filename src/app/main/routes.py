@@ -342,6 +342,18 @@ def my_room_event(message):
 
 
 @socketio.event
+def emit_move(data):
+    """TODO."""
+    logger.debug(f"socket.emit_move: {data}")
+    emit(
+        "receive_move",
+        data,
+        to=data["room"],
+        include_self=False,
+    )
+
+
+@socketio.event
 def my_ping():
     """TODO."""
     emit("my_pong")
