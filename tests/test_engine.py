@@ -190,15 +190,18 @@ def test_player_returns_repr() -> None:
     player_a = engine.HumanPlayer(1, PLAYER_A_NAME)
     player_b = engine.AIPlayer(-1, PLAYER_B_NAME)
 
-    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(1)}, None)"
+    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(1)}, None, 0)"
     player_a.set_mark(-1)
-    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(-1)}, None)"
+    assert repr(player_a) == f"HumanPlayer({repr(PLAYER_A_NAME)}, {repr(-1)}, None, 0)"
 
     assert (
-        repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(-1)}, 'naive_move')"
+        repr(player_b)
+        == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(-1)}, 'naive_move', 0)"
     )
     player_b.set_mark(1)
-    assert repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(1)}, 'naive_move')"
+    assert (
+        repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(1)}, 'naive_move', 0)"
+    )
 
 
 # ================ Test PlayersMatch ================

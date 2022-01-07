@@ -2,6 +2,7 @@
 import click
 
 from app import create_app
+from app import socketio
 
 
 @click.command()
@@ -9,7 +10,7 @@ from app import create_app
 def main() -> None:
     """Tic Tac Toe Game."""
     app = create_app()
-    app.run(debug=True)
+    socketio.run(app)
 
 
 if __name__ == "__main__":

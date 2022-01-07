@@ -18,5 +18,33 @@ block head %} {{ super() }} {% endblock %} {% block content %}
     "
     >Start a game</a
   >
+  <a
+    href="{{ url_for('main.new_multi_game') }}"
+    class="
+      mt-10
+      bg-blue-600
+      rounded-md
+      py-3
+      px-8
+      font-medium
+      text-white
+      hover:bg-blue-700
+    "
+    >Create a multiplayer game</a
+  >
+  <a
+    href="{{ url_for('main.join_game') }}"
+    class="
+      mt-10
+      bg-blue-600
+      rounded-md
+      py-3
+      px-8
+      font-medium
+      text-white
+      hover:bg-blue-700
+    "
+    >Join a multiplayer game</a
+  >
 </div>
 {% endblock %} {% block scripts %}{% endblock %}

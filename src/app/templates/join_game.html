@@ -1,0 +1,13 @@
+{% extends "layout.html" %} {% block title %} Tic Tac Toe Game {% endblock %} {%
+block head %} {{ super() }} {% endblock %} {% block content %}
+<h1>Join Game</h1>
+<form action="" method="POST" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.game_name.label }}<br />
+    {{ form.game_name(size=32) }}
+  </p>
+
+  <p>{{ form.submit() }}</p>
+</form>
+{% endblock %} {% block scripts %}{% endblock %}
