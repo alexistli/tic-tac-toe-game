@@ -5,14 +5,14 @@ from wtforms import SubmitField
 from wtforms.validators import DataRequired
 
 
-class CreateMultiGame(FlaskForm):
+class CreateMultiGame(FlaskForm):  # type: ignore[misc]
     """TODO."""
 
     game_name = StringField("Game name", validators=[DataRequired()])
     submit = SubmitField("Create game")
 
 
-class JoinMultiGame(FlaskForm):
+class JoinMultiGame(FlaskForm):  # type: ignore[misc]
     """TODO."""
 
     game_name = StringField("Game name", validators=[DataRequired()])
