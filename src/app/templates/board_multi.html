@@ -29,7 +29,6 @@
       />
       <!--suppress HtmlUnknownAttribute -->
       <button
-        type="submit"
         id="button-{{i}}{{j}}"
         class="w-full h-full text-4xl"
         {{disabled
@@ -38,6 +37,8 @@
       >
         {{board[i][j]}}
       </button>
+      <!--suppress HtmlUnknownAttribute -->
+      <input type="submit" id="real-button-{{i}}{{j}}" style="display: none" />
     </div>
   </form>
   {% endfor %} {% endfor %}
