@@ -62,6 +62,12 @@
   ></script>
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
+      htmx.logAll();
+
+      var $my_real_button = "#real-button-11";
+      console.log($my_real_button);
+      htmx.trigger(htmx.find($my_real_button), "click", {});
+
       // Connect to the Socket.IO server.
       // The connection URL has the following format, relative to the current page:
       //     http[s]://<domain>:<port>[/<namespace>]
@@ -125,6 +131,31 @@
         return false;
       });
 
+      $("#board").on("click", "button", function (event) {
+        event.preventDefault();
+        console.log("form.move.submit");
+
+        var $button = $(this);
+        console.log($button);
+
+        var $id = $button.attr("id");
+        console.log($id);
+
+        var form_id = $id.split("-")[1];
+        var cell = form_id.split("").join(" ");
+        console.log(cell);
+
+        socket.emit("emit_move", {
+          room: "{{room}}",
+          player_mark: "{{turn}}",
+          form_id: form_id,
+          coord: cell,
+        });
+        var $my_real_button = "#real-button-" + form_id;
+        console.log($my_real_button);
+        $("#real-button-" + form_id).trigger("click");
+      });
+
       socket.on("receive_move", function (data) {
         console.log("socket.on.receive_move");
         console.log(data);
@@ -132,29 +163,9 @@
         $("#room_name-" + form_id).val(data.room);
         $("#player_mark-" + form_id).val(data.player_mark);
         $("#coord-" + form_id).val(data.coord);
-        var my_form = "#move-" + form_id;
-        console.log(my_form);
-        $(my_form).attr("hx-trigger", "click");
-        console.log(htmx.find(my_form));
-        htmx.trigger(htmx.find(my_form), "click", {});
-      });
-
-      $("#board").on("submit", ".form", function (event) {
-        event.preventDefault();
-        console.log("form.move.submit");
-        var form_id = this.id.split("-")[1];
-        var cell = form_id.split("").join(" ");
-        console.log(cell);
-        socket.emit("emit_move", {
-          room: "{{room}}",
-          player_mark: "{{turn}}",
-          form_id: form_id,
-          coord: cell,
-        });
-        var my_form = "#move-" + form_id;
-        console.log(my_form);
-        $(my_form).attr("hx-trigger", "click");
-        return false;
+        var $my_real_button = "#real-button-" + form_id;
+        console.log($my_real_button);
+        $("#real-button-" + form_id).trigger("click");
       });
     });
   </script>
