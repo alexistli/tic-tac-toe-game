@@ -58,12 +58,6 @@
   ></script>
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
-      htmx.logAll();
-
-      var $my_real_button = "#real-button-11";
-      console.log($my_real_button);
-      htmx.trigger(htmx.find($my_real_button), "click", {});
-
       // Connect to the Socket.IO server.
       // The connection URL has the following format, relative to the current page:
       //     http[s]://<domain>:<port>[/<namespace>]
