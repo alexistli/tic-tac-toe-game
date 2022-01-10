@@ -10,21 +10,13 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(FORMATTER)
-stream_handler.setLevel(logging.DEBUG)
-logger.addHandler(stream_handler)
-
-
 async_mode = "eventlet"
 
 session = Session()
 socketio = SocketIO()
+
+if __name__ != "__main__":
+    logger = logging.getLogger("gunicorn.error")
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -32,7 +24,8 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_object(config_class)
 
-    app.logger = logger
+    app.logger.handlers = logger.handlers
+    app.logger.setLevel(logger.level)
 
     app.logger.info("Flask game")
 
