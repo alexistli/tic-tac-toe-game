@@ -68,23 +68,7 @@
       // server is established.
       socket.on("connect", function () {
         console.log("socket.on.connect");
-        socket.emit("my_event", { data: "I'm connected!" });
         socket.emit("join", { room: "{{room}}" });
-        socket.emit("my_room_event", { room: "{{room}}", data: "{{room}}" });
-      });
-
-      // Event handler for server sent data.
-      // The callback function is invoked whenever the server emits data
-      // to the client. The data is then displayed in the "Received"
-      // section of the page.
-      socket.on("my_response", function (msg, cb) {
-        $("#log").append(
-          "<br>" +
-            $("<div/>")
-              .text("Received #" + msg.count + ": " + msg.data)
-              .html()
-        );
-        if (cb) cb();
       });
 
       // Interval function that tests message latency by sending a "ping"
@@ -123,17 +107,17 @@
 
       $("#board").on("click", "button", function (event) {
         event.preventDefault();
-        console.log("form.move.submit");
+        console.log("form.move.submit - before");
 
         var $button = $(this);
-        console.log($button);
+        // console.log($button);
 
         var $id = $button.attr("id");
-        console.log($id);
+        // console.log($id);
 
         var form_id = $id.split("-")[1];
         var cell = form_id.split("").join(" ");
-        console.log(cell);
+        // console.log(cell);
 
         socket.emit("emit_move", {
           room: "{{room}}",
@@ -141,21 +125,17 @@
           form_id: form_id,
           coord: cell,
         });
-        var $my_real_button = "#real-button-" + form_id;
-        console.log($my_real_button);
-        $("#real-button-" + form_id).trigger("click");
+
+        console.log("form.move.submit - after");
+
+        $("#grid").trigger("click");
+
+        console.log("form.move.last");
       });
 
-      socket.on("receive_move", function (data) {
-        console.log("socket.on.receive_move");
-        console.log(data);
-        form_id = data.form_id;
-        $("#room_name-" + form_id).val(data.room);
-        $("#player_mark-" + form_id).val(data.player_mark);
-        $("#coord-" + form_id).val(data.coord);
-        var $my_real_button = "#real-button-" + form_id;
-        console.log($my_real_button);
-        $("#real-button-" + form_id).trigger("click");
+      socket.on("refresh_game", function () {
+        console.log("socket.on.refresh_game");
+        $("#grid").trigger("click");
       });
     });
   </script>

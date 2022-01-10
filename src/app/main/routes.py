@@ -194,6 +194,26 @@ def move_multi():
     )
 
 
+@bp.route("/board", methods=["GET"])
+def board():
+    """Returns the current board state."""
+    current_game = session["game"]
+    current_board = current_game.board
+    current_player = current_game.players_match.current()
+
+    # if board.is_winning_move(chosen_cell, player.get_mark()):
+    #     player.record_win()
+    #     return redirect(url_for("main.win", mark=player.display_mark()))
+    # elif board.is_full():
+    #     return redirect(url_for("main.tie"))
+
+    return render_template(
+        "board_multi.html",
+        board=current_board.display(),
+        turn=current_player.display_mark(),
+    )
+
+
 @bp.route("/move", methods=["POST"])
 def move():
     """Processes a player's move."""
@@ -237,24 +257,6 @@ def move():
 
     return render_template(
         "board.html", board=board.display(), turn=player.display_mark(), session=session
-    )
-
-
-@socketio.event
-def my_event(message):
-    """TODO."""
-    session["receive_count"] = session.get("receive_count", 0) + 1
-    emit("my_response", {"data": message["data"], "count": session["receive_count"]})
-
-
-@socketio.event
-def my_broadcast_event(message):
-    """TODO."""
-    session["receive_count"] = session.get("receive_count", 0) + 1
-    emit(
-        "my_response",
-        {"data": message["data"], "count": session["receive_count"]},
-        broadcast=True,
     )
 
 
@@ -320,6 +322,38 @@ def emit_move(data):
     emit(
         "receive_move",
         data,
+        to=data["room"],
+        include_self=True,
+    )
+    emit(
+        "receive_move",
+        data,
+    )
+
+
+@socketio.event
+def receive_move(data):
+    """TODO."""
+    logger.debug(f"socket.receive_move: {data}")
+
+    player_move = data["coord"]
+
+    print("/receive_move")
+    print(player_move)
+
+    current_game = session["game"]
+    current_player = current_game.players_match.current()
+
+    row_str, col_str = player_move.split()
+    logger.debug(f"row_str, col_str: {row_str} {col_str}")
+    chosen_cell = int(row_str), int(col_str)
+    logger.debug(f"chosen_cell: {chosen_cell}")
+    board.set_cell(coord=chosen_cell, value=current_player.get_mark())
+
+    current_game.players_match.switch()
+
+    emit(
+        "refresh_game",
         to=data["room"],
         include_self=False,
     )
