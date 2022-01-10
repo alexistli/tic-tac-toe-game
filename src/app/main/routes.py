@@ -1,6 +1,4 @@
 """Flask app routes."""
-import logging
-import sys
 from typing import Union
 
 from flask import flash
@@ -16,6 +14,7 @@ from flask_socketio import leave_room
 from flask_socketio import rooms
 from werkzeug import Response
 
+from app import logger
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -24,17 +23,6 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
-
-
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-
-console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setFormatter(FORMATTER)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-logger.addHandler(console_handler)
 
 
 @bp.route("/")
