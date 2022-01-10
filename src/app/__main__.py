@@ -1,8 +1,11 @@
 """Command-line interface."""
 import click
+import eventlet
 
 from app import create_app
 from app import socketio
+
+eventlet.monkey_patch()
 
 
 @click.command()
@@ -10,8 +13,8 @@ from app import socketio
 def main() -> None:
     """Tic Tac Toe Game."""
     app = create_app()
-    socketio.run(app, debug=True)
+    socketio.run(app)
 
 
 if __name__ == "__main__":
-    main(prog_name="flask-game")  # pragma: no cover
+    main(prog_name="game")  # pragma: no cover
