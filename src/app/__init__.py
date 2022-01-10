@@ -1,4 +1,5 @@
 """Application factory."""
+import logging
 from typing import Type
 
 from config import Config
@@ -9,8 +10,13 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 
+async_mode = "eventlet"
+
 session = Session()
 socketio = SocketIO()
+
+if __name__ != "__main__":
+    logger = logging.getLogger("gunicorn.error")
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -18,8 +24,15 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_object(config_class)
 
+    app.logger.handlers = logger.handlers
+    app.logger.setLevel(logger.level)
+
+    app.logger.info("Flask game")
+
     session.init_app(app)
-    socketio.init_app(app, manage_session=False)
+    socketio.init_app(
+        app, async_mode=async_mode, manage_session=False, logger=app.logger
+    )
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")

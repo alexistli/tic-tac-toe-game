@@ -57,7 +57,7 @@ furo = ">=2021.11.12"
 
 [tool.poetry.scripts]
 tic-tac-toe-game = "tic_tac_toe_game.__main__:main"
-flask-game = "app.__main__:main"
+game = "app.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]

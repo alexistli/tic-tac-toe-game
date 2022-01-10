@@ -1,8 +1,11 @@
 """Command-line interface."""
 import click
+import eventlet
 
 from app import create_app
 from app import socketio
+
+eventlet.monkey_patch()
 
 
 @click.command()
@@ -14,4 +17,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main(prog_name="flask-game")  # pragma: no cover
+    main(prog_name="game")  # pragma: no cover

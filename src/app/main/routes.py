@@ -1,6 +1,4 @@
 """Flask app routes."""
-import logging
-import sys
 from typing import Union
 
 from flask import flash
@@ -16,6 +14,7 @@ from flask_socketio import leave_room
 from flask_socketio import rooms
 from werkzeug import Response
 
+from app import logger
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -24,17 +23,6 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
-
-
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-
-console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setFormatter(FORMATTER)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-logger.addHandler(console_handler)
 
 
 @bp.route("/")
@@ -79,7 +67,9 @@ def game() -> Union[str, Response]:
         current_game.players_match.update_ai_algorithm(mcts.mcts_move)
     elif "AI_negamax" in request.form:
         current_game.players_match.update_ai_algorithm(negamax.negamax_move)
-    print(current_game.players_match.players)
+    logger.debug(
+        f"game - game.players_match.players: {current_game.players_match.players}"
+    )
 
     return render_template(
         "game.html",
@@ -140,7 +130,7 @@ def join_game() -> Union[str, Response]:
     form = JoinMultiGame()
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
-        print(form.game_name.data)
+        logger.debug(f"join_game - form.game_name.data: {form.game_name.data}")
 
         current_game = engine.build_game(mode="multi")
         session["game"] = current_game
@@ -161,7 +151,7 @@ def new_multi_game() -> Union[str, Response]:
     form = CreateMultiGame()
     if form.validate_on_submit():
         flash(f"New multi game requested: {form.game_name.data}")
-        print(form.game_name.data)
+        logger.debug(f"new_multi_game - form.game_name.data: {form.game_name.data}")
 
         current_game = engine.build_game(mode="multi")
         session["game"] = current_game
@@ -179,8 +169,7 @@ def move_multi():
     """Processes a player's move."""
     player_move = request.form.get("coord")
 
-    print("/move")
-    print(request.form)
+    logger.debug(f"move_multi - request.form: {request.form}")
 
     current_game = session["game"]
     board = current_game.board
@@ -211,8 +200,7 @@ def move():
     """Processes a player's move."""
     player_move = request.form.get("move")
 
-    print("/move")
-    print(request.form)
+    logger.debug(f"move - request.form: {request.form}")
 
     current_game = session["game"]
     board = current_game.board
@@ -245,7 +233,9 @@ def move():
         current_game.players_match.update_ai_algorithm(mcts.mcts_move)
     elif "AI_negamax" in request.form:
         current_game.players_match.update_ai_algorithm(negamax.negamax_move)
-    print(current_game.players_match.players)
+    logger.debug(
+        f"move - game.players_match.players: {current_game.players_match.players}"
+    )
 
     return render_template(
         "board.html", board=board.display(), turn=player.display_mark(), session=session
