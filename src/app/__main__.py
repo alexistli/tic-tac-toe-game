@@ -10,7 +10,7 @@ from app import socketio
 def main() -> None:
     """Tic Tac Toe Game."""
     app = create_app()
-    socketio.run(app)
+    socketio.run(app, debug=True)
 
 
 if __name__ == "__main__":
