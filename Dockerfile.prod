@@ -1,0 +1,76 @@
+###########
+# BUILDER #
+###########
+
+# pull official base image
+FROM python:3.10.1-slim-bullseye as builder
+
+# set work directory
+WORKDIR /usr/src/app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
+
+RUN pip install --upgrade pip
+COPY . /usr/src/app/
+
+# install python dependencies
+COPY ./requirements.txt .
+# https://github.com/benoitc/gunicorn/pull/2581#issuecomment-994198667
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0"
+
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.10.1-slim-bullseye
+
+# create directory for the app user
+RUN mkdir -p /home/ttt
+
+# create the app user
+RUN addgroup --system appuser && adduser --system --group appuser
+
+# create the appropriate directories
+ENV HOME=/home/ttt/
+ENV APP_HOME=/home/ttt/src/app/
+ENV ENGINE_HOME=/home/ttt/src/tic_tac_toe_game/
+
+RUN mkdir -p $ENGINE_HOME
+RUN mkdir -p $APP_HOME
+WORKDIR $HOME
+
+# install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends netcat && apt-get install -y nodejs && apt-get install -y npm
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+COPY tailwind.config.js postcss.config.js package.json package-lock.json /home/ttt/
+RUN npm install --global postcss
+RUN npm install --production
+
+
+COPY src/app /home/ttt/app/
+COPY src/tic_tac_toe_game /home/ttt/tic_tac_toe_game/
+
+COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml /home/ttt/
+
+
+# chown all the files to the app user
+RUN chown -R appuser:appuser /home/ttt
+
+# change to the app user
+USER appuser
+
+# run entrypoint.prod.sh
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "--worker-class", "eventlet", "-w", "2", "--log-level=debug", "game:app"]

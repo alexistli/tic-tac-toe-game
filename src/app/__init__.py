@@ -16,7 +16,14 @@ session = Session()
 socketio = SocketIO()
 
 if __name__ != "__main__":
+    print("in gunicorn.error")
     logger = logging.getLogger("gunicorn.error")
+    logger.info("in gunicorn.error")
+else:
+    import logging
+
+    logger = logging.getLogger()
+    logger.info("without gunicorn.error")
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -34,6 +41,8 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
         app, async_mode=async_mode, manage_session=False, logger=app.logger
     )
 
+    app.logger.info("extensions init finished")
+
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
     js = Bundle("src/*.js", output="dist/main.js")
@@ -42,8 +51,12 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     css.build()
     js.build()
 
+    app.logger.info("assets build finished")
+
     from app.main import bp as main_bp
 
     app.register_blueprint(main_bp)
+
+    app.logger.info("last step before return")
 
     return app

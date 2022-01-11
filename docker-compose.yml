@@ -1,0 +1,15 @@
+version: "3"
+services:
+  web:
+    container_name: flask-container
+    build: .
+    entrypoint: python app.py
+    env_file:
+      - .env
+    ports:
+      - "8000:5000"
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"

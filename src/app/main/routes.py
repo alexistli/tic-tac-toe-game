@@ -25,6 +25,12 @@ from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
 
 
+@bp.route("/session", methods=["GET"])
+def session_view():
+    """Display session variable value."""
+    return render_template("session.html", session_variables=str(session))
+
+
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
@@ -327,10 +333,6 @@ def emit_move(data):
         to=data["room"],
         include_self=True,
     )
-    emit(
-        "receive_move",
-        data,
-    )
 
 
 @socketio.event
@@ -359,9 +361,3 @@ def receive_move(data):
         to=data["room"],
         include_self=False,
     )
-
-
-@socketio.event
-def my_ping():
-    """TODO."""
-    emit("my_pong")

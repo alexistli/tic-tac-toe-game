@@ -27,6 +27,7 @@ mctspy = "^0.1.1"
 easyAI = "^2.0.12"
 Flask-Assets = "^2.0"
 Flask-WTF = "^1.0.0"
+redis = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 cruft = "^2.10.1"
