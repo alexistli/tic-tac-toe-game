@@ -21,8 +21,9 @@ COPY . /usr/src/app/
 
 # install python dependencies
 COPY ./requirements.txt .
-# https://github.com/benoitc/gunicorn/pull/2581#issuecomment-994198667
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+# https://github.com/benoitc/gunicorn/pull/2581#issuecomment-994198667
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0"
 
 
@@ -34,42 +35,41 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://
 FROM python:3.10.1-slim-bullseye
 
 # create directory for the app user
-RUN mkdir -p /home/ttt
+ENV HOME=/home/ttt/
+RUN mkdir -p $HOME
+WORKDIR $HOME
 
 # create the app user
 RUN addgroup --system appuser && adduser --system --group appuser
 
 # create the appropriate directories
-ENV HOME=/home/ttt/
-ENV APP_HOME=/home/ttt/src/app/
-ENV ENGINE_HOME=/home/ttt/src/tic_tac_toe_game/
-
-RUN mkdir -p $ENGINE_HOME
-RUN mkdir -p $APP_HOME
-WORKDIR $HOME
+ENV APP_HOME=/home/ttt/app/
+ENV ENGINE_HOME=/home/ttt/tic_tac_toe_game/
+RUN mkdir $APP_HOME
+RUN mkdir $ENGINE_HOME
 
 # install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends netcat
-RUN apt-get install -y nodejs
-RUN apt-get install -y npm
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
-COPY tailwind.config.js postcss.config.js package.json package-lock.json /home/ttt/
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
+COPY tailwind.config.js postcss.config.js package.json package-lock.json $HOME
 RUN npm install --global postcss
 RUN npm install --production
 
+# copy app and engine
+COPY src/app $APP_HOME
+COPY src/tic_tac_toe_game $ENGINE_HOME
 
-COPY src/app /home/ttt/app/
-COPY src/tic_tac_toe_game /home/ttt/tic_tac_toe_game/
-
-COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml /home/ttt/
-
+# copy Docker and Flask files
+COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml $HOME
 
 # chown all the files to the app user
-RUN chown -R appuser:appuser /home/ttt
+RUN chown -R appuser:appuser $HOME
 
 # change to the app user
 USER appuser
