@@ -2,12 +2,15 @@
 import logging
 from typing import Type
 
+import structlog
 from config import Config
 from flask import Flask
 from flask_assets import Bundle
 from flask_assets import Environment
 from flask_session import Session
 from flask_socketio import SocketIO
+
+log = structlog.get_logger()
 
 
 async_mode = "eventlet"
