@@ -29,6 +29,7 @@ Flask-Assets = "^2.0"
 Flask-WTF = "^1.0.0"
 redis = "^4.1.0"
 structlog = "^21.5.0"
+rich = "^11.0.0"
 
 [tool.poetry.dev-dependencies]
 cruft = "^2.10.1"
