@@ -10,13 +10,12 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 
-async_mode = "eventlet"
+ASYNC_MODE = "eventlet"
 
 session = Session()
 socketio = SocketIO()
 
-logger = logging.getLogger("gunicorn.error")
-logger_new = logging.getLogger("app")
+logger = logging.getLogger("app")  # logger configured in gunicorn.conf.py
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -24,14 +23,13 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_object(config_class)
 
+    # attach the logger and its handlers to the Flask app
     app.logger.handlers = logger.handlers
     app.logger.setLevel(logger.level)
-
     logger.info("Flask game")
-    logger_new.info("Flask game")
 
     session.init_app(app)
-    socketio.init_app(app, async_mode=async_mode, manage_session=False, logger=logger)
+    socketio.init_app(app, async_mode=ASYNC_MODE, manage_session=False, logger=logger)
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
