@@ -1,4 +1,5 @@
 """Flask app routes."""
+# import uuid
 from typing import Union
 
 from flask import flash
@@ -15,6 +16,7 @@ from flask_socketio import rooms
 from werkzeug import Response
 
 from app import logger
+from app import logger_new
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -23,6 +25,20 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
+
+
+# @bp.before_request
+# def before_request_func():
+#     print("before_request is running!")
+#     # You would put this into some kind of middleware or processor so it's set
+#     # automatically for all requests in all views.
+#     structlog.threadlocal.clear_threadlocal()
+#     structlog.threadlocal.bind_threadlocal(
+#         view=request.path,
+#         request_id=str(uuid.uuid4()),
+#         peer=request.access_route[0],
+#     )
+#     # End of belongs-to-middleware.
 
 
 @bp.route("/session", methods=["GET"])
@@ -37,6 +53,7 @@ def index() -> str:
     # log = logger.bind()
     # log.info("user on index page", user="test-user")
     logger.info("in index")
+    logger_new.info("in index")
     # a = session["a"]
     # b = session["b"]
     # c = session["c"]
@@ -143,6 +160,8 @@ def join_game() -> Union[str, Response]:
     form = JoinMultiGame()
     logger.info("join_game")
     logger.debug("join_game")
+    logger_new.info("join_game")
+    logger_new.debug("join_game")
 
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
