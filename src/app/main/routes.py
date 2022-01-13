@@ -34,6 +34,13 @@ def session_view():
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
+    # log = logger.bind()
+    # log.info("user on index page", user="test-user")
+    logger.info("in index")
+    # a = session["a"]
+    # b = session["b"]
+    # c = session["c"]
+
     return render_template("index.html", headline="Tic Tac Toe Game")
 
 
@@ -134,6 +141,9 @@ def multi_game(room: str) -> str:
 def join_game() -> Union[str, Response]:
     """Initializes a new game."""
     form = JoinMultiGame()
+    logger.info("join_game")
+    logger.debug("join_game")
+
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
         logger.debug(f"join_game - form.game_name.data: {form.game_name.data}")
