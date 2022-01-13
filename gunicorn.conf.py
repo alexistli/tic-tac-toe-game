@@ -1,8 +1,11 @@
 """Gunicorn configuration file."""
+import logging
 import re
+import sys
 
 import structlog
 
+logging.basicConfig(format="%(message)s", stream=sys.stdout, level=logging.INFO)
 
 # --- Structlog logging initialisation code
 
@@ -46,7 +49,10 @@ def combined_logformat(logger, name, event_dict):
 
         # Final selection
         del event_dict["event"]  # not interested in raw event
+        del event_dict["host"]  # not interested in host
+        del event_dict["user"]  # not interested in user
         del event_dict["time"]  # timestamper already in pre-chain
+        del event_dict["size"]  # not interested in size
         del event_dict["agent"]  # not interested in agent
 
     return event_dict
@@ -55,13 +61,11 @@ def combined_logformat(logger, name, event_dict):
 structlog.configure(
     processors=[
         structlog.threadlocal.merge_threadlocal,
-        structlog.processors.StackInfoRenderer(),
         structlog.dev.ConsoleRenderer(),
     ],
     logger_factory=structlog.stdlib.LoggerFactory,
     cache_logger_on_first_use=True,
 )
-
 
 # --- Gunicorn logger configuration code
 
@@ -73,30 +77,36 @@ pre_chain = [
     combined_logformat,
 ]
 
-logfmt_processor = structlog.processors.LogfmtRenderer(
-    key_order=["timestamp", "event", "view", "request_id", "peer"], drop_missing=True
-)
+# logfmt_processor = structlog.processors.LogfmtRenderer(
+#     key_order=["timestamp", "event", "view", "request_id", "peer"], drop_missing=True
+# )
 
 logconfig_dict = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "logfmt_formatter": {
+        "console_formatter": {
             "()": structlog.stdlib.ProcessorFormatter,
-            "processor": logfmt_processor,
+            "processor": structlog.dev.ConsoleRenderer(
+                exception_formatter=structlog.dev.rich_traceback
+            ),
             "foreign_pre_chain": pre_chain,
         }
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "logfmt_formatter",
-        }
-    },
-    "loggers": {
-        "gunicorn": {
-            "propagate": False,
-            "handlers": ["console"],
+            "formatter": "console_formatter",
+        },
+        "error_console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console_formatter",
         },
     },
+    # "loggers": {
+    #     "gunicorn": {
+    #         "propagate": False,
+    #         "handlers": ["dev"],
+    #     },
+    # },
 }
