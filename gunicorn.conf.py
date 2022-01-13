@@ -87,9 +87,7 @@ logconfig_dict = {
     "formatters": {
         "console_formatter": {
             "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(
-                exception_formatter=structlog.dev.rich_traceback
-            ),
+            "processor": structlog.dev.ConsoleRenderer(),
             "foreign_pre_chain": pre_chain,
         }
     },
@@ -103,10 +101,18 @@ logconfig_dict = {
             "formatter": "console_formatter",
         },
     },
-    # "loggers": {
-    #     "gunicorn": {
-    #         "propagate": False,
-    #         "handlers": ["dev"],
-    #     },
-    # },
+    "loggers": {
+        "gunicorn.error": {
+            "propagate": False,
+            "handlers": ["error_console"],
+        },
+        "gunicorn.access": {
+            "propagate": False,
+            "handlers": ["console"],
+        },
+        "app": {
+            "propagate": False,
+            "handlers": ["console"],
+        },
+    },
 }
