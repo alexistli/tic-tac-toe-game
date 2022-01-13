@@ -16,7 +16,6 @@ from flask_socketio import rooms
 from werkzeug import Response
 
 from app import logger
-from app import logger_new
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -53,7 +52,6 @@ def index() -> str:
     # log = logger.bind()
     # log.info("user on index page", user="test-user")
     logger.info("in index")
-    logger_new.info("in index")
     # a = session["a"]
     # b = session["b"]
     # c = session["c"]
@@ -160,8 +158,6 @@ def join_game() -> Union[str, Response]:
     form = JoinMultiGame()
     logger.info("join_game")
     logger.debug("join_game")
-    logger_new.info("join_game")
-    logger_new.debug("join_game")
 
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
