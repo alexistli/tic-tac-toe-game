@@ -16,6 +16,7 @@ session = Session()
 socketio = SocketIO()
 
 logger = logging.getLogger("gunicorn.error")
+logger_new = logging.getLogger("app")
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -27,6 +28,7 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app.logger.setLevel(logger.level)
 
     logger.info("Flask game")
+    logger_new.info("Flask game")
 
     session.init_app(app)
     socketio.init_app(app, async_mode=async_mode, manage_session=False, logger=logger)
