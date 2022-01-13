@@ -49,24 +49,26 @@ RUN mkdir $APP_HOME
 RUN mkdir $ENGINE_HOME
 
 # install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends netcat
-COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install --no-cache /wheels/*
-
+RUN apt-get update
 RUN apt-get install -y nodejs
 RUN apt-get install -y npm
 COPY tailwind.config.js postcss.config.js package.json package-lock.json $HOME
 RUN npm install --global postcss
 RUN npm install --production
 
+# install dependencies
+RUN apt-get install -y --no-install-recommends netcat
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
 # copy app and engine
 COPY src/app $APP_HOME
 COPY src/tic_tac_toe_game $ENGINE_HOME
 
 # copy Docker and Flask files
-COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml $HOME
+COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml gunicorn.conf.py $HOME
 
 # chown all the files to the app user
 RUN chown -R appuser:appuser $HOME
@@ -75,5 +77,5 @@ RUN chown -R appuser:appuser $HOME
 USER appuser
 
 # run Gunicorn WSGI
-ENTRYPOINT ["gunicorn", "game:app", "-b", "0.0.0.0:8000", "--worker-class", "eventlet", "-w", "2", "--capture-output"]
+ENTRYPOINT ["gunicorn", "game:app", "-b", "0.0.0.0:8000", "--worker-class", "eventlet", "-w", "1", "-c", "./gunicorn.conf.py", "--capture-output"]
 CMD ["--log-level=debug"]
