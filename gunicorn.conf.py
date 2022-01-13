@@ -4,8 +4,13 @@ import re
 import structlog
 
 
+# --- Structlog logging initialisation code
+
+timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
+
+
 def combined_logformat(logger, name, event_dict):
-    """Processor for Gunicorn access events."""
+    """Custom processor for Gunicorn access events."""
     if event_dict.get("logger") == "gunicorn.access":
         message = event_dict["event"]
 
@@ -47,26 +52,29 @@ def combined_logformat(logger, name, event_dict):
     return event_dict
 
 
-# --- Structlog logging initialisation code
-timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
+structlog.configure(
+    processors=[
+        structlog.threadlocal.merge_threadlocal,
+        structlog.processors.StackInfoRenderer(),
+        structlog.dev.ConsoleRenderer(),
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory,
+    cache_logger_on_first_use=True,
+)
+
+
+# --- Gunicorn logger configuration code
+
+# Add some info if the log entry is not from structlog.
 pre_chain = [
-    # Add the log level and a timestamp to the event_dict if the log entry
-    # is not from structlog.
     structlog.stdlib.add_log_level,
     structlog.stdlib.add_logger_name,
     timestamper,
-    combined_logformat,  # This does the magic!
+    combined_logformat,
 ]
 
 logfmt_processor = structlog.processors.LogfmtRenderer(
     key_order=["timestamp", "event", "view", "request_id", "peer"], drop_missing=True
-)
-
-structlog.configure(
-    processors=[
-        structlog.threadlocal.merge_threadlocal,  # <--!!!
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
 )
 
 logconfig_dict = {
