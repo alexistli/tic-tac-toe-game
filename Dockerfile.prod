@@ -77,5 +77,5 @@ RUN chown -R appuser:appuser $HOME
 USER appuser
 
 # run Gunicorn WSGI
-ENTRYPOINT ["gunicorn", "game:app", "-b", "0.0.0.0:8000", "--worker-class", "eventlet", "-w", "1", "-c", "./gunicorn.conf.py", "--capture-output"]
+ENTRYPOINT ["gunicorn", "game:app", "-c", "./gunicorn.conf.py", "--capture-output"]
 CMD ["--log-level=debug"]
