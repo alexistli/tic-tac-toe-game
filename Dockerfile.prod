@@ -68,7 +68,7 @@ COPY src/app $APP_HOME
 COPY src/tic_tac_toe_game $ENGINE_HOME
 
 # copy Docker and Flask files
-COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml gunicorn.conf.py $HOME
+COPY game.py config.py .env .env.prod Dockerfile.prod docker-compose.prod.yml gunicorn.conf.py logging_setup.py $HOME
 
 # chown all the files to the app user
 RUN chown -R appuser:appuser $HOME
