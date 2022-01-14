@@ -1,83 +1,11 @@
 """Gunicorn configuration file."""
-import logging
-import re
-import sys
+import logging_setup
 
-import structlog
-
-
-# ================ Structlog logging initialization code
-
-logging.basicConfig(format="%(message)s", stream=sys.stdout, level=logging.INFO)
-
-
-timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
-
-
-def combined_logformat(logger, name, event_dict):
-    """Custom processor for Gunicorn access events."""
-    if event_dict.get("logger") == "gunicorn.access":
-        message = event_dict["event"]
-
-        parts = [
-            r"(?P<host>\S+)",  # host %h
-            r"\S+",  # indent %l (unused)
-            r"(?P<user>\S+)",  # user %u
-            r"\[(?P<time>.+)\]",  # time %t
-            r'"(?P<request>.+)"',  # request "%r"
-            r"(?P<status>[0-9]+)",  # status %>s
-            r"(?P<size>\S+)",  # size %b (careful, can be '-')
-            r'"(?P<referer>.*)"',  # referer "%{Referer}i"
-            r'"(?P<agent>.*)"',  # user agent "%{User-agent}i"
-        ]
-        pattern = re.compile(r"\s+".join(parts) + r"\s*\Z")
-        m = pattern.match(message)
-        res = m.groupdict()
-
-        if res["user"] == "-":
-            res["user"] = None
-
-        res["status"] = int(res["status"])
-
-        if res["size"] == "-":
-            res["size"] = 0
-        else:
-            res["size"] = int(res["size"])
-
-        if res["referer"] == "-":
-            res["referer"] = None
-
-        event_dict.update(res)
-
-        # Final selection
-        del event_dict["event"]  # not interested in raw event
-        del event_dict["host"]  # not interested in host
-        del event_dict["user"]  # not interested in user
-        del event_dict["time"]  # timestamper already in pre-chain
-        del event_dict["size"]  # not interested in size
-        del event_dict["agent"]  # not interested in agent
-
-    return event_dict
-
-
-structlog.configure(
-    processors=[
-        structlog.threadlocal.merge_threadlocal,
-        structlog.dev.ConsoleRenderer(),
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory,
-    cache_logger_on_first_use=True,
-)
-
-# ================ Gunicorn logger configuration code
 
 #
 # Server socket
 #
 #   bind - The socket to bind.
-#
-#       A string of the form: 'HOST', 'HOST:PORT', 'unix:PATH'.
-#       An IP is a valid HOST.
 
 bind = "0.0.0.0:8000"
 
@@ -134,49 +62,18 @@ keepalive = 2
 # Logging
 #
 #   capture_output - Redirect stdout/stderr to specified file in errorlog.
+#
+#   logfile - The path to a log file to write to.
+#
+#       A path string. "-" means log to stdout.
+#
+#   loglevel - The granularity of log output
+#
+#       A string of "debug", "info", "warning", "error", "critical"
 
 capture_output = True
-
-# Add some info if the log entry is not from structlog.
-pre_chain = [
-    structlog.stdlib.add_log_level,
-    structlog.stdlib.add_logger_name,
-    timestamper,
-    combined_logformat,
-]
-
-logconfig_dict = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "console_formatter": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(),
-            "foreign_pre_chain": pre_chain,
-        }
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "console_formatter",
-        },
-        "error_console": {
-            "class": "logging.StreamHandler",
-            "formatter": "console_formatter",
-        },
-    },
-    "loggers": {
-        "gunicorn.error": {
-            "propagate": False,
-            "handlers": ["error_console"],
-        },
-        "gunicorn.access": {
-            "propagate": False,
-            "handlers": ["console"],
-        },
-        "app": {
-            "propagate": False,
-            "handlers": ["console"],
-        },
-    },
-}
+logger_class = logging_setup.GunicornLogger
+errorlog = "-"
+loglevel = "debug"
+accesslog = "-"
+access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
