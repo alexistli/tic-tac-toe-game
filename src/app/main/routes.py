@@ -1,7 +1,8 @@
 """Flask app routes."""
-# import uuid
+import uuid
 from typing import Union
 
+import structlog
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -15,7 +16,6 @@ from flask_socketio import leave_room
 from flask_socketio import rooms
 from werkzeug import Response
 
-from app import logger
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -25,19 +25,21 @@ from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
 
+logger = structlog.get_logger()
 
-# @bp.before_request
-# def before_request_func():
-#     print("before_request is running!")
-#     # You would put this into some kind of middleware or processor so it's set
-#     # automatically for all requests in all views.
-#     structlog.threadlocal.clear_threadlocal()
-#     structlog.threadlocal.bind_threadlocal(
-#         view=request.path,
-#         request_id=str(uuid.uuid4()),
-#         peer=request.access_route[0],
-#     )
-#     # End of belongs-to-middleware.
+
+@bp.before_request
+def before_request_func():
+    """Prepares the structlog logger before each request.
+
+    Each request will have its own `request_id` to help debugging.
+    """
+    structlog.threadlocal.clear_threadlocal()
+    structlog.threadlocal.bind_threadlocal(
+        view=request.path,
+        request_id=str(uuid.uuid4()),
+        peer=request.access_route[0],
+    )
 
 
 @bp.route("/session", methods=["GET"])
@@ -49,12 +51,10 @@ def session_view():
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
-    # log = logger.bind()
-    # log.info("user on index page", user="test-user")
     logger.info("in index")
-    # a = session["a"]
-    # b = session["b"]
-    # c = session["c"]
+
+    log = logger.bind()
+    log.info("user on index page", user="test-user")
 
     return render_template("index.html", headline="Tic Tac Toe Game")
 
