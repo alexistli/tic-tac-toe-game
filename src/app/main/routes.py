@@ -1,6 +1,8 @@
 """Flask app routes."""
+import uuid
 from typing import Union
 
+import structlog
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -14,7 +16,6 @@ from flask_socketio import leave_room
 from flask_socketio import rooms
 from werkzeug import Response
 
-from app import logger
 from app import socketio
 from app.main import bp
 from app.main.forms import CreateMultiGame
@@ -24,10 +25,37 @@ from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
 
+logger = structlog.get_logger()
+
+
+@bp.before_request
+def before_request_func():
+    """Prepares the structlog logger before each request.
+
+    Each request will have its own `request_id` to help debugging.
+    """
+    structlog.threadlocal.clear_threadlocal()
+    structlog.threadlocal.bind_threadlocal(
+        view=request.path,
+        request_id=str(uuid.uuid4()),
+        peer=request.access_route[0],
+    )
+
+
+@bp.route("/session", methods=["GET"])
+def session_view():
+    """Display session variable value."""
+    return render_template("session.html", session_variables=str(session))
+
 
 @bp.route("/")
 def index() -> str:
     """Shows the website index."""
+    logger.info("in index")
+
+    log = logger.bind()
+    log.info("user on index page", user="test-user")
+
     return render_template("index.html", headline="Tic Tac Toe Game")
 
 
@@ -128,6 +156,9 @@ def multi_game(room: str) -> str:
 def join_game() -> Union[str, Response]:
     """Initializes a new game."""
     form = JoinMultiGame()
+    logger.info("join_game")
+    logger.debug("join_game")
+
     if form.validate_on_submit():
         flash(f"Join multi game: {form.game_name.data}")
         logger.debug(f"join_game - form.game_name.data: {form.game_name.data}")
@@ -195,6 +226,26 @@ def move_multi():
     )
 
 
+@bp.route("/board", methods=["GET"])
+def board():
+    """Returns the current board state."""
+    current_game = session["game"]
+    current_board = current_game.board
+    current_player = current_game.players_match.current()
+
+    # if board.is_winning_move(chosen_cell, player.get_mark()):
+    #     player.record_win()
+    #     return redirect(url_for("main.win", mark=player.display_mark()))
+    # elif board.is_full():
+    #     return redirect(url_for("main.tie"))
+
+    return render_template(
+        "board_multi.html",
+        board=current_board.display(),
+        turn=current_player.display_mark(),
+    )
+
+
 @bp.route("/move", methods=["POST"])
 def move():
     """Processes a player's move."""
@@ -239,24 +290,6 @@ def move():
 
     return render_template(
         "board.html", board=board.display(), turn=player.display_mark(), session=session
-    )
-
-
-@socketio.event
-def my_event(message):
-    """TODO."""
-    session["receive_count"] = session.get("receive_count", 0) + 1
-    emit("my_response", {"data": message["data"], "count": session["receive_count"]})
-
-
-@socketio.event
-def my_broadcast_event(message):
-    """TODO."""
-    session["receive_count"] = session.get("receive_count", 0) + 1
-    emit(
-        "my_response",
-        {"data": message["data"], "count": session["receive_count"]},
-        broadcast=True,
     )
 
 
@@ -323,11 +356,33 @@ def emit_move(data):
         "receive_move",
         data,
         to=data["room"],
-        include_self=False,
+        include_self=True,
     )
 
 
 @socketio.event
-def my_ping():
+def receive_move(data):
     """TODO."""
-    emit("my_pong")
+    logger.debug(f"socket.receive_move: {data}")
+
+    player_move = data["coord"]
+
+    print("/receive_move")
+    print(player_move)
+
+    current_game = session["game"]
+    current_player = current_game.players_match.current()
+
+    row_str, col_str = player_move.split()
+    logger.debug(f"row_str, col_str: {row_str} {col_str}")
+    chosen_cell = int(row_str), int(col_str)
+    logger.debug(f"chosen_cell: {chosen_cell}")
+    board.set_cell(coord=chosen_cell, value=current_player.get_mark())
+
+    current_game.players_match.switch()
+
+    emit(
+        "refresh_game",
+        to=data["room"],
+        include_self=False,
+    )

@@ -1,7 +1,7 @@
 """Application factory."""
-import logging
 from typing import Type
 
+import structlog
 from config import Config
 from flask import Flask
 from flask_assets import Bundle
@@ -10,13 +10,12 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 
-async_mode = "eventlet"
+ASYNC_MODE = "eventlet"
 
 session = Session()
 socketio = SocketIO()
 
-if __name__ != "__main__":
-    logger = logging.getLogger("gunicorn.error")
+logger = structlog.get_logger()  # logger configured in logging_setup.py
 
 
 def create_app(config_class: Type[Config] = Config) -> Flask:
@@ -24,15 +23,8 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_object(config_class)
 
-    app.logger.handlers = logger.handlers
-    app.logger.setLevel(logger.level)
-
-    app.logger.info("Flask game")
-
     session.init_app(app)
-    socketio.init_app(
-        app, async_mode=async_mode, manage_session=False, logger=app.logger
-    )
+    socketio.init_app(app, async_mode=ASYNC_MODE, manage_session=False, logger=logger)
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
