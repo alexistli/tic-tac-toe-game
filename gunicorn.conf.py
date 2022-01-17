@@ -74,6 +74,5 @@ keepalive = 2
 capture_output = True
 logger_class = logging_setup.GunicornLogger
 errorlog = "-"
-loglevel = "debug"
 accesslog = "-"
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
