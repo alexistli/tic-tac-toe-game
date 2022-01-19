@@ -52,7 +52,7 @@ bind = "0.0.0.0:8000"
 #
 #       A positive integer. Generally set in the 1-5 seconds range.
 
-workers = 4
+workers = 1
 worker_class = "eventlet"
 worker_connections = 1000
 timeout = 30
