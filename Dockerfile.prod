@@ -63,6 +63,8 @@ RUN pip install --no-cache /wheels/*
 
 # copy app and engine
 COPY src/app $APP_HOME
+COPY src/app/static/dist/main.css src/app/static/dist/main.js $APP_HOME/static/
+
 COPY src/tic_tac_toe_game $ENGINE_HOME
 
 # copy Docker and Flask files
@@ -76,4 +78,4 @@ USER appuser
 
 # run Gunicorn WSGI
 ENTRYPOINT ["gunicorn", "game:app", "-c", "./gunicorn.conf.py"]
-CMD ["--log-level=info"]
+CMD ["--log-level=debug"]

@@ -94,7 +94,7 @@ logging.config.dictConfig(
             },
         },
         "loggers": {
-            "": {"handlers": ["development"], "level": "INFO", "propagate": True}
+            "": {"handlers": ["development"], "level": "DEBUG", "propagate": True}
         },
     }
 )
