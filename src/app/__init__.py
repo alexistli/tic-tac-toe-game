@@ -1,13 +1,17 @@
 """Application factory."""
 from typing import Type
 
-import structlog
-from config import Config
-from flask import Flask
-from flask_assets import Bundle
-from flask_assets import Environment
-from flask_session import Session
-from flask_socketio import SocketIO
+import eventlet
+
+eventlet.monkey_patch()
+
+import structlog  # noqa: E402
+from config import Config  # noqa: E402
+from flask import Flask  # noqa: E402
+from flask_assets import Bundle  # noqa: E402
+from flask_assets import Environment  # noqa: E402
+from flask_session import Session  # noqa: E402
+from flask_socketio import SocketIO  # noqa: E402
 
 
 ASYNC_MODE = "eventlet"
