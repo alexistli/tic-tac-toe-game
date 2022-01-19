@@ -1,7 +1,6 @@
 NAME := tic-tac-toe-game
 POETRY := $(shell command -v poetry 2> /dev/null)
 NOX := $(shell command -v nox 2> /dev/null)
-DOCKER-COMPOSE := $(shell command -v docker-compose 2> /dev/null)
 
 COMPOSE_FILE := docker-compose.$(ENV).yml
 
@@ -53,9 +52,13 @@ freeze:
 .PHONY: start
 start: check-env
 	$(info Make: Using "$(ENV)" environment)
-	$(DOCKER-COMPOSE) -f $(COMPOSE_FILE) up --build
+	docker-compose -f $(COMPOSE_FILE) up --build
 
 
 .PHONY: stop
-stop: check-env
-	$(DOCKER-COMPOSE) -f $(COMPOSE_FILE) down -v
+stop:
+	docker rm -f $$(docker ps -aq -f name=^ttt-)
+
+
+.PHONY: re-start
+re-start: stop start
