@@ -76,4 +76,4 @@ USER appuser
 
 # run Gunicorn WSGI
 ENTRYPOINT ["gunicorn", "game:app", "-c", "./gunicorn.conf.py"]
-CMD ["--log-level=debug"]
+CMD ["--log-level=info"]
