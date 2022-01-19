@@ -94,7 +94,7 @@ logging.config.dictConfig(
             },
         },
         "loggers": {
-            "": {"handlers": ["development"], "level": "DEBUG", "propagate": True}
+            "": {"handlers": ["development"], "level": "INFO", "propagate": True}
         },
     }
 )
@@ -108,7 +108,6 @@ structlog.configure(
         structlog.stdlib.PositionalArgumentsFormatter(),
         timestamper,
         structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     context_class=structlog.threadlocal.wrap_dict(dict),
