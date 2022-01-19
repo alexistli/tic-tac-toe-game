@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.prod
   nginx:
-    container_name: nginx
+    container_name: ttt-nginx
     build: ./nginx
     ports:
       - "8000:80"
