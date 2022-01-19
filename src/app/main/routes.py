@@ -3,10 +3,12 @@ import uuid
 from typing import Union
 
 import structlog
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from flask import session
 from flask import url_for
 from werkzeug import Response
@@ -46,6 +48,12 @@ def not_found_error(_):
 def internal_error(_):
     """Handles 500 internal error."""
     return render_template("500.html"), 500
+
+
+@bp.route("/static/<path:filename>")
+def staticfiles(filename):
+    """Serving static files."""
+    return send_from_directory(current_app.config["STATIC_FOLDER"], filename)
 
 
 @bp.route("/session", methods=["GET"])
