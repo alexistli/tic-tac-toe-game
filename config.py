@@ -22,6 +22,3 @@ class Config:
     SESSION_FILE_DIR = mkdtemp()
     SESSION_PERMANENT = True
     SESSION_TYPE = "filesystem"
-
-    # SESSION_TYPE = os.environ.get('SESSION_TYPE')
-    # SESSION_REDIS = redis.from_url(os.environ.get('SESSION_REDIS'))
