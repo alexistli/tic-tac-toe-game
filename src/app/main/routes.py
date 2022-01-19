@@ -36,6 +36,18 @@ def before_request_func():
     )
 
 
+@bp.app_errorhandler(404)
+def not_found_error(_):
+    """Handles 404 not found error."""
+    return render_template("404.html"), 404
+
+
+@bp.app_errorhandler(500)
+def internal_error(_):
+    """Handles 500 internal error."""
+    return render_template("500.html"), 500
+
+
 @bp.route("/session", methods=["GET"])
 def session_view():
     """Display session variable value."""
