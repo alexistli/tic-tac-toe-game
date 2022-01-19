@@ -1,11 +1,8 @@
 """Command-line interface."""
 import click
-import eventlet
 
 from app import create_app
 from app import socketio
-
-eventlet.monkey_patch()
 
 
 @click.command()
