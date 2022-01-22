@@ -246,6 +246,7 @@ def board():
     current_game = session["game"]
     current_board = current_game.board
     current_player = current_game.players_match.current()
+    logger.debug("game retrieved from session", game=current_game, session=session)
 
     # if board.is_winning_move(chosen_cell, player.get_mark()):
     #     player.record_win()
