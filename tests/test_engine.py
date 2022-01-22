@@ -7,12 +7,43 @@ import pytest
 from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
 
+
+BOARD = engine.Board()
+BOARD_DICT = {"__class": "Board", "grid": [[0, 0, 0], [0, 0, 0], [0, 0, 0]]}
+
 PLAYER_NAME = "Sapiens"
 PLAYER_A_NAME = "U-Man"
+PLAYER_A_DICT = {
+    "__class": "HumanPlayer",
+    "name": PLAYER_A_NAME,
+    "mark": 1,
+    "moves": None,
+    "score": 0,
+}
 PLAYER_B_NAME = "Botybot"
-
+PLAYER_B_DICT = {
+    "__class": "AIPlayer",
+    "name": PLAYER_B_NAME,
+    "mark": -1,
+    "moves": "naive_move",
+    "score": 0,
+}
 PLAYER_A = engine.HumanPlayer(1, PLAYER_A_NAME)
 PLAYER_B = engine.AIPlayer(-1, PLAYER_B_NAME)
+
+PLAYERS_MATCH = engine.PlayersMatch(PLAYER_A, PLAYER_B)
+PLAYERS_MATCH_DICT = {
+    "__class": "PlayersMatch",
+    "players": [PLAYER_A_DICT, PLAYER_B_DICT],
+    "current_player": PLAYER_A_DICT,
+}
+
+GAME = engine.build_game()
+GAME_DICT = {
+    "__class": "Engine",
+    "board": BOARD_DICT,
+    "players_match": PLAYERS_MATCH_DICT,
+}
 
 RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
@@ -169,6 +200,16 @@ def test_grid_returns_repr() -> None:
     assert repr(board) == f"Board({repr(board.grid)})"
 
 
+def test_board_to_dict() -> None:
+    """It returns expected dict."""
+    assert BOARD.to_dict() == BOARD_DICT
+
+
+def test_board_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Board.from_dict(BOARD_DICT) == BOARD
+
+
 # ================ Test Player ================
 
 
@@ -202,6 +243,18 @@ def test_player_returns_repr() -> None:
     assert (
         repr(player_b) == f"AIPlayer({repr(PLAYER_B_NAME)}, {repr(1)}, 'naive_move', 0)"
     )
+
+
+def test_player_to_dict() -> None:
+    """It returns expected dict."""
+    assert PLAYER_A.to_dict() == PLAYER_A_DICT
+    assert PLAYER_B.to_dict() == PLAYER_B_DICT
+
+
+def test_player_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Player.from_dict(PLAYER_A_DICT) == PLAYER_A
+    assert engine.Player.from_dict(PLAYER_B_DICT) == PLAYER_B
 
 
 # ================ Test PlayersMatch ================
@@ -241,3 +294,28 @@ def test_players_match_returns_repr() -> None:
     assert repr(players_match) == (
         f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), {repr(player_a)})"
     )
+
+
+def test_players_match_to_dict() -> None:
+    """It returns expected dict."""
+    assert PLAYERS_MATCH.to_dict() == PLAYERS_MATCH_DICT
+
+
+def test_players_match_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.PlayersMatch.from_dict(PLAYERS_MATCH_DICT) == PLAYERS_MATCH
+
+
+# ================ Test Engine ================
+
+
+@pytest.mark.xfail("failing but known")
+def test_engine_to_dict() -> None:
+    """It returns expected dict."""
+    assert GAME.to_dict() == GAME_DICT
+
+
+@pytest.mark.xfail("failing but known")
+def test_engine_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Engine.from_dict(GAME_DICT) == GAME

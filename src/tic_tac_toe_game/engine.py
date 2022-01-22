@@ -26,17 +26,22 @@ Version 2.0: Dumb AI + score limit
         game.score_limit = 123
         game.current_turn = "X"
 """
+import ast
 import json
 from abc import ABC
 from abc import abstractmethod
+from typing import Any
 from typing import Callable
+from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
 from typing import Sequence
 from typing import Tuple
 
-from tic_tac_toe_game.AI import naive
+from tic_tac_toe_game.AI.mcts import mcts_move
+from tic_tac_toe_game.AI.naive import naive_move
+from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
 
 
@@ -170,6 +175,27 @@ class Board:
         """Returns instance representation."""
         return f"{self.__class__.__name__}({self.grid!r})"
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the PlayersMatch instance to a dictionary."""
+        return {"__class": self.__class__.__name__, **self.__dict__}
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Board":
+        """Constructs Board instance from dictionary."""
+        if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
+            raise ValueError
+        return cls(**data)
+
+    def __eq__(self, other: "Board"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Board):
+            return False
+        attr_keys = self.__dict__.keys()
+        return all(
+            self.__getattribute__(key) == other.__getattribute__(key)
+            for key in attr_keys
+        )
+
 
 class Player(ABC):
     """Base Player class.
@@ -179,11 +205,14 @@ class Player(ABC):
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
+    _available_moves = [naive_move, mcts_move, negamax_move]
+
     def __init__(
         self,
         mark: int,
         name: str,
         moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -191,11 +220,12 @@ class Player(ABC):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
         self.name = name
         self.mark = mark
         self.moves = moves
-        self.score = 0
+        self.score = score
 
     def set_mark(self, mark: int) -> None:
         """Sets the player's mark for this game.
@@ -240,10 +270,48 @@ class Player(ABC):
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        repr_moves = self.moves.__name__ if self.moves is not None else self.moves
+        repr_moves = (
+            self.moves.__name__ if self.moves in self._available_moves else None
+        )
         return (
             f"{self.__class__.__name__}("
             f"{self.name!r}, {self.mark!r}, {repr_moves!r}, {self.score!r})"
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the Player instance to a dictionary."""
+        repr_moves = (
+            self.moves.__name__ if self.moves in self._available_moves else None
+        )
+        return dict(
+            name=self.name,
+            mark=self.mark,
+            moves=repr_moves,
+            score=self.score,
+            __class=self.__class__.__name__,
+        )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Player":
+        """Constructs Player instance from dictionary."""
+        data = dict(data)  # local copy
+        class_name = data.pop("__class")
+        available_moves = [move.__name__ for move in cls._available_moves]
+        data["moves"] = (
+            ast.literal_eval(data["moves"])
+            if data["moves"] in available_moves
+            else None
+        )
+        return ast.literal_eval(class_name)(**data)
+
+    def __eq__(self, other):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Player):
+            return False
+        attr_keys = self.__dict__.keys()
+        return all(
+            self.__getattribute__(key) == other.__getattribute__(key)
+            for key in attr_keys
         )
 
 
@@ -254,9 +322,8 @@ class AIPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[
-            Callable[[List[List[int]], int], Tuple[int, int]]
-        ] = naive.naive_move,
+        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = naive_move,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -264,8 +331,9 @@ class AIPlayer(Player):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
-        super().__init__(mark=mark, name=name, moves=moves)
+        super().__init__(mark=mark, name=name, moves=moves, score=score)
 
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
@@ -282,6 +350,7 @@ class HumanPlayer(Player):
         mark: int,
         name: str,
         moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -289,8 +358,9 @@ class HumanPlayer(Player):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
-        super().__init__(mark=mark, name=name, moves=moves)
+        super().__init__(mark=mark, name=name, moves=moves, score=score)
 
     def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
         """Asks the player what move he wants to play."""
@@ -342,6 +412,34 @@ class PlayersMatch:
         """Returns instance representation."""
         return f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the PlayersMatch instance to a dictionary."""
+        return dict(
+            players=[player.to_dict() for player in self.players],
+            current_player=self.current_player.to_dict(),
+            __class=self.__class__.__name__,
+        )
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "PlayersMatch":
+        """Constructs PlayersMatch instance from dictionary."""
+        players = [Player.from_dict(player) for player in data.get("players")]
+        current_player = Player.from_dict(data.get("current_player"))
+        players_match = PlayersMatch(*players)
+        if players_match.current() != current_player:
+            players_match.switch()
+        return players_match
+
+    def __eq__(self, other: "PlayersMatch"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, PlayersMatch):
+            return False
+        attr_keys = self.__dict__.keys()
+        return all(
+            self.__getattribute__(key) == other.__getattribute__(key)
+            for key in attr_keys
+        )
+
 
 class Engine:
     """Engine.
@@ -376,6 +474,29 @@ class Engine:
     def __repr__(self) -> str:
         """Returns instance representation."""
         return f"{self.__class__.__name__}({self.players_match!r}, {self.board!r})"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the Engine instance to a dictionary."""
+        return dict(
+            players_match=self.players_match.to_dict(),
+            board=self.board.to_dict(),
+            __class=self.__class__.__name__,
+        )
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "Engine":
+        """Constructs Engine instance from dictionary."""
+        return Engine(data.get("players_match"), data.get("board"))
+
+    def __eq__(self, other: "Engine"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Engine):
+            return False
+        attr_keys = self.__dict__.keys()
+        return all(
+            self.__getattribute__(key) == other.__getattribute__(key)
+            for key in attr_keys
+        )
 
 
 MODE = Literal["single", "multi"]
