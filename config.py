@@ -22,5 +22,6 @@ class Config:
     SESSION_FILE_DIR = mkdtemp()
     SESSION_PERMANENT = True
     SESSION_TYPE = "filesystem"
+    SESSION_COOKIE_HTTPONLY = False
 
     STATIC_FOLDER = f"{os.getenv('APP_FOLDER')}/static"
