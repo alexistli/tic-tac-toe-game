@@ -102,16 +102,15 @@
         var cell = form_id.split("").join(" ");
         // console.log(cell);
 
-        socket.emit("emit_move", {
+        socket.emit("move_received", {
           room: "{{room}}",
           player_mark: "{{turn}}",
           form_id: form_id,
           coord: cell,
         });
-
         console.log("form.move.submit - after");
 
-        $("#grid").trigger("click");
+        // $("#grid").trigger("click");
 
         console.log("form.move.last");
       });
