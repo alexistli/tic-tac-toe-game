@@ -33,6 +33,7 @@ from typing import Callable
 from typing import List
 from typing import Literal
 from typing import Optional
+from typing import Sequence
 from typing import Tuple
 
 from tic_tac_toe_game.AI import naive
@@ -79,18 +80,18 @@ class Board:
             grid = [[Board._empty_cell] * 3 for _ in range(3)]
         self.grid: List[List[int]] = grid
 
-    def get_cell(self, coord: Tuple[int, int]) -> int:
+    def get_cell(self, coord: Sequence[int]) -> int:
         """Returns value for cell located at `coord`."""
         return self.grid[coord[0]][coord[1]]
 
-    def set_cell(self, coord: Tuple[int, int], value: int) -> None:
+    def set_cell(self, coord: Sequence[int], value: int) -> None:
         """Sets `value` for cell located at `coord` if cell is empty."""
         coord_x, coord_y = coord
         if not self.is_empty_cell(coord):
             raise OverwriteCellError(coord)
         self.grid[coord_x][coord_y] = value
 
-    def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
+    def is_empty_cell(self, coord: Sequence[int]) -> bool:
         """Checks if cell located at `coord` is empty."""
         return bool(self.get_cell(coord) == Board._empty_cell)
 
