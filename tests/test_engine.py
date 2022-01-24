@@ -7,7 +7,6 @@ import pytest
 from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
 
-
 BOARD = engine.Board()
 BOARD_DICT = {"__class": "Board", "grid": [[0, 0, 0], [0, 0, 0], [0, 0, 0]]}
 
@@ -38,7 +37,7 @@ PLAYERS_MATCH_DICT = {
     "current_player": PLAYER_A_DICT,
 }
 
-GAME = engine.build_game()
+GAME = engine.build_game(PLAYER_A_NAME, PLAYER_B_NAME)
 GAME_DICT = {
     "__class": "Engine",
     "board": BOARD_DICT,
@@ -309,13 +308,11 @@ def test_players_match_from_dict() -> None:
 # ================ Test Engine ================
 
 
-@pytest.mark.xfail("failing but known")
 def test_engine_to_dict() -> None:
     """It returns expected dict."""
     assert GAME.to_dict() == GAME_DICT
 
 
-@pytest.mark.xfail("failing but known")
 def test_engine_from_dict() -> None:
     """It returns expected dict."""
     assert engine.Engine.from_dict(GAME_DICT) == GAME
