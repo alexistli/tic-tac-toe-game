@@ -14,9 +14,9 @@ from flask import url_for
 from werkzeug import Response
 
 from app.main import bp
-from app.main.forms import CreateMultiGame
-from app.main.forms import JoinMultiGame
+from app.main import forms
 from tic_tac_toe_game import engine
+from tic_tac_toe_game import state
 from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
@@ -54,12 +54,6 @@ def internal_error(_):
 def staticfiles(filename):
     """Serving static files."""
     return send_from_directory(current_app.config["STATIC_FOLDER"], filename)
-
-
-@bp.route("/session", methods=["GET"])
-def session_view():
-    """Display session variable value."""
-    return render_template("session.html", session_variables=str(session))
 
 
 @bp.route("/")
@@ -152,13 +146,14 @@ def new_game() -> Response:
 def multi_game(room: str) -> str:
     """Initializes a new game."""
     logger.debug(f"multi_game - session: {session}")
-    current_game = session["game"]
-    board = current_game.board
+    current_game = state.get_state(room)
+    # current_game = session["game"]
+    current_board = current_game.board
     player = current_game.players_match.current()
 
     return render_template(
         "game_multi.html",
-        board=board.display(),
+        board=current_board.display(),
         turn=player.display_mark(),
         my_mark=session["my_mark"],
         scores=current_game.get_scores(),
@@ -169,43 +164,49 @@ def multi_game(room: str) -> str:
 @bp.route("/join_game", methods=["GET", "POST"])
 def join_game() -> Union[str, Response]:
     """Initializes a new game."""
-    form = JoinMultiGame()
+    form = forms.JoinMultiGame()
     logger.info("join_game")
     logger.debug("join_game")
 
     if form.validate_on_submit():
-        flash(f"Join multi game: {form.game_name.data}")
-        logger.debug(f"join_game - form.game_name.data: {form.game_name.data}")
+        room = form.game_name.data
+        flash(f"Join multi game: {room}")
+        logger.debug(f"join_game - form.game_name.data: {room}")
 
         current_game = engine.build_game(mode="multi")
-        session["game"] = current_game
         current_game.players_match.switch()
+        session["room"] = room
         session["my_id"] = current_game.players_match.current().get_mark()
         session["my_mark"] = current_game.players_match.current().display_mark()
         current_game.players_match.switch()
 
+        state.set_state(room, current_game)
+
         logger.debug(f"join_game - session: {session}")
 
-        return redirect(url_for("main.multi_game", room=form.game_name.data))
+        return redirect(url_for("main.multi_game", room=room))
     return render_template("join_game.html", form=form)
 
 
 @bp.route("/new_multi_game", methods=["GET", "POST"])
 def new_multi_game() -> Union[str, Response]:
     """Initializes a new game."""
-    form = CreateMultiGame()
+    form = forms.CreateMultiGame()
     if form.validate_on_submit():
-        flash(f"New multi game requested: {form.game_name.data}")
-        logger.debug(f"new_multi_game - form.game_name.data: {form.game_name.data}")
+        room = form.game_name.data
+        flash(f"New multi game requested: {room}")
+        logger.debug(f"new_multi_game - form.game_name.data: {room}")
 
         current_game = engine.build_game(mode="multi")
-        session["game"] = current_game
+        session["room"] = room
         session["my_id"] = current_game.players_match.current().get_mark()
         session["my_mark"] = current_game.players_match.current().display_mark()
 
+        state.set_state(room, current_game)
+
         logger.debug(f"new_multi_game - session: {session}")
 
-        return redirect(url_for("main.multi_game", room=form.game_name.data))
+        return redirect(url_for("main.multi_game", room=room))
     return render_template("new_multi_game.html", form=form)
 
 
@@ -243,16 +244,11 @@ def move_multi():
 @bp.route("/board", methods=["GET"])
 def board():
     """Returns the current board state."""
-    current_game = session["game"]
+    room = session["room"]
+    current_game = state.get_state(room)
     current_board = current_game.board
     current_player = current_game.players_match.current()
     logger.debug("game retrieved from session", game=current_game, session=session)
-
-    # if board.is_winning_move(chosen_cell, player.get_mark()):
-    #     player.record_win()
-    #     return redirect(url_for("main.win", mark=player.display_mark()))
-    # elif board.is_full():
-    #     return redirect(url_for("main.tie"))
 
     return render_template(
         "board_multi.html",
