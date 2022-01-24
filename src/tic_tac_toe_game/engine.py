@@ -175,7 +175,7 @@ class Board:
         return f"{self.__class__.__name__}({self.grid!r})"
 
     def to_dict(self) -> Dict[str, Any]:
-        """Converts the PlayersMatch instance to a dictionary."""
+        """Converts the Board instance to a dictionary."""
         return {"__class": self.__class__.__name__, **self.__dict__}
 
     @classmethod
