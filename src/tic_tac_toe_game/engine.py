@@ -26,7 +26,6 @@ Version 2.0: Dumb AI + score limit
         game.score_limit = 123
         game.current_turn = "X"
 """
-import ast
 import json
 from abc import ABC
 from abc import abstractmethod
@@ -296,13 +295,14 @@ class Player(ABC):
         """Constructs Player instance from dictionary."""
         data = dict(data)  # local copy
         class_name = data.pop("__class")
-        available_moves = [move.__name__ for move in cls._available_moves]
+        available_moves = {move.__name__: move for move in cls._available_moves}
         data["moves"] = (
-            ast.literal_eval(data["moves"])
-            if data["moves"] in available_moves
-            else None
+            available_moves[data["moves"]] if data["moves"] in available_moves else None
         )
-        return ast.literal_eval(class_name)(**data)
+        if class_name == "HumanPlayer":
+            return HumanPlayer(**data)
+        elif class_name == "AIPlayer":
+            return AIPlayer(**data)
 
     def __eq__(self, other):
         """Check whether other equals self elementwise."""
