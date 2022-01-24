@@ -304,11 +304,7 @@ class Player(ABC):
         """Check whether other equals self elementwise."""
         if not isinstance(other, Player):
             return False
-        attr_keys = self.__dict__.keys()
-        return all(
-            self.__getattribute__(key) == other.__getattribute__(key)
-            for key in attr_keys
-        )
+        return self.__dict__ == other.__dict__
 
 
 class AIPlayer(Player):
