@@ -181,6 +181,7 @@ class Board:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Board":
         """Constructs Board instance from dictionary."""
+        data = dict(data)  # local copy
         if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
             raise ValueError
         return cls(**data)
@@ -412,12 +413,13 @@ class PlayersMatch:
             __class=self.__class__.__name__,
         )
 
-    @staticmethod
-    def from_dict(data: Dict[str, Any]) -> "PlayersMatch":
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "PlayersMatch":
         """Constructs PlayersMatch instance from dictionary."""
+        data = dict(data)  # local copy
         players = [Player.from_dict(player) for player in data.get("players")]
         current_player = Player.from_dict(data.get("current_player"))
-        players_match = PlayersMatch(*players)
+        players_match = cls(*players)
         if players_match.current() != current_player:
             players_match.switch()
         return players_match
@@ -471,10 +473,13 @@ class Engine:
             __class=self.__class__.__name__,
         )
 
-    @staticmethod
-    def from_dict(data: Dict[str, Any]) -> "Engine":
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Engine":
         """Constructs Engine instance from dictionary."""
-        return Engine(data.get("players_match"), data.get("board"))
+        return cls(
+            PlayersMatch.from_dict(data.get("players_match")),
+            Board.from_dict(data.get("board")),
+        )
 
     def __eq__(self, other: "Engine"):
         """Check whether other equals self elementwise."""
