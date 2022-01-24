@@ -17,5 +17,5 @@ def get_state(room: str) -> engine.Engine:
 # SET STATE
 def set_state(room: str, game: engine.Engine) -> None:
     """TODO."""
-    with open(f"{room}.json", "a") as json_file:
-        json.dump(game.to_dict(), json_file)
+    with open(f"{room}.json", "w") as json_file:
+        json.dump(game.to_dict(), json_file, indent=4, sort_keys=True)
