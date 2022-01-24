@@ -6,7 +6,7 @@ ROOM = "test"
 GAME = engine.build_game()
 
 
-def test_state():
+def test_state(tmp_path):
     """TODO."""
     state.set_state(ROOM, GAME)
     loaded_game = state.get_state(ROOM)
