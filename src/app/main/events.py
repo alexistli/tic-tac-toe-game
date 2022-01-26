@@ -3,11 +3,8 @@ from typing import Tuple
 
 import structlog
 from flask import session
-from flask_socketio import close_room
 from flask_socketio import emit
 from flask_socketio import join_room
-from flask_socketio import leave_room
-from flask_socketio import rooms
 
 from app import socketio
 from tic_tac_toe_game import engine
@@ -19,49 +16,10 @@ logger = structlog.get_logger()
 @socketio.event
 def join(message):
     """TODO."""
-    join_room(message["room"])
-    logger.debug(f"room joined: {message}")
-    logger.debug("emit my_response")
-    emit(
-        "my_response",
-        {"data": "In rooms: " + ", ".join(rooms())},
-    )
-
-    logger.debug("emit my_room_event")
-    emit("my_room_event", {"room": message["room"], "data": message["room"]})
-
-
-@socketio.event
-def leave(message):
-    """TODO."""
-    leave_room(message["room"])
-    emit(
-        "my_response",
-        {"data": "In rooms: " + ", ".join(rooms())},
-    )
-
-
-@socketio.on("close_room")
-def on_close_room(message):
-    """TODO."""
-    emit(
-        "my_response",
-        {"data": "Room " + message["room"] + " is closing."},
-        to=message["room"],
-    )
-    close_room(message["room"])
-
-
-@socketio.event
-def my_room_event(message):
-    """TODO."""
-    logger.debug(f"my_room_event: {message}")
-    emit(
-        "my_response",
-        {"data": message["data"]},
-        to=message["room"],
-        include_self=False,
-    )
+    room = message["room"]
+    join_room(room)
+    session["room"] = room
+    logger.info(f"Player joined room {room}", message=message)
 
 
 @socketio.event
