@@ -12,7 +12,7 @@
   hx-trigger="click"
 >
   {% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled"
-  if board[i][j] != "_" or session.my_mark != turn else None %}
+  if board[i][j] != "_" or my_mark != turn else None %}
   <!--suppress HtmlUnknownAttribute -->
   <form
     id="move-{{i}}{{j}}"
