@@ -276,9 +276,9 @@ class Player(ABC):
             score: int, player's score.
         """
         self.name = name
-        self.mark = mark
+        self._mark = mark
         self.moves = moves
-        self.score = score
+        self._score = score
 
     def set_mark(self, mark: int) -> None:
         """Sets the player's mark for this game.
@@ -286,7 +286,7 @@ class Player(ABC):
         Args:
             mark: int, player's mark
         """
-        self.mark = mark
+        self._mark = mark
 
     def get_mark(self) -> int:
         """Returns the player's mark for this game.
@@ -294,7 +294,7 @@ class Player(ABC):
         Returns:
             An integer with the value of the mark.
         """
-        return self.mark
+        return self._mark
 
     def display_mark(self) -> str:
         """Returns the pretty print mark for the player.
@@ -302,11 +302,11 @@ class Player(ABC):
         Returns:
             A string with the value of the mark.
         """
-        return "X" if self.mark == 1 else "O"
+        return "X" if self._mark == 1 else "O"
 
     def record_win(self) -> None:
         """Records player's win and updates score."""
-        self.score += 1
+        self._score += 1
 
     def get_score(self) -> int:
         """Returns the player's score for this game.
@@ -314,7 +314,7 @@ class Player(ABC):
         Returns:
             An integer with the value of the score.
         """
-        return self.score
+        return self._score
 
     @abstractmethod
     def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
@@ -328,7 +328,7 @@ class Player(ABC):
         )
         return (
             f"{self.__class__.__name__}("
-            f"{self.name!r}, {self.mark!r}, {repr_moves!r}, {self.score!r})"
+            f"{self.name!r}, {self._mark!r}, {repr_moves!r}, {self._score!r})"
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -338,9 +338,9 @@ class Player(ABC):
         )
         return dict(
             name=self.name,
-            mark=self.mark,
+            mark=self._mark,
             moves=repr_moves,
-            score=self.score,
+            score=self._score,
             __class=self.__class__.__name__,
         )
 
@@ -424,7 +424,7 @@ class PlayersMatch:
 
     Attributes:
         players: tuple(Player, Player), Players playing against each other.
-        current_player: Player, Holds the player currently playing.
+        _current_player: Player, Holds the player currently playing.
     """
 
     def __init__(self, player_x: Player, player_o: Player) -> None:
@@ -437,7 +437,7 @@ class PlayersMatch:
         self.players: Sequence[Player, Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
-        self.current_player: Player = player_x
+        self._current_player: Player = player_x
 
     def update_ai_algorithm(
         self, algorithm: Callable[[List[List[int]], int], Coordinates]
@@ -449,9 +449,9 @@ class PlayersMatch:
         ai_player.moves = algorithm
 
     def switch(self) -> None:  # pragma: no cover
-        """Updates `current_player` with the other player."""
-        self.current_player = next(
-            player for player in self.players if player != self.current_player
+        """Updates `_current_player` with the other player."""
+        self._current_player = next(
+            player for player in self.players if player != self._current_player
         )
 
     def current(self) -> Player:
@@ -460,13 +460,13 @@ class PlayersMatch:
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
+        return f"{self.__class__.__name__}({self.players!r}, {self._current_player!r})"
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts the PlayersMatch instance to a dictionary."""
         return dict(
             players=[player.to_dict() for player in self.players],
-            current_player=self.current_player.to_dict(),
+            current_player=self._current_player.to_dict(),
             __class=self.__class__.__name__,
         )
 
