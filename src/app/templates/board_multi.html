@@ -3,13 +3,14 @@
   board is: {{board}}<br />
   turn is: {{turn}}
 </p>
+{% if winner is not none %}{% endif %}
 <!--suppress HtmlUnknownAttribute -->
 <div
   id="grid"
   class="grid grid-cols-3 w-96 h-96"
   hx-get="/board"
   hx-target="#board"
-  hx-trigger="click"
+  hx-trigger="reloadBoard"
 >
   {% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled"
   if board[i][j] != "_" or my_mark != turn else None %}
