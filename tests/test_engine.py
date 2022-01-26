@@ -266,7 +266,7 @@ def test_players_match_inits() -> None:
     players_match = engine.PlayersMatch(player_a, player_b)
     assert bool(player_a in players_match.players) is True
     assert bool(player_b in players_match.players) is True
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
 
 
 def test_players_match_player_get_and_switch() -> None:
@@ -274,13 +274,13 @@ def test_players_match_player_get_and_switch() -> None:
     player_a = engine.HumanPlayer(1, PLAYER_A_NAME)
     player_b = engine.AIPlayer(-1, PLAYER_B_NAME)
     players_match = engine.PlayersMatch(player_a, player_b)
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
     assert players_match.current() == player_a
     players_match.switch()
-    assert players_match.current_player == player_b
+    assert players_match._current_player == player_b
     assert players_match.current() == player_b
     players_match.switch()
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
     assert players_match.current() == player_a
 
 
