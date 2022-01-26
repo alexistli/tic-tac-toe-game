@@ -134,7 +134,7 @@ class Board:
             history = []
         self.history: List[Move] = history
 
-    def get_cell(self, coord: Sequence[int]) -> int:
+    def get_cell(self, coord: Coordinates) -> int:
         """Returns value for cell located at `coord`."""
         return self.grid[coord[0]][coord[1]]
 
@@ -264,7 +264,7 @@ class Player(ABC):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -317,7 +317,7 @@ class Player(ABC):
         return self.score
 
     @abstractmethod
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         raise NotImplementedError
 
@@ -372,7 +372,7 @@ class AIPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = naive_move,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = naive_move,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -385,7 +385,7 @@ class AIPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -399,7 +399,7 @@ class HumanPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -412,7 +412,7 @@ class HumanPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -434,13 +434,13 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Tuple[Player, Player] = (player_x, player_o)
+        self.players: Sequence[Player, Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self.current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[List[List[int]], int], Tuple[int, int]]
+        self, algorithm: Callable[[List[List[int]], int], Coordinates]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(
@@ -500,7 +500,7 @@ class Engine:
         self.players_match = players_match
         self.board = board
 
-    def get_move(self) -> Optional[Tuple[int, int]]:
+    def get_move(self) -> Optional[Coordinates]:
         """Gets a move from the current player.
 
         If the player is an
