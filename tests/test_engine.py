@@ -8,7 +8,11 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
 
 BOARD = engine.Board()
-BOARD_DICT = {"__class": "Board", "grid": [[0, 0, 0], [0, 0, 0], [0, 0, 0]]}
+BOARD_DICT = {
+    "__class": "Board",
+    "grid": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    "history": [],
+}
 
 PLAYER_NAME = "Sapiens"
 PLAYER_A_NAME = "U-Man"
@@ -196,7 +200,7 @@ def test_grid_returns_repr() -> None:
     """It returns expected repr."""
     board = engine.Board()
 
-    assert repr(board) == f"Board({repr(board.grid)})"
+    assert repr(board) == f"Board({repr(board.grid)}, {repr(board.history)})"
 
 
 def test_board_to_dict() -> None:
