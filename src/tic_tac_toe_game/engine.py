@@ -138,14 +138,17 @@ class Board:
         """Returns value for cell located at `coord`."""
         return self.grid[coord[0]][coord[1]]
 
-    def set_cell(self, coord: Sequence[int], value: int) -> None:
-        """Sets `value` for cell located at `coord` if cell is empty."""
-        coord_x, coord_y = coord
-        if not self.is_empty_cell(coord):
-            raise OverwriteCellError(coord)
-        self.grid[coord_x][coord_y] = value
+    def make_move(self, move: Move) -> None:
+        """Sets `value` for cell located at `coord` if cell is empty.
 
-    def is_empty_cell(self, coord: Sequence[int]) -> bool:
+        Consumes action.
+        """
+        if not self.is_empty_cell(move.coordinates):
+            raise OverwriteCellError(move.coordinates)
+        self.grid[move.x][move.y] = move.player
+        self.history.append(move)
+
+    def is_empty_cell(self, coord: Coordinates) -> bool:
         """Checks if cell located at `coord` is empty."""
         return bool(self.get_cell(coord) == Board._empty_cell)
 
@@ -157,24 +160,24 @@ class Board:
             for col_id, col in enumerate(row)
         )
 
-    def is_winning_move(self, coord: Tuple[int, int], value: int) -> bool:
+    def is_winning_move(self, move: Move) -> bool:
         """Checks if playing `value` at `coord` leads to a win.
 
         Only checks the combinations containing the cell with the given coordinates.
         Checks the one row, the one column and eventually the two diagonals.
         """
-        has_winning_row = all([cell == value for cell in self.grid[coord[0]]])
-        has_winning_col = all([row[coord[1]] == value for row in self.grid])
+        has_winning_row = all([cell == move.player for cell in self.grid[move.x]])
+        has_winning_col = all([row[move.y] == move.player for row in self.grid])
 
         has_winning_diag = False
-        if coord[0] == coord[1]:
+        if move.x == move.y:
             has_winning_diag = all(
-                self.grid[row_id][row_id] == value
+                self.grid[row_id][row_id] == move.player
                 for row_id, row in enumerate(self.grid)
             )
-        if coord[0] + coord[1] == 2:
+        if move.x + move.y == 2:
             has_winning_diag = has_winning_diag or all(
-                self.grid[2 - row_id][row_id] == value
+                self.grid[2 - row_id][row_id] == move.player
                 for row_id, row in enumerate(self.grid)
             )
         return bool(has_winning_row or has_winning_col or has_winning_diag)
@@ -191,6 +194,81 @@ class Board:
             if idx != len(self.grid) - 1:
                 framed.append(Board._intersection.join(Board._horizontal_separator * 3))
         return "\n".join(framed)
+
+    def winner(self) -> Optional[int]:
+        """Returns game result.
+
+        This property should return:
+         1 if player #1 wins
+        -1 if player #2 wins
+         0 if there is a draw
+         None if result is unknown
+        Returns
+        -------
+        int
+        """
+        try:
+            last_move = self.history[-1]
+        except IndexError:  # no history means there is no winner
+            return None
+
+        has_winning_row = all(
+            [cell == last_move.player for cell in self.grid[last_move.x]]
+        )
+        has_winning_col = all(
+            [row[last_move.y] == last_move.player for row in self.grid]
+        )
+
+        has_winning_diag = False
+        if last_move.x == last_move.y:
+            has_winning_diag = all(
+                self.grid[row_id][row_id] == last_move.player
+                for row_id, row in enumerate(self.grid)
+            )
+        if last_move.x + last_move.y == 2:
+            has_winning_diag = has_winning_diag or all(
+                self.grid[2 - row_id][row_id] == last_move.player
+                for row_id, row in enumerate(self.grid)
+            )
+        if has_winning_row or has_winning_col or has_winning_diag:
+            return last_move.player
+        elif self.is_full():
+            return 0
+        else:
+            return None
+
+    def is_over(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.winner() is not None
+
+    def is_tie(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.winner() == 0
+
+    def is_won(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.is_over() and not self.is_tie()
 
     def to_json(self) -> str:
         """Creates a JSON representation of an instance of Board."""
@@ -455,8 +533,14 @@ class PlayersMatch:
         )
 
     def current(self) -> Player:
-        """Returns `current_player`."""
-        return self.current_player
+        """Returns `_current_player`."""
+        return self._current_player
+
+    def player(self, id_: int) -> Player:
+        """Returns `_current_player`."""
+        if id_ != 1 and id_ != -1:
+            raise ValueError("id argument should be 1 or -1")
+        return next(player for player in self.players if player.get_mark() == id_)
 
     def __repr__(self) -> str:
         """Returns instance representation."""
@@ -517,6 +601,15 @@ class Engine:
             for player in self.players_match.players
         ]
         return scores
+
+    def winner(self) -> Optional[Player]:
+        """TODO."""
+        board_winner = self.board.winner()
+        return (
+            self.players_match.player(board_winner)
+            if board_winner == 1 or board_winner == -1
+            else None
+        )
 
     def __repr__(self) -> str:
         """Returns instance representation."""
