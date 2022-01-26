@@ -92,8 +92,8 @@
         event.preventDefault();
         console.log("form.move.submit - before");
 
-        var form_id = $(this).attr("id").split("-")[1];
-        var coordinates = form_id.split("");
+        var coordinates = $(this).attr("id").split("-")[1].split("");
+
         var move = {
           x: coordinates[0],
           y: coordinates[1],
