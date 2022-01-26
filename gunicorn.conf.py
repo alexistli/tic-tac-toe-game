@@ -3,6 +3,14 @@ import logging_setup
 
 
 #
+# Config
+#
+#   wsgi_app - A WSGI application path in pattern $(MODULE_NAME):$(VARIABLE_NAME).
+
+wsgi_app = "game:app"
+
+
+#
 # Server socket
 #
 #   bind - The socket to bind.
@@ -76,3 +84,10 @@ logger_class = logging_setup.GunicornLogger
 errorlog = "-"
 accesslog = "-"
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
+
+#
+# Debugging
+#
+#   reload - Restart workers when code changes.
+
+reload = True
