@@ -78,7 +78,7 @@ def game() -> Union[str, Response]:
     if "choice" in request.form:
         row_str, col_str = request.form["choice"].split()
         chosen_cell = int(row_str), int(col_str)
-        board.set_cell(coord=chosen_cell, value=player.get_mark())
+        board.make_move(coord=chosen_cell, value=player.get_mark())
         current_game.players_match.switch()
 
         if not board.is_full() and not board.is_winning_move(
@@ -86,7 +86,7 @@ def game() -> Union[str, Response]:
         ):
             player = current_game.players_match.current()
             chosen_cell = current_game.get_move()
-            board.set_cell(coord=chosen_cell, value=player.get_mark())
+            board.make_move(coord=chosen_cell, value=player.get_mark())
             current_game.players_match.switch()
 
     if chosen_cell is None:
@@ -225,7 +225,7 @@ def move_multi():
     logger.debug(f"row_str, col_str: {row_str} {col_str}")
     chosen_cell = int(row_str), int(col_str)
     logger.debug(f"chosen_cell: {chosen_cell}")
-    board.set_cell(coord=chosen_cell, value=player.get_mark())
+    board.make_move(coord=chosen_cell, value=player.get_mark())
 
     if board.is_winning_move(chosen_cell, player.get_mark()):
         player.record_win()
@@ -270,7 +270,7 @@ def move():
 
     row_str, col_str = player_move.split()
     chosen_cell = int(row_str), int(col_str)
-    board.set_cell(coord=chosen_cell, value=player.get_mark())
+    board.make_move(coord=chosen_cell, value=player.get_mark())
     current_game.players_match.switch()
 
     if not board.is_full() and not board.is_winning_move(
@@ -278,7 +278,7 @@ def move():
     ):
         player = current_game.players_match.current()
         chosen_cell = current_game.get_move()
-        board.set_cell(coord=chosen_cell, value=player.get_mark())
+        board.make_move(coord=chosen_cell, value=player.get_mark())
         current_game.players_match.switch()
 
     if chosen_cell is None:
