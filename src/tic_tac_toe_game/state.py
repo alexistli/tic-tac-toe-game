@@ -12,8 +12,8 @@ def get_state(room: str) -> engine.Engine:
     """TODO."""
     with open(Path(basedir).joinpath(f"{room}.json")) as json_file:
         data = json.load(json_file)
-        game = engine.Engine.from_dict(data)
-        return game
+    game = engine.Engine.from_dict(data)
+    return game
 
 
 # SET STATE
@@ -21,3 +21,4 @@ def set_state(room: str, game: engine.Engine) -> None:
     """TODO."""
     with open(Path(basedir).joinpath(f"{room}.json"), "w") as json_file:
         json.dump(game.to_dict(), json_file, indent=4, sort_keys=True)
+    return
