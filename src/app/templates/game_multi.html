@@ -92,32 +92,27 @@
         event.preventDefault();
         console.log("form.move.submit - before");
 
-        var $button = $(this);
-        // console.log($button);
-
-        var $id = $button.attr("id");
-        // console.log($id);
-
-        var form_id = $id.split("-")[1];
-        var cell = form_id.split("").join(" ");
-        // console.log(cell);
+        var form_id = $(this).attr("id").split("-")[1];
+        var coordinates = form_id.split("");
+        var move = {
+          x: coordinates[0],
+          y: coordinates[1],
+          player: "{{my_id}}",
+        };
+        console.log(move);
 
         socket.emit("move_received", {
           room: "{{room}}",
           player_mark: "{{turn}}",
-          form_id: form_id,
-          coord: cell,
+          move: move,
         });
         console.log("form.move.submit - after");
-
-        // $("#grid").trigger("click");
-
-        console.log("form.move.last");
       });
 
       socket.on("refresh_game", function () {
         console.log("socket.on.refresh_game");
-        $("#grid").trigger("click");
+        // $("#grid").trigger("reloadBoard");
+        htmx.trigger(htmx.find("#grid"), "reloadBoard", {});
       });
     });
   </script>
