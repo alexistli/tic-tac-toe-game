@@ -50,7 +50,14 @@ GAME_DICT = {
 
 RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
-RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
+RANDOM_ID = random.randint(0, 2)
+RANDOM_MOVE = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+RANDOM_MOVE_DICT = {
+    "x": RANDOM_ROW,
+    "y": RANDOM_COL,
+    "player": RANDOM_ID,
+    "__class": "Move",
+}
 
 FULL_GRID_LOOSE = "1 -1 1 -1 -1 1 1 1 -1"
 
@@ -68,6 +75,35 @@ def load_grid_from_string(grid_str: str) -> List[List[int]]:
     array = [int(cell) for cell in grid_str.split()]
     grid = [[int(cell) for cell in array[i : i + 3]] for i in range(0, len(array), 3)]
     return grid
+
+
+# ================ Test Move ================
+
+
+def test_move_init_succeeds() -> None:
+    """It returns a move with expected properties."""
+    move = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+    assert move.x == RANDOM_ROW
+    assert move.y == RANDOM_COL
+    assert move.player == RANDOM_ID
+    assert move.coordinates == (RANDOM_ROW, RANDOM_COL)
+
+
+def test_move_returns_repr() -> None:
+    """It returns expected repr."""
+    move = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+
+    assert repr(move) == f"Move({repr(move.x)}, {repr(move.y)}, {repr(move.player)})"
+
+
+def test_move_to_dict() -> None:
+    """It returns expected dict."""
+    assert RANDOM_MOVE.to_dict() == RANDOM_MOVE_DICT
+
+
+def test_move_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Move.from_dict(RANDOM_MOVE_DICT) == RANDOM_MOVE
 
 
 # ================ Test Grid ================
@@ -97,22 +133,22 @@ def test_grid_handles_cell_operations() -> None:
     board = engine.Board()
     for row_index, row in enumerate(board.grid):
         for col_index, _cell in enumerate(row):
-            coord = (row_index, col_index)
-            assert board.is_empty_cell(coord) is True
-            board.set_cell(coord, 1)
-            assert board.get_cell(coord) == 1
-            assert board.is_empty_cell(coord) is False
+            move = engine.Move(row_index, col_index, 1)
+            assert board.is_empty_cell(move.coordinates) is True
+            board.make_move(move)
+            assert board.get_cell(move.coordinates) == 1
+            assert board.is_empty_cell(move.coordinates) is False
 
 
 def test_grid_handles_cell_override() -> None:
     """It handles cell overriding attempt."""
     board = engine.Board()
-    assert board.is_empty_cell(RANDOM_COORD) is True
-    board.set_cell(RANDOM_COORD, 1)
-    assert board.get_cell(RANDOM_COORD) == 1
+    assert board.is_empty_cell(RANDOM_MOVE.coordinates) is True
+    board.make_move(RANDOM_MOVE)
+    assert board.get_cell(RANDOM_MOVE.coordinates) == RANDOM_MOVE.player
     with pytest.raises(errors.OverwriteCellError):
-        board.set_cell(RANDOM_COORD, -1)
-        assert board.get_cell(RANDOM_COORD) == 1
+        board.make_move(RANDOM_MOVE)
+        assert board.get_cell(RANDOM_MOVE.coordinates) == RANDOM_MOVE.player
 
 
 def test_not_full_grid_returns_is_not_full() -> None:
@@ -122,12 +158,12 @@ def test_not_full_grid_returns_is_not_full() -> None:
     assert board.is_full() is False
 
     # grid is neither empty nor full
-    for mark in (1, -1):
+    for id_ in (1, -1):
         board = engine.Board()
         for row_index, row in enumerate(board.grid):
             for col_index, _cell in enumerate(row):
                 assert board.is_full() is False
-                board.set_cell((row_index, col_index), mark)
+                board.make_move(engine.Move(row_index, col_index, id_))
 
 
 def test_full_grid_returns_is_full() -> None:
@@ -135,11 +171,11 @@ def test_full_grid_returns_is_full() -> None:
     board = engine.Board(load_grid_from_string(FULL_GRID_LOOSE))
     assert board.is_full() is True
 
-    for mark in (1, -1):
+    for id_ in (1, -1):
         board = engine.Board()
         for row_index, row in enumerate(board.grid):
             for col_index, _cell in enumerate(row):
-                board.set_cell((row_index, col_index), mark)
+                board.make_move(engine.Move(row_index, col_index, id_))
         assert board.is_full() is True
 
 
@@ -153,8 +189,9 @@ def test_not_is_winning_move() -> None:
         for col_index, _cell in enumerate(row):
             coord = (row_index, col_index)
             mark = loose_board.get_cell(coord)
-            board.set_cell(coord, mark)
-            assert board.is_winning_move(coord, mark) is False
+            move = engine.Move(row_index, col_index, mark)
+            board.make_move(move)
+            assert board.is_winning_move(move) is False
 
 
 def test_is_winning_move() -> None:
@@ -168,9 +205,10 @@ def test_is_winning_move() -> None:
             for col_index, _cell in enumerate(row):
                 coord = (row_index, col_index)
                 mark = model_board.get_cell(coord)
-                board.set_cell(coord, mark)
+                move = engine.Move(row_index, col_index, mark)
+                board.make_move(move)
                 is_winning = coord in win_moves
-                assert bool(board.is_winning_move(coord, mark)) == is_winning
+                assert bool(board.is_winning_move(move)) == is_winning
 
 
 @pytest.mark.xfail(reason="random_available_cell method was moved")
