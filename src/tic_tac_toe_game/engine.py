@@ -114,7 +114,7 @@ class Board:
     """
 
     x = 1
-    y = -1
+    o = -1
     _empty_cell = 0
     _vertical_separator = "│"
     _horizontal_separator = "─"
