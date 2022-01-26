@@ -121,11 +121,18 @@ class Board:
     _intersection = "┼"
     _marks = {0: "_", -1: "O", 1: "X"}
 
-    def __init__(self, grid: Optional[List[List[int]]] = None) -> None:
+    def __init__(
+        self,
+        grid: Optional[List[List[int]]] = None,
+        history: Optional[List[Move]] = None,
+    ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
             grid = [[Board._empty_cell] * 3 for _ in range(3)]
         self.grid: List[List[int]] = grid
+        if history is None:
+            history = []
+        self.history: List[Move] = history
 
     def get_cell(self, coord: Sequence[int]) -> int:
         """Returns value for cell located at `coord`."""
@@ -215,11 +222,15 @@ class Board:
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return f"{self.__class__.__name__}({self.grid!r})"
+        return f"{self.__class__.__name__}({self.grid!r}, {self.history!r})"
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts the Board instance to a dictionary."""
-        return {"__class": self.__class__.__name__, **self.__dict__}
+        return dict(
+            grid=self.grid,
+            history=[move.to_dict() for move in self.history],
+            __class=self.__class__.__name__,
+        )
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Board":
@@ -227,7 +238,10 @@ class Board:
         data = dict(data)  # local copy
         if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
             raise ValueError
-        return cls(**data)
+        return cls(
+            data.get("grid"),
+            [Move.from_dict(move) for move in data.get("history")],
+        )
 
     def __eq__(self, other: "Board"):
         """Check whether other equals self elementwise."""
