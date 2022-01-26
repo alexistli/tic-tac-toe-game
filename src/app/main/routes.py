@@ -155,6 +155,7 @@ def multi_game(room: str) -> str:
         "game_multi.html",
         board=current_board.display(),
         turn=player.display_mark(),
+        my_id=session["my_id"],
         my_mark=session["my_mark"],
         scores=current_game.get_scores(),
         room=room,
@@ -184,7 +185,14 @@ def join_game() -> Union[str, Response]:
 
         logger.debug(f"join_game - session: {session}")
 
-        return redirect(url_for("main.multi_game", room=room))
+        return redirect(
+            url_for(
+                "main.multi_game",
+                room=room,
+                my_id=current_game.players_match.current().get_mark(),
+                my_mark=current_game.players_match.current().display_mark(),
+            )
+        )
     return render_template("join_game.html", form=form)
 
 
@@ -248,11 +256,18 @@ def board():
     current_game = state.get_state(room)
     current_board = current_game.board
     current_player = current_game.players_match.current()
-    logger.debug("game retrieved from session", game=current_game, session=session)
+    logger.debug("game retrieved from state", game=current_game, session=session)
+
+    winner = current_game.winner().display_mark() if current_game.winner() else None
 
     return render_template(
         "board_multi.html",
+        room=room,
+        is_over=current_game.board.is_over(),
+        is_tie=current_game.board.is_tie(),
+        winner=winner,
         board=current_board.display(),
+        my_mark=session["my_mark"],
         turn=current_player.display_mark(),
     )
 
