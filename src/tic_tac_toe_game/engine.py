@@ -37,6 +37,7 @@ from typing import Literal
 from typing import Optional
 from typing import Sequence
 from typing import Tuple
+from typing import Union
 
 from tic_tac_toe_game.AI.mcts import mcts_move
 from tic_tac_toe_game.AI.naive import naive_move
@@ -44,23 +45,65 @@ from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
 
 
+Coordinates = Sequence[int]
+
+
 class Move:
     """Move performed by a Player on the Grid."""
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, value: str) -> None:
+    def __init__(
+        self,
+        x: Union[int, float, str],
+        y: Union[int, float, str],
+        player: Union[int, float, str],
+    ) -> None:
         """Inits."""
-        self.x_coordinate = x_coordinate
-        self.y_coordinate = y_coordinate
-        self.value = value
+        self.x = int(x)
+        self.y = int(y)
+        self._player = int(player)
+
+    @property
+    def player(self) -> int:
+        """TODO."""
+        return self._player
+
+    @player.setter
+    def player(self, value: Union[int, float, str]) -> None:
+        if int(value) != 1 and int(value) != -1:
+            raise ValueError("Player should be 1 or -1")
+        self._player = int(value)
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """TODO."""
+        return self.x, self.y
 
     def __repr__(self) -> str:
         """Repr."""
-        return (
-            f"{self.__class__.__name__}"
-            f"(x_coordinate: {self.x_coordinate}, "
-            f"y_coordinate: {self.y_coordinate}, "
-            f"value: {self.value})"
+        return f"{self.__class__.__name__}({self.x!r}, {self.y!r}, {self.player!r})"
+
+    def to_dict(self) -> Dict[str, Union[int, str]]:
+        """Converts the Move instance to a dictionary."""
+        return dict(
+            x=self.x,
+            y=self.y,
+            player=self.player,
+            __class=self.__class__.__name__,
         )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Union[int, str]]) -> "Move":
+        """Constructs Move instance from dictionary."""
+        data = dict(data)  # local copy
+        if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
+            raise ValueError
+        return cls(**data)
+
+    def __eq__(self, other: "Move"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Move):
+            return False
+        return self.__dict__ == other.__dict__
 
 
 class Board:
