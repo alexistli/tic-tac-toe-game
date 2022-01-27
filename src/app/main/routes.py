@@ -24,6 +24,11 @@ from tic_tac_toe_game.AI import negamax
 logger = structlog.get_logger()
 
 
+# ===============================================================================
+# ================================ Common routes ================================
+# ===============================================================================
+
+
 @bp.before_request
 def before_request_func():
     """Prepares the structlog logger before each request.
@@ -65,6 +70,23 @@ def index() -> str:
     log.info("user on index page", user="test-user")
 
     return render_template("index.html", headline="Tic Tac Toe Game")
+
+
+@bp.route("/win/<string:mark>")
+def win(mark: str) -> str:
+    """Announces the winning player."""
+    return render_template("win.html", mark=mark)
+
+
+@bp.route("/tie")
+def tie() -> str:
+    """Announces players are tied."""
+    return render_template("tie.html")
+
+
+# ====================================================================================
+# ================================ Single Player mode ================================
+# ====================================================================================
 
 
 @bp.route("/game", methods=["GET", "POST"])
@@ -116,18 +138,6 @@ def game() -> Union[str, Response]:
     )
 
 
-@bp.route("/win/<string:mark>")
-def win(mark: str) -> str:
-    """Announces the winning player."""
-    return render_template("win.html", mark=mark)
-
-
-@bp.route("/tie")
-def tie() -> str:
-    """Announces players are tied."""
-    return render_template("tie.html")
-
-
 @bp.route("/new_game")
 def new_game() -> Response:
     """Initializes a new game."""
@@ -140,6 +150,58 @@ def new_game() -> Response:
         current_game.players_match.switch()
 
     return redirect(url_for("main.game"))
+
+
+@bp.route("/move", methods=["POST"])
+def move():
+    """Processes a player's move."""
+    player_move = request.form.get("move")
+
+    logger.debug(f"move - request.form: {request.form}")
+
+    current_game = session["game"]
+    board = current_game.board
+    player = current_game.players_match.current()
+
+    row_str, col_str = player_move.split()
+    chosen_cell = int(row_str), int(col_str)
+    board.make_move(coord=chosen_cell, value=player.get_mark())
+    current_game.players_match.switch()
+
+    if not board.is_full() and not board.is_winning_move(
+        chosen_cell, player.get_mark()
+    ):
+        player = current_game.players_match.current()
+        chosen_cell = current_game.get_move()
+        board.make_move(coord=chosen_cell, value=player.get_mark())
+        current_game.players_match.switch()
+
+    if chosen_cell is None:
+        pass
+    elif board.is_winning_move(chosen_cell, player.get_mark()):
+        player.record_win()
+        return redirect(url_for("main.win", mark=player.display_mark()))
+    elif board.is_full():
+        return redirect(url_for("main.tie"))
+
+    if "AI_random" in request.form:
+        current_game.players_match.update_ai_algorithm(naive.naive_move)
+    elif "AI_mcts" in request.form:
+        current_game.players_match.update_ai_algorithm(mcts.mcts_move)
+    elif "AI_negamax" in request.form:
+        current_game.players_match.update_ai_algorithm(negamax.negamax_move)
+    logger.debug(
+        f"move - game.players_match.players: {current_game.players_match.players}"
+    )
+
+    return render_template(
+        "board.html", board=board.display(), turn=player.display_mark(), session=session
+    )
+
+
+# ===================================================================================
+# ================================ Multi Player mode ================================
+# ===================================================================================
 
 
 @bp.route("/multi_game/<string:room>")
@@ -218,37 +280,6 @@ def new_multi_game() -> Union[str, Response]:
     return render_template("new_multi_game.html", form=form)
 
 
-@bp.route("/move_multi", methods=["POST"])
-def move_multi():
-    """Processes a player's move."""
-    player_move = request.form.get("coord")
-
-    logger.debug(f"move_multi - request.form: {request.form}")
-
-    current_game = session["game"]
-    board = current_game.board
-    player = current_game.players_match.current()
-
-    row_str, col_str = player_move.split()
-    logger.debug(f"row_str, col_str: {row_str} {col_str}")
-    chosen_cell = int(row_str), int(col_str)
-    logger.debug(f"chosen_cell: {chosen_cell}")
-    board.make_move(coord=chosen_cell, value=player.get_mark())
-
-    if board.is_winning_move(chosen_cell, player.get_mark()):
-        player.record_win()
-        return redirect(url_for("main.win", mark=player.display_mark()))
-    elif board.is_full():
-        return redirect(url_for("main.tie"))
-
-    current_game.players_match.switch()
-    player = current_game.players_match.current()
-
-    return render_template(
-        "board_multi.html", board=board.display(), turn=player.display_mark()
-    )
-
-
 @bp.route("/board", methods=["GET"])
 def board():
     """Returns the current board state."""
@@ -269,51 +300,4 @@ def board():
         board=current_board.display(),
         my_mark=session["my_mark"],
         turn=current_player.display_mark(),
-    )
-
-
-@bp.route("/move", methods=["POST"])
-def move():
-    """Processes a player's move."""
-    player_move = request.form.get("move")
-
-    logger.debug(f"move - request.form: {request.form}")
-
-    current_game = session["game"]
-    board = current_game.board
-    player = current_game.players_match.current()
-
-    row_str, col_str = player_move.split()
-    chosen_cell = int(row_str), int(col_str)
-    board.make_move(coord=chosen_cell, value=player.get_mark())
-    current_game.players_match.switch()
-
-    if not board.is_full() and not board.is_winning_move(
-        chosen_cell, player.get_mark()
-    ):
-        player = current_game.players_match.current()
-        chosen_cell = current_game.get_move()
-        board.make_move(coord=chosen_cell, value=player.get_mark())
-        current_game.players_match.switch()
-
-    if chosen_cell is None:
-        pass
-    elif board.is_winning_move(chosen_cell, player.get_mark()):
-        player.record_win()
-        return redirect(url_for("main.win", mark=player.display_mark()))
-    elif board.is_full():
-        return redirect(url_for("main.tie"))
-
-    if "AI_random" in request.form:
-        current_game.players_match.update_ai_algorithm(naive.naive_move)
-    elif "AI_mcts" in request.form:
-        current_game.players_match.update_ai_algorithm(mcts.mcts_move)
-    elif "AI_negamax" in request.form:
-        current_game.players_match.update_ai_algorithm(negamax.negamax_move)
-    logger.debug(
-        f"move - game.players_match.players: {current_game.players_match.players}"
-    )
-
-    return render_template(
-        "board.html", board=board.display(), turn=player.display_mark(), session=session
     )
