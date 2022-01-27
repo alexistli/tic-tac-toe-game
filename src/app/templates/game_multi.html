@@ -9,18 +9,6 @@
     Current transport is: <b><span id="transport"></span></b><br />
   </p>
   <br />
-  <form id="send_room" method="POST" action="#">
-    <input
-      type="text"
-      name="room_name"
-      id="room_name"
-      placeholder="Room Name"
-    />
-    <input type="text" name="room_data" id="room_data" placeholder="Message" />
-    <input type="submit" value="Send to Room" />
-  </form>
-  <h2>Receive:</h2>
-  <div id="log"></div>
   <div class="mt-4 text-2xl font font-extrabold tracking-tight text-gray-900">
     Scores
   </div>
@@ -77,17 +65,7 @@
         $("#transport").text(socket.io.engine.transport.name);
       }, 5000);
 
-      // Handlers for the different forms in the page.
-      // These accept data from the user and send it to the server in a
-      // variety of ways
-      $("form#send_room").submit(function (event) {
-        socket.emit("my_room_event", {
-          room: $("#room_name").val(),
-          data: $("#room_data").val(),
-        });
-        return false;
-      });
-
+      // Handler for the clickable board.
       $("#board").on("click", "button", function (event) {
         event.preventDefault();
         console.log("form.move.submit - before");
