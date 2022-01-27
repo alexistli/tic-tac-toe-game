@@ -14,7 +14,7 @@
   </div>
   <div id="scores">
     {% for score in scores %} Player {{ score[0] }} &mdash;
-    <span>{{ score[1] }}</span>
+    <span>{{ score[1] }}</span><br />
     {% endfor %}
   </div>
   <div id="board" class="mt-8">{% include 'board_multi.html' %}</div>
@@ -54,13 +54,18 @@
       // The callback function is invoked when a connection with the
       // server is established.
       socket.on("connect", function () {
-        console.log("socket.on.connect");
+        console.log("socketio connect");
         socket.emit("join", { room: "{{room}}" });
       });
 
-      // Interval function that tests message latency by sending a "ping"
-      // message. The server then responds with a "pong" message and the
-      // round trip time is measured.
+      // Event handler for new game state available.
+      socket.on("refresh_game", function () {
+        console.log("socketio refresh_game");
+        htmx.trigger(htmx.find("#grid"), "reloadBoard", {});
+      });
+
+      // Interval function that tests the transport currently used.
+      // Should be websocket, but can be polling as a fallback.
       window.setInterval(function () {
         $("#transport").text(socket.io.engine.transport.name);
       }, 5000);
@@ -68,7 +73,8 @@
       // Handler for the clickable board.
       $("#board").on("click", "button", function (event) {
         event.preventDefault();
-        console.log("form.move.submit - before");
+
+        console.log("event player click");
 
         var coordinates = $(this).attr("id").split("-")[1].split("");
 
@@ -84,13 +90,6 @@
           player_mark: "{{turn}}",
           move: move,
         });
-        console.log("form.move.submit - after");
-      });
-
-      socket.on("refresh_game", function () {
-        console.log("socket.on.refresh_game");
-        // $("#grid").trigger("reloadBoard");
-        htmx.trigger(htmx.find("#grid"), "reloadBoard", {});
       });
     });
   </script>
