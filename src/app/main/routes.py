@@ -92,31 +92,32 @@ def tie() -> str:
 @bp.route("/game", methods=["GET", "POST"])
 def game() -> Union[str, Response]:
     """Shows the current game."""
-    current_game = session["game"]
-    board = current_game.board
+    current_game: engine.Engine = session["game"]
+    current_board = current_game.board
     player = current_game.players_match.current()
     chosen_cell = None
 
     if "choice" in request.form:
-        row_str, col_str = request.form["choice"].split()
-        chosen_cell = int(row_str), int(col_str)
-        board.make_move(coord=chosen_cell, value=player.get_mark())
+        chosen_cell = request.form["choice"].split()
+        player_move = engine.Move(*chosen_cell, player.get_mark())
+        current_board.make_move(player_move)
         current_game.players_match.switch()
 
-        if not board.is_full() and not board.is_winning_move(
-            chosen_cell, player.get_mark()
+        if not current_board.is_full() and not current_board.is_winning_move(
+            player_move
         ):
             player = current_game.players_match.current()
             chosen_cell = current_game.get_move()
-            board.make_move(coord=chosen_cell, value=player.get_mark())
+            player_move = engine.Move(*chosen_cell, player.get_mark())
+            current_board.make_move(player_move)
             current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, player.get_mark()):
+    elif current_board.is_winning_move(engine.Move(*chosen_cell, player.get_mark())):
         player.record_win()
         return redirect(url_for("main.win", mark=player.display_mark()))
-    elif board.is_full():
+    elif current_board.is_full():
         return redirect(url_for("main.tie"))
 
     if "AI_random" in request.form:
@@ -131,7 +132,7 @@ def game() -> Union[str, Response]:
 
     return render_template(
         "game.html",
-        board=board.display(),
+        board=current_board.display(),
         turn=player.display_mark(),
         session=session,
         scores=current_game.get_scores(),
@@ -145,7 +146,7 @@ def new_game() -> Response:
         current_game = engine.build_game()
         session["game"] = current_game
     else:
-        current_game = session["game"]
+        current_game: engine.Engine = session["game"]
         current_game.board = engine.Board()
         current_game.players_match.switch()
 
@@ -155,33 +156,28 @@ def new_game() -> Response:
 @bp.route("/move", methods=["POST"])
 def move():
     """Processes a player's move."""
-    player_move = request.form.get("move")
-
-    logger.debug(f"move - request.form: {request.form}")
-
-    current_game = session["game"]
-    board = current_game.board
+    current_game: engine.Engine = session["game"]
+    current_board = current_game.board
     player = current_game.players_match.current()
 
-    row_str, col_str = player_move.split()
-    chosen_cell = int(row_str), int(col_str)
-    board.make_move(coord=chosen_cell, value=player.get_mark())
+    chosen_cell = request.form["move"].split()
+    player_move = engine.Move(*chosen_cell, player.get_mark())
+    current_board.make_move(player_move)
     current_game.players_match.switch()
 
-    if not board.is_full() and not board.is_winning_move(
-        chosen_cell, player.get_mark()
-    ):
+    if not current_board.is_full() and not current_board.is_winning_move(player_move):
         player = current_game.players_match.current()
         chosen_cell = current_game.get_move()
-        board.make_move(coord=chosen_cell, value=player.get_mark())
+        player_move = engine.Move(*chosen_cell, player.get_mark())
+        current_board.make_move(player_move)
         current_game.players_match.switch()
 
     if chosen_cell is None:
         pass
-    elif board.is_winning_move(chosen_cell, player.get_mark()):
+    elif current_board.is_winning_move(engine.Move(*chosen_cell, player.get_mark())):
         player.record_win()
         return redirect(url_for("main.win", mark=player.display_mark()))
-    elif board.is_full():
+    elif current_board.is_full():
         return redirect(url_for("main.tie"))
 
     if "AI_random" in request.form:
@@ -195,7 +191,10 @@ def move():
     )
 
     return render_template(
-        "board.html", board=board.display(), turn=player.display_mark(), session=session
+        "board.html",
+        board=current_board.display(),
+        turn=player.display_mark(),
+        session=session,
     )
 
 
