@@ -1,5 +1,8 @@
 """Error classes used in the project."""
-from tic_tac_toe_game.engine import Coordinates
+from typing import Sequence
+
+
+Coordinates = Sequence[int]
 
 
 class OverwriteCellError(Exception):
