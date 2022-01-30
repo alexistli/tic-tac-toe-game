@@ -1,11 +1,11 @@
 """Error classes used in the project."""
-from typing import Sequence
+from tic_tac_toe_game.engine import Coordinates
 
 
 class OverwriteCellError(Exception):
     """Raised when player tries to overwrite a non-empty cell."""
 
-    def __init__(self, coord: Sequence[int]) -> None:
+    def __init__(self, coord: Coordinates) -> None:
         """Constructor.
 
         Args:
