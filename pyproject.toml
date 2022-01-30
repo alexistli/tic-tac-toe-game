@@ -31,6 +31,7 @@ redis = "^4.1.0"
 structlog = "^21.5.0"
 rich = "^11.0.0"
 gunicorn = "^20.1.0"
+Flask-SQLAlchemy = "^2.5.1"
 
 [tool.poetry.dev-dependencies]
 cruft = "^2.10.1"
