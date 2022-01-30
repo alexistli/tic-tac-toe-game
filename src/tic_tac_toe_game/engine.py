@@ -572,8 +572,8 @@ class PlayersMatch:
         return self.__dict__ == other.__dict__
 
 
-class Engine:
-    """Engine.
+class TicTacToeGame:
+    """TicTacToeGame.
 
     Attributes:
         board: Board, The current board being played.
@@ -616,7 +616,7 @@ class Engine:
         return f"{self.__class__.__name__}({self.players_match!r}, {self.board!r})"
 
     def to_dict(self) -> Dict[str, Any]:
-        """Converts the Engine instance to a dictionary."""
+        """Converts the TicTacToeGame instance to a dictionary."""
         return dict(
             players_match=self.players_match.to_dict(),
             board=self.board.to_dict(),
@@ -624,16 +624,16 @@ class Engine:
         )
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Engine":
-        """Constructs Engine instance from dictionary."""
+    def from_dict(cls, data: Dict[str, Any]) -> "TicTacToeGame":
+        """Constructs TicTacToeGame instance from dictionary."""
         return cls(
             PlayersMatch.from_dict(data.get("players_match")),
             Board.from_dict(data.get("board")),
         )
 
-    def __eq__(self, other: "Engine"):
+    def __eq__(self, other: "TicTacToeGame"):
         """Check whether other equals self elementwise."""
-        if not isinstance(other, Engine):
+        if not isinstance(other, TicTacToeGame):
             return False
         return self.__dict__ == other.__dict__
 
@@ -646,7 +646,7 @@ def build_game(
     player_2_name: Optional[str] = None,
     player_1_starts: bool = True,
     mode: MODE = "single",
-) -> Engine:
+) -> TicTacToeGame:
     """Returns a game object."""
     player_1_mark = 1 if player_1_starts is True else -1
     player_1: Player = HumanPlayer(player_1_mark, player_1_name or "Player 1")
@@ -658,4 +658,4 @@ def build_game(
     else:
         player_2 = HumanPlayer(player_2_mark, player_2_name or "Player 2")
 
-    return Engine(PlayersMatch(player_1, player_2), Board())
+    return TicTacToeGame(PlayersMatch(player_1, player_2), Board())

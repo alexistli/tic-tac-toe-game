@@ -43,7 +43,7 @@ PLAYERS_MATCH_DICT = {
 
 GAME = engine.build_game(PLAYER_A_NAME, PLAYER_B_NAME)
 GAME_DICT = {
-    "__class": "Engine",
+    "__class": "TicTacToeGame",
     "board": BOARD_DICT,
     "players_match": PLAYERS_MATCH_DICT,
 }
@@ -357,4 +357,4 @@ def test_engine_to_dict() -> None:
 
 def test_engine_from_dict() -> None:
     """It returns expected dict."""
-    assert engine.Engine.from_dict(GAME_DICT) == GAME
+    assert engine.TicTacToeGame.from_dict(GAME_DICT) == GAME

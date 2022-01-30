@@ -92,7 +92,7 @@ def tie() -> str:
 @bp.route("/game", methods=["GET", "POST"])
 def game() -> Union[str, Response]:
     """Shows the current game."""
-    current_game: engine.Engine = session["game"]
+    current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
     chosen_cell = None
@@ -146,7 +146,7 @@ def new_game() -> Response:
         current_game = engine.build_game()
         session["game"] = current_game
     else:
-        current_game: engine.Engine = session["game"]
+        current_game: engine.TicTacToeGame = session["game"]
         current_game.board = engine.Board()
         current_game.players_match.switch()
 
@@ -156,7 +156,7 @@ def new_game() -> Response:
 @bp.route("/move", methods=["POST"])
 def move():
     """Processes a player's move."""
-    current_game: engine.Engine = session["game"]
+    current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
 
