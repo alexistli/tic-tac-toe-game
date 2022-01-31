@@ -2,8 +2,6 @@ NAME := tic-tac-toe-game
 POETRY := $(shell command -v poetry 2> /dev/null)
 NOX := $(shell command -v nox 2> /dev/null)
 
-COMPOSE_FILE := docker-compose.$(ENV).yml
-
 .DEFAULT_GOAL := help
 
 
@@ -14,9 +12,10 @@ help:
 	@echo ""
 	@echo "  install		install packages and prepare environment"
 	@echo "  clean			remove all temporary files"
-	@echo "  start			build docker images and start web app containers"
+	@echo "  freeze			freeze poetry dependencies into a requirements.txt file"
+	@echo "  start			start web app containers, pull or build if necessary"
 	@echo "  stop			stop running containers"
-
+	@echo "  re-start		build docker images and start web app containers"
 	@echo ""
 	@echo "Check the Makefile to know exactly what each target is doing."
 
@@ -52,7 +51,7 @@ freeze:
 .PHONY: start
 start: check-env
 	$(info Make: Using "$(ENV)" environment)
-	docker-compose -f $(COMPOSE_FILE) up --build
+	docker-compose up --build
 
 
 .PHONY: stop
