@@ -1,7 +1,6 @@
 """Gunicorn configuration file."""
 import logging_setup
 
-
 #
 # Config
 #
@@ -91,3 +90,8 @@ access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
 #   reload - Restart workers when code changes.
 
 reload = True
+
+# check_config = True
+# print_config = True
+
+# worker_tmp_dir = "/dev/shm"

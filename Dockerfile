@@ -41,18 +41,24 @@ WORKDIR $HOME
 RUN addgroup --system appuser && adduser --system --group appuser
 
 # create the appropriate directories
-ENV APP_HOME=/home/ttt/app/
-ENV ENGINE_HOME=/home/ttt/tic_tac_toe_game/
-RUN mkdir $APP_HOME
-RUN mkdir $ENGINE_HOME
+# ENV APP_HOME=/home/ttt/app/
+# ENV ENGINE_HOME=/home/ttt/tic_tac_toe_game/
+# RUN mkdir $APP_HOME
+# RUN mkdir $ENGINE_HOME
 
 # install dependencies
 RUN apt-get update
 RUN apt-get install -y nodejs
 RUN apt-get install -y npm
-COPY tailwind.config.js postcss.config.js package.json package-lock.json $HOME
-RUN npm install --global postcss
-RUN npm install --production
+
+COPY src/tailwind.config.js src/postcss.config.js src/package.json src/package-lock.json $HOME
+RUN npm install --global postcss-cli@8.3.1
+# RUN npm install
+
+# COPY src/package.json src/package-lock.json $HOME
+# RUN npm install --global postcss@8.2.8 postcss-cli@8.3.1
+# RUN npm install --global @fullhuman/postcss-purgecss@4.0.2
+# RUN npm install --global autoprefixer@10.2.5 tailwindcss@2.0.3
 
 # install dependencies
 RUN apt-get install -y --no-install-recommends netcat
@@ -62,19 +68,21 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
 # copy app and engine
-COPY src/app $APP_HOME
-COPY src/app/static/dist/main.css src/app/static/dist/main.js $APP_HOME/static/
+# COPY src/app $APP_HOME
+# COPY src/app/static/dist/main.css src/app/static/dist/main.js $APP_HOME/static/
 
-COPY src/tic_tac_toe_game $ENGINE_HOME
+# COPY src/tic_tac_toe_game $ENGINE_HOME
 
 # copy Docker and Flask files
-COPY game.py config.py .env.prod Dockerfile.prod docker-compose.prod.yml gunicorn.conf.py logging_setup.py $HOME
+# COPY game.py config.py .env.dev docker-compose.yml docker-compose.override.yml gunicorn.conf.py logging_setup.py $HOME
+
 
 # chown all the files to the app user
 RUN chown -R appuser:appuser $HOME
 
 # change to the app user
 USER appuser
+
 
 # run Gunicorn WSGI
 # config file loaded by Gunicorn: ./gunicorn.conf.py

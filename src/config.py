@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 
 basedir = Path(__file__).resolve().parent
-load_dotenv(Path(basedir).joinpath(".env.prod"))
+load_dotenv(Path(basedir).joinpath("../.env.prod"))
 
 
 class Config:
@@ -24,4 +24,4 @@ class Config:
     SESSION_TYPE = "filesystem"
     SESSION_COOKIE_HTTPONLY = False
 
-    STATIC_FOLDER = f"{os.getenv('APP_FOLDER')}/static"
+    STATIC_FOLDER = f"{os.getenv('APP_FOLDER')}/static/dist"

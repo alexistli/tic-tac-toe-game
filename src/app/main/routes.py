@@ -58,6 +58,8 @@ def internal_error(_):
 @bp.route("/static/<path:filename>")
 def staticfiles(filename):
     """Serving static files."""
+    print("static")
+    logger.debug("static")
     return send_from_directory(current_app.config["STATIC_FOLDER"], filename)
 
 

@@ -31,10 +31,12 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     socketio.init_app(app, async_mode=ASYNC_MODE, manage_session=False, logger=logger)
 
     assets = Environment(app)
+
     css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
     js = Bundle("src/*.js", output="dist/main.js")
     assets.register("css", css)
     assets.register("js", js)
+
     css.build()
     js.build()
 

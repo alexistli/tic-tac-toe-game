@@ -5,6 +5,7 @@
     define([], factory);
   } else {
     // Browser globals
+
     root.htmx = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
