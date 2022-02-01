@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   ttt-game:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     image: "ttt-game:latest"
     expose:
       - 8000
