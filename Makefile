@@ -36,6 +36,8 @@ endif
 install: pyproject.toml poetry.lock
 	@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
 	$(POETRY) install
+	npm install --global postcss-cli@^8.3.1
+	cd src && npm install
 
 
 .PHONY: clean
