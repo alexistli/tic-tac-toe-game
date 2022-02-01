@@ -1,5 +1,10 @@
 """Gunicorn configuration file."""
+import os
+
 import logging_setup
+
+LOG_LEVEL = os.environ.get("LOG_LEVEL")
+ENV = os.environ.get("ENV")
 
 #
 # Config
@@ -80,6 +85,7 @@ keepalive = 2
 
 capture_output = True
 logger_class = logging_setup.GunicornLogger
+loglevel = LOG_LEVEL
 errorlog = "-"
 accesslog = "-"
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
@@ -89,9 +95,7 @@ access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
 #
 #   reload - Restart workers when code changes.
 
-reload = True
+reload = True if ENV == "dev" else False
 
 # check_config = True
 # print_config = True
-
-# worker_tmp_dir = "/dev/shm"

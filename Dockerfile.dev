@@ -33,9 +33,10 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://
 FROM python:3.10.1-slim-bullseye
 
 # create directory for the app user
-ENV HOME=/home/ttt/
-RUN mkdir -p $HOME
-WORKDIR $HOME
+ARG ROOT_FOLDER
+ENV ROOT=$ROOT_FOLDER
+RUN mkdir -p $ROOT
+WORKDIR $ROOT
 
 # create the app user
 RUN addgroup --system appuser && adduser --system --group appuser
@@ -55,7 +56,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
 # chown all the files to the app user
-RUN chown -R appuser:appuser $HOME
+RUN chown -R appuser:appuser $ROOT
 
 # change to the app user
 USER appuser
@@ -63,4 +64,3 @@ USER appuser
 # run Gunicorn WSGI
 # config file loaded by Gunicorn: ./gunicorn.conf.py
 ENTRYPOINT ["gunicorn"]
-CMD ["--log-level=debug"]
