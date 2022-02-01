@@ -1,43 +1,22 @@
-<p>
-  room is: {{room}}<br />
-  board is: {{board}}<br />
-  turn is: {{turn}}
-</p>
+{% if winner %}{% include 'win.html' %}{% endif %}
 <!--suppress HtmlUnknownAttribute -->
 <div
   id="grid"
-  class="grid grid-cols-3 w-96 h-96"
+  class="grid grid-cols-3 mt-8 w-96 h-96"
   hx-get="/board"
   hx-target="#board"
-  hx-trigger="click"
+  hx-trigger="reloadBoard"
 >
   {% for i in range(3) %} {% for j in range(3) %} {% set disabled = "disabled"
-  if board[i][j] != "_" or session.my_mark != turn else None %}
+  if board[i][j] != "_" or my_mark != turn else None %}
   <!--suppress HtmlUnknownAttribute -->
-  <form
-    id="move-{{i}}{{j}}"
-    class="form"
-    hx-post="/move_multi"
-    hx-target="#board"
-  >
+  <div id="move-{{i}}{{j}}">
     <div class="h-full text-center border border-black">
       <input
         type="hidden"
         name="coord"
         id="coord-{{i}}{{j}}"
         value="{{i}} {{j}}"
-      />
-      <input
-        type="hidden"
-        name="player_mark"
-        id="player_mark-{{i}}{{j}}"
-        value="{{turn}}"
-      />
-      <input
-        type="hidden"
-        name="room_name"
-        id="room_name-{{i}}{{j}}"
-        value="{{room}}"
       />
       <!--suppress HtmlUnknownAttribute -->
       <button
@@ -49,9 +28,7 @@
       >
         {{board[i][j]}}
       </button>
-      <!--suppress HtmlUnknownAttribute -->
-      <input type="submit" id="real-button-{{i}}{{j}}" style="display: none" />
     </div>
-  </form>
+  </div>
   {% endfor %} {% endfor %}
 </div>

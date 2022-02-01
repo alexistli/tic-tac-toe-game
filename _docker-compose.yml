@@ -2,31 +2,25 @@ version: "3.8"
 
 services:
   ttt-game:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    image: "ttt-game:latest"
+    build: .
+    image: "alexistli/ttt-game:latest"
     expose:
       - 8000
     env_file:
       - .env.prod
     volumes:
       - static_volume:/home/ttt/app/static
-    privileged: true
-    tty: true
     container_name: ttt-game
 
   nginx:
     build: ./nginx
-    image: "ttt-nginx:latest"
+    image: "alexistli/ttt-nginx:latest"
     ports:
       - "8000:80"
     depends_on:
       - ttt-game
     volumes:
       - static_volume:/home/ttt/app/static
-    privileged: true
-    tty: true
     container_name: ttt-nginx
 
 volumes:

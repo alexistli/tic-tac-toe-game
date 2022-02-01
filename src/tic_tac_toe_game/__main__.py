@@ -48,7 +48,7 @@ def main() -> None:
         else:
             played_cell = game.get_move()
 
-        game.board.set_cell(coord=played_cell, value=player.get_mark())
+        game.board.make_move(coord=played_cell, value=player.get_mark())
 
         if game.board.is_winning_move(played_cell, player.get_mark()):
             print(f"Player {player.name} won!")

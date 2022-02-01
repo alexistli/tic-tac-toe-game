@@ -7,16 +7,57 @@ import pytest
 from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
 
+BOARD = engine.Board()
+BOARD_DICT = {
+    "__class": "Board",
+    "grid": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    "history": [],
+}
+
 PLAYER_NAME = "Sapiens"
 PLAYER_A_NAME = "U-Man"
+PLAYER_A_DICT = {
+    "__class": "HumanPlayer",
+    "name": PLAYER_A_NAME,
+    "mark": 1,
+    "moves": None,
+    "score": 0,
+}
 PLAYER_B_NAME = "Botybot"
-
+PLAYER_B_DICT = {
+    "__class": "AIPlayer",
+    "name": PLAYER_B_NAME,
+    "mark": -1,
+    "moves": "naive_move",
+    "score": 0,
+}
 PLAYER_A = engine.HumanPlayer(1, PLAYER_A_NAME)
 PLAYER_B = engine.AIPlayer(-1, PLAYER_B_NAME)
 
+PLAYERS_MATCH = engine.PlayersMatch(PLAYER_A, PLAYER_B)
+PLAYERS_MATCH_DICT = {
+    "__class": "PlayersMatch",
+    "players": [PLAYER_A_DICT, PLAYER_B_DICT],
+    "current_player": PLAYER_A_DICT,
+}
+
+GAME = engine.build_game(PLAYER_A_NAME, PLAYER_B_NAME)
+GAME_DICT = {
+    "__class": "TicTacToeGame",
+    "board": BOARD_DICT,
+    "players_match": PLAYERS_MATCH_DICT,
+}
+
 RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
-RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)
+RANDOM_ID = random.randint(0, 2)
+RANDOM_MOVE = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+RANDOM_MOVE_DICT = {
+    "x": RANDOM_ROW,
+    "y": RANDOM_COL,
+    "player": RANDOM_ID,
+    "__class": "Move",
+}
 
 FULL_GRID_LOOSE = "1 -1 1 -1 -1 1 1 1 -1"
 
@@ -34,6 +75,35 @@ def load_grid_from_string(grid_str: str) -> List[List[int]]:
     array = [int(cell) for cell in grid_str.split()]
     grid = [[int(cell) for cell in array[i : i + 3]] for i in range(0, len(array), 3)]
     return grid
+
+
+# ================ Test Move ================
+
+
+def test_move_init_succeeds() -> None:
+    """It returns a move with expected properties."""
+    move = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+    assert move.x == RANDOM_ROW
+    assert move.y == RANDOM_COL
+    assert move.player == RANDOM_ID
+    assert move.coordinates == (RANDOM_ROW, RANDOM_COL)
+
+
+def test_move_returns_repr() -> None:
+    """It returns expected repr."""
+    move = engine.Move(RANDOM_ROW, RANDOM_COL, RANDOM_ID)
+
+    assert repr(move) == f"Move({repr(move.x)}, {repr(move.y)}, {repr(move.player)})"
+
+
+def test_move_to_dict() -> None:
+    """It returns expected dict."""
+    assert RANDOM_MOVE.to_dict() == RANDOM_MOVE_DICT
+
+
+def test_move_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Move.from_dict(RANDOM_MOVE_DICT) == RANDOM_MOVE
 
 
 # ================ Test Grid ================
@@ -63,22 +133,22 @@ def test_grid_handles_cell_operations() -> None:
     board = engine.Board()
     for row_index, row in enumerate(board.grid):
         for col_index, _cell in enumerate(row):
-            coord = (row_index, col_index)
-            assert board.is_empty_cell(coord) is True
-            board.set_cell(coord, 1)
-            assert board.get_cell(coord) == 1
-            assert board.is_empty_cell(coord) is False
+            move = engine.Move(row_index, col_index, 1)
+            assert board.is_empty_cell(move.coordinates) is True
+            board.make_move(move)
+            assert board.get_cell(move.coordinates) == 1
+            assert board.is_empty_cell(move.coordinates) is False
 
 
 def test_grid_handles_cell_override() -> None:
     """It handles cell overriding attempt."""
     board = engine.Board()
-    assert board.is_empty_cell(RANDOM_COORD) is True
-    board.set_cell(RANDOM_COORD, 1)
-    assert board.get_cell(RANDOM_COORD) == 1
+    assert board.is_empty_cell(RANDOM_MOVE.coordinates) is True
+    board.make_move(RANDOM_MOVE)
+    assert board.get_cell(RANDOM_MOVE.coordinates) == RANDOM_MOVE.player
     with pytest.raises(errors.OverwriteCellError):
-        board.set_cell(RANDOM_COORD, -1)
-        assert board.get_cell(RANDOM_COORD) == 1
+        board.make_move(RANDOM_MOVE)
+        assert board.get_cell(RANDOM_MOVE.coordinates) == RANDOM_MOVE.player
 
 
 def test_not_full_grid_returns_is_not_full() -> None:
@@ -88,12 +158,12 @@ def test_not_full_grid_returns_is_not_full() -> None:
     assert board.is_full() is False
 
     # grid is neither empty nor full
-    for mark in (1, -1):
+    for id_ in (1, -1):
         board = engine.Board()
         for row_index, row in enumerate(board.grid):
             for col_index, _cell in enumerate(row):
                 assert board.is_full() is False
-                board.set_cell((row_index, col_index), mark)
+                board.make_move(engine.Move(row_index, col_index, id_))
 
 
 def test_full_grid_returns_is_full() -> None:
@@ -101,11 +171,11 @@ def test_full_grid_returns_is_full() -> None:
     board = engine.Board(load_grid_from_string(FULL_GRID_LOOSE))
     assert board.is_full() is True
 
-    for mark in (1, -1):
+    for id_ in (1, -1):
         board = engine.Board()
         for row_index, row in enumerate(board.grid):
             for col_index, _cell in enumerate(row):
-                board.set_cell((row_index, col_index), mark)
+                board.make_move(engine.Move(row_index, col_index, id_))
         assert board.is_full() is True
 
 
@@ -119,8 +189,9 @@ def test_not_is_winning_move() -> None:
         for col_index, _cell in enumerate(row):
             coord = (row_index, col_index)
             mark = loose_board.get_cell(coord)
-            board.set_cell(coord, mark)
-            assert board.is_winning_move(coord, mark) is False
+            move = engine.Move(row_index, col_index, mark)
+            board.make_move(move)
+            assert board.is_winning_move(move) is False
 
 
 def test_is_winning_move() -> None:
@@ -134,9 +205,10 @@ def test_is_winning_move() -> None:
             for col_index, _cell in enumerate(row):
                 coord = (row_index, col_index)
                 mark = model_board.get_cell(coord)
-                board.set_cell(coord, mark)
+                move = engine.Move(row_index, col_index, mark)
+                board.make_move(move)
                 is_winning = coord in win_moves
-                assert bool(board.is_winning_move(coord, mark)) == is_winning
+                assert bool(board.is_winning_move(move)) == is_winning
 
 
 @pytest.mark.xfail(reason="random_available_cell method was moved")
@@ -166,7 +238,17 @@ def test_grid_returns_repr() -> None:
     """It returns expected repr."""
     board = engine.Board()
 
-    assert repr(board) == f"Board({repr(board.grid)})"
+    assert repr(board) == f"Board({repr(board.grid)}, {repr(board.history)})"
+
+
+def test_board_to_dict() -> None:
+    """It returns expected dict."""
+    assert BOARD.to_dict() == BOARD_DICT
+
+
+def test_board_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Board.from_dict(BOARD_DICT) == BOARD
 
 
 # ================ Test Player ================
@@ -204,6 +286,18 @@ def test_player_returns_repr() -> None:
     )
 
 
+def test_player_to_dict() -> None:
+    """It returns expected dict."""
+    assert PLAYER_A.to_dict() == PLAYER_A_DICT
+    assert PLAYER_B.to_dict() == PLAYER_B_DICT
+
+
+def test_player_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.Player.from_dict(PLAYER_A_DICT) == PLAYER_A
+    assert engine.Player.from_dict(PLAYER_B_DICT) == PLAYER_B
+
+
 # ================ Test PlayersMatch ================
 
 
@@ -214,7 +308,7 @@ def test_players_match_inits() -> None:
     players_match = engine.PlayersMatch(player_a, player_b)
     assert bool(player_a in players_match.players) is True
     assert bool(player_b in players_match.players) is True
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
 
 
 def test_players_match_player_get_and_switch() -> None:
@@ -222,13 +316,13 @@ def test_players_match_player_get_and_switch() -> None:
     player_a = engine.HumanPlayer(1, PLAYER_A_NAME)
     player_b = engine.AIPlayer(-1, PLAYER_B_NAME)
     players_match = engine.PlayersMatch(player_a, player_b)
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
     assert players_match.current() == player_a
     players_match.switch()
-    assert players_match.current_player == player_b
+    assert players_match._current_player == player_b
     assert players_match.current() == player_b
     players_match.switch()
-    assert players_match.current_player == player_a
+    assert players_match._current_player == player_a
     assert players_match.current() == player_a
 
 
@@ -241,3 +335,26 @@ def test_players_match_returns_repr() -> None:
     assert repr(players_match) == (
         f"PlayersMatch(({repr(player_a)}, {repr(player_b)}), {repr(player_a)})"
     )
+
+
+def test_players_match_to_dict() -> None:
+    """It returns expected dict."""
+    assert PLAYERS_MATCH.to_dict() == PLAYERS_MATCH_DICT
+
+
+def test_players_match_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.PlayersMatch.from_dict(PLAYERS_MATCH_DICT) == PLAYERS_MATCH
+
+
+# ================ Test Engine ================
+
+
+def test_engine_to_dict() -> None:
+    """It returns expected dict."""
+    assert GAME.to_dict() == GAME_DICT
+
+
+def test_engine_from_dict() -> None:
+    """It returns expected dict."""
+    assert engine.TicTacToeGame.from_dict(GAME_DICT) == GAME

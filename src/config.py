@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 
 basedir = Path(__file__).resolve().parent
-load_dotenv(Path(basedir).joinpath(".env.prod"))
+load_dotenv(Path(basedir).joinpath("../.env.prod"))
 
 
 class Config:
@@ -22,6 +22,6 @@ class Config:
     SESSION_FILE_DIR = mkdtemp()
     SESSION_PERMANENT = True
     SESSION_TYPE = "filesystem"
+    SESSION_COOKIE_HTTPONLY = False
 
-    # SESSION_TYPE = os.environ.get('SESSION_TYPE')
-    # SESSION_REDIS = redis.from_url(os.environ.get('SESSION_REDIS'))
+    STATIC_FOLDER = f"{os.getenv('APP_FOLDER')}/static/dist"

@@ -29,33 +29,81 @@ Version 2.0: Dumb AI + score limit
 import json
 from abc import ABC
 from abc import abstractmethod
+from typing import Any
 from typing import Callable
+from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
+from typing import Sequence
 from typing import Tuple
+from typing import Union
 
-from tic_tac_toe_game.AI import naive
+from tic_tac_toe_game.AI.mcts import mcts_move
+from tic_tac_toe_game.AI.naive import naive_move
+from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
+
+
+Coordinates = Sequence[int]
 
 
 class Move:
     """Move performed by a Player on the Grid."""
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, value: str) -> None:
+    def __init__(
+        self,
+        x: Union[int, float, str],
+        y: Union[int, float, str],
+        player: Union[int, float, str],
+    ) -> None:
         """Inits."""
-        self.x_coordinate = x_coordinate
-        self.y_coordinate = y_coordinate
-        self.value = value
+        self.x = int(x)
+        self.y = int(y)
+        self._player = int(player)
+
+    @property
+    def player(self) -> int:
+        """TODO."""
+        return self._player
+
+    @player.setter
+    def player(self, value: Union[int, float, str]) -> None:
+        if int(value) != 1 and int(value) != -1:
+            raise ValueError("Player should be 1 or -1")
+        self._player = int(value)
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """TODO."""
+        return self.x, self.y
 
     def __repr__(self) -> str:
         """Repr."""
-        return (
-            f"{self.__class__.__name__}"
-            f"(x_coordinate: {self.x_coordinate}, "
-            f"y_coordinate: {self.y_coordinate}, "
-            f"value: {self.value})"
+        return f"{self.__class__.__name__}({self.x!r}, {self.y!r}, {self.player!r})"
+
+    def to_dict(self) -> Dict[str, Union[int, str]]:
+        """Converts the Move instance to a dictionary."""
+        return dict(
+            x=self.x,
+            y=self.y,
+            player=self.player,
+            __class=self.__class__.__name__,
         )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Union[int, str]]) -> "Move":
+        """Constructs Move instance from dictionary."""
+        data = dict(data)  # local copy
+        if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
+            raise ValueError
+        return cls(**data)
+
+    def __eq__(self, other: "Move"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Move):
+            return False
+        return self.__dict__ == other.__dict__
 
 
 class Board:
@@ -66,31 +114,41 @@ class Board:
     """
 
     x = 1
-    y = -1
+    o = -1
     _empty_cell = 0
     _vertical_separator = "│"
     _horizontal_separator = "─"
     _intersection = "┼"
     _marks = {0: "_", -1: "O", 1: "X"}
 
-    def __init__(self, grid: Optional[List[List[int]]] = None) -> None:
+    def __init__(
+        self,
+        grid: Optional[List[List[int]]] = None,
+        history: Optional[List[Move]] = None,
+    ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
             grid = [[Board._empty_cell] * 3 for _ in range(3)]
         self.grid: List[List[int]] = grid
+        if history is None:
+            history = []
+        self.history: List[Move] = history
 
-    def get_cell(self, coord: Tuple[int, int]) -> int:
+    def get_cell(self, coord: Coordinates) -> int:
         """Returns value for cell located at `coord`."""
         return self.grid[coord[0]][coord[1]]
 
-    def set_cell(self, coord: Tuple[int, int], value: int) -> None:
-        """Sets `value` for cell located at `coord` if cell is empty."""
-        coord_x, coord_y = coord
-        if not self.is_empty_cell(coord):
-            raise OverwriteCellError(coord)
-        self.grid[coord_x][coord_y] = value
+    def make_move(self, move: Move) -> None:
+        """Sets `value` for cell located at `coord` if cell is empty.
 
-    def is_empty_cell(self, coord: Tuple[int, int]) -> bool:
+        Consumes action.
+        """
+        if not self.is_empty_cell(move.coordinates):
+            raise OverwriteCellError(move.coordinates)
+        self.grid[move.x][move.y] = move.player
+        self.history.append(move)
+
+    def is_empty_cell(self, coord: Coordinates) -> bool:
         """Checks if cell located at `coord` is empty."""
         return bool(self.get_cell(coord) == Board._empty_cell)
 
@@ -102,24 +160,24 @@ class Board:
             for col_id, col in enumerate(row)
         )
 
-    def is_winning_move(self, coord: Tuple[int, int], value: int) -> bool:
+    def is_winning_move(self, move: Move) -> bool:
         """Checks if playing `value` at `coord` leads to a win.
 
         Only checks the combinations containing the cell with the given coordinates.
         Checks the one row, the one column and eventually the two diagonals.
         """
-        has_winning_row = all([cell == value for cell in self.grid[coord[0]]])
-        has_winning_col = all([row[coord[1]] == value for row in self.grid])
+        has_winning_row = all([cell == move.player for cell in self.grid[move.x]])
+        has_winning_col = all([row[move.y] == move.player for row in self.grid])
 
         has_winning_diag = False
-        if coord[0] == coord[1]:
+        if move.x == move.y:
             has_winning_diag = all(
-                self.grid[row_id][row_id] == value
+                self.grid[row_id][row_id] == move.player
                 for row_id, row in enumerate(self.grid)
             )
-        if coord[0] + coord[1] == 2:
+        if move.x + move.y == 2:
             has_winning_diag = has_winning_diag or all(
-                self.grid[2 - row_id][row_id] == value
+                self.grid[2 - row_id][row_id] == move.player
                 for row_id, row in enumerate(self.grid)
             )
         return bool(has_winning_row or has_winning_col or has_winning_diag)
@@ -136,6 +194,81 @@ class Board:
             if idx != len(self.grid) - 1:
                 framed.append(Board._intersection.join(Board._horizontal_separator * 3))
         return "\n".join(framed)
+
+    def winner(self) -> Optional[int]:
+        """Returns game result.
+
+        This property should return:
+         1 if player #1 wins
+        -1 if player #2 wins
+         0 if there is a draw
+         None if result is unknown
+        Returns
+        -------
+        int
+        """
+        try:
+            last_move = self.history[-1]
+        except IndexError:  # no history means there is no winner
+            return None
+
+        has_winning_row = all(
+            [cell == last_move.player for cell in self.grid[last_move.x]]
+        )
+        has_winning_col = all(
+            [row[last_move.y] == last_move.player for row in self.grid]
+        )
+
+        has_winning_diag = False
+        if last_move.x == last_move.y:
+            has_winning_diag = all(
+                self.grid[row_id][row_id] == last_move.player
+                for row_id, row in enumerate(self.grid)
+            )
+        if last_move.x + last_move.y == 2:
+            has_winning_diag = has_winning_diag or all(
+                self.grid[2 - row_id][row_id] == last_move.player
+                for row_id, row in enumerate(self.grid)
+            )
+        if has_winning_row or has_winning_col or has_winning_diag:
+            return last_move.player
+        elif self.is_full():
+            return 0
+        else:
+            return None
+
+    def is_over(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.winner() is not None
+
+    def is_tie(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.winner() == 0
+
+    def is_won(self) -> bool:
+        """Returns boolean indicating if the game is over.
+
+        Simplest implementation may just be
+        `return self.game_result() is not None`
+        Returns
+        -------
+        boolean
+        """
+        return self.is_over() and not self.is_tie()
 
     def to_json(self) -> str:
         """Creates a JSON representation of an instance of Board."""
@@ -167,7 +300,32 @@ class Board:
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return f"{self.__class__.__name__}({self.grid!r})"
+        return f"{self.__class__.__name__}({self.grid!r}, {self.history!r})"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the Board instance to a dictionary."""
+        return dict(
+            grid=self.grid,
+            history=[move.to_dict() for move in self.history],
+            __class=self.__class__.__name__,
+        )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Board":
+        """Constructs Board instance from dictionary."""
+        data = dict(data)  # local copy
+        if not isinstance(data, dict) or data.pop("__class") != cls.__name__:
+            raise ValueError
+        return cls(
+            data.get("grid"),
+            [Move.from_dict(move) for move in data.get("history")],
+        )
+
+    def __eq__(self, other: "Board"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Board):
+            return False
+        return self.__dict__ == other.__dict__
 
 
 class Player(ABC):
@@ -178,11 +336,14 @@ class Player(ABC):
         mark: The value of the mark currently used. Must be "X" or "O".
     """
 
+    _available_moves = [naive_move, mcts_move, negamax_move]
+
     def __init__(
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -190,11 +351,12 @@ class Player(ABC):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
         self.name = name
-        self.mark = mark
+        self._mark = mark
         self.moves = moves
-        self.score = 0
+        self._score = score
 
     def set_mark(self, mark: int) -> None:
         """Sets the player's mark for this game.
@@ -202,7 +364,7 @@ class Player(ABC):
         Args:
             mark: int, player's mark
         """
-        self.mark = mark
+        self._mark = mark
 
     def get_mark(self) -> int:
         """Returns the player's mark for this game.
@@ -210,7 +372,7 @@ class Player(ABC):
         Returns:
             An integer with the value of the mark.
         """
-        return self.mark
+        return self._mark
 
     def display_mark(self) -> str:
         """Returns the pretty print mark for the player.
@@ -218,11 +380,11 @@ class Player(ABC):
         Returns:
             A string with the value of the mark.
         """
-        return "X" if self.mark == 1 else "O"
+        return "X" if self._mark == 1 else "O"
 
     def record_win(self) -> None:
         """Records player's win and updates score."""
-        self.score += 1
+        self._score += 1
 
     def get_score(self) -> int:
         """Returns the player's score for this game.
@@ -230,20 +392,55 @@ class Player(ABC):
         Returns:
             An integer with the value of the score.
         """
-        return self.score
+        return self._score
 
     @abstractmethod
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         raise NotImplementedError
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        repr_moves = self.moves.__name__ if self.moves is not None else self.moves
+        repr_moves = (
+            self.moves.__name__ if self.moves in self._available_moves else None
+        )
         return (
             f"{self.__class__.__name__}("
-            f"{self.name!r}, {self.mark!r}, {repr_moves!r}, {self.score!r})"
+            f"{self.name!r}, {self._mark!r}, {repr_moves!r}, {self._score!r})"
         )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the Player instance to a dictionary."""
+        repr_moves = (
+            self.moves.__name__ if self.moves in self._available_moves else None
+        )
+        return dict(
+            name=self.name,
+            mark=self._mark,
+            moves=repr_moves,
+            score=self._score,
+            __class=self.__class__.__name__,
+        )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Player":
+        """Constructs Player instance from dictionary."""
+        data = dict(data)  # local copy
+        class_name = data.pop("__class")
+        available_moves = {move.__name__: move for move in cls._available_moves}
+        data["moves"] = (
+            available_moves[data["moves"]] if data["moves"] in available_moves else None
+        )
+        if class_name == "HumanPlayer":
+            return HumanPlayer(**data)
+        elif class_name == "AIPlayer":
+            return AIPlayer(**data)
+
+    def __eq__(self, other):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, Player):
+            return False
+        return self.__dict__ == other.__dict__
 
 
 class AIPlayer(Player):
@@ -253,9 +450,8 @@ class AIPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[
-            Callable[[List[List[int]], int], Tuple[int, int]]
-        ] = naive.naive_move,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = naive_move,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -263,10 +459,11 @@ class AIPlayer(Player):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
-        super().__init__(mark=mark, name=name, moves=moves)
+        super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -280,7 +477,8 @@ class HumanPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Tuple[int, int]]] = None,
+        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        score: int = 0,
     ) -> None:
         """Constructor.
 
@@ -288,10 +486,11 @@ class HumanPlayer(Player):
             name: str, name of the player.
             mark: str, player's mark.
             moves: callable, handles choice of moves.
+            score: int, player's score.
         """
-        super().__init__(mark=mark, name=name, moves=moves)
+        super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Tuple[int, int]]:
+    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -303,7 +502,7 @@ class PlayersMatch:
 
     Attributes:
         players: tuple(Player, Player), Players playing against each other.
-        current_player: Player, Holds the player currently playing.
+        _current_player: Player, Holds the player currently playing.
     """
 
     def __init__(self, player_x: Player, player_o: Player) -> None:
@@ -313,13 +512,13 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Tuple[Player, Player] = (player_x, player_o)
+        self.players: Sequence[Player, Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
-        self.current_player: Player = player_x
+        self._current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[List[List[int]], int], Tuple[int, int]]
+        self, algorithm: Callable[[List[List[int]], int], Coordinates]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(
@@ -328,22 +527,53 @@ class PlayersMatch:
         ai_player.moves = algorithm
 
     def switch(self) -> None:  # pragma: no cover
-        """Updates `current_player` with the other player."""
-        self.current_player = next(
-            player for player in self.players if player != self.current_player
+        """Updates `_current_player` with the other player."""
+        self._current_player = next(
+            player for player in self.players if player != self._current_player
         )
 
     def current(self) -> Player:
-        """Returns `current_player`."""
-        return self.current_player
+        """Returns `_current_player`."""
+        return self._current_player
+
+    def player(self, id_: int) -> Player:
+        """Returns `_current_player`."""
+        if id_ != 1 and id_ != -1:
+            raise ValueError("id argument should be 1 or -1")
+        return next(player for player in self.players if player.get_mark() == id_)
 
     def __repr__(self) -> str:
         """Returns instance representation."""
-        return f"{self.__class__.__name__}({self.players!r}, {self.current_player!r})"
+        return f"{self.__class__.__name__}({self.players!r}, {self._current_player!r})"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the PlayersMatch instance to a dictionary."""
+        return dict(
+            players=[player.to_dict() for player in self.players],
+            current_player=self._current_player.to_dict(),
+            __class=self.__class__.__name__,
+        )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "PlayersMatch":
+        """Constructs PlayersMatch instance from dictionary."""
+        data = dict(data)  # local copy
+        players = [Player.from_dict(player) for player in data.get("players")]
+        current_player = Player.from_dict(data.get("current_player"))
+        players_match = cls(*players)
+        if players_match.current() != current_player:
+            players_match.switch()
+        return players_match
+
+    def __eq__(self, other: "PlayersMatch"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, PlayersMatch):
+            return False
+        return self.__dict__ == other.__dict__
 
 
-class Engine:
-    """Engine.
+class TicTacToeGame:
+    """TicTacToeGame.
 
     Attributes:
         board: Board, The current board being played.
@@ -354,7 +584,7 @@ class Engine:
         self.players_match = players_match
         self.board = board
 
-    def get_move(self) -> Optional[Tuple[int, int]]:
+    def get_move(self) -> Optional[Coordinates]:
         """Gets a move from the current player.
 
         If the player is an
@@ -372,9 +602,40 @@ class Engine:
         ]
         return scores
 
+    def winner(self) -> Optional[Player]:
+        """TODO."""
+        board_winner = self.board.winner()
+        return (
+            self.players_match.player(board_winner)
+            if board_winner == 1 or board_winner == -1
+            else None
+        )
+
     def __repr__(self) -> str:
         """Returns instance representation."""
         return f"{self.__class__.__name__}({self.players_match!r}, {self.board!r})"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the TicTacToeGame instance to a dictionary."""
+        return dict(
+            players_match=self.players_match.to_dict(),
+            board=self.board.to_dict(),
+            __class=self.__class__.__name__,
+        )
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "TicTacToeGame":
+        """Constructs TicTacToeGame instance from dictionary."""
+        return cls(
+            PlayersMatch.from_dict(data.get("players_match")),
+            Board.from_dict(data.get("board")),
+        )
+
+    def __eq__(self, other: "TicTacToeGame"):
+        """Check whether other equals self elementwise."""
+        if not isinstance(other, TicTacToeGame):
+            return False
+        return self.__dict__ == other.__dict__
 
 
 MODE = Literal["single", "multi"]
@@ -385,7 +646,7 @@ def build_game(
     player_2_name: Optional[str] = None,
     player_1_starts: bool = True,
     mode: MODE = "single",
-) -> Engine:
+) -> TicTacToeGame:
     """Returns a game object."""
     player_1_mark = 1 if player_1_starts is True else -1
     player_1: Player = HumanPlayer(player_1_mark, player_1_name or "Player 1")
@@ -397,4 +658,4 @@ def build_game(
     else:
         player_2 = HumanPlayer(player_2_mark, player_2_name or "Player 2")
 
-    return Engine(PlayersMatch(player_1, player_2), Board())
+    return TicTacToeGame(PlayersMatch(player_1, player_2), Board())

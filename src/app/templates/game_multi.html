@@ -9,27 +9,15 @@
     Current transport is: <b><span id="transport"></span></b><br />
   </p>
   <br />
-  <form id="send_room" method="POST" action="#">
-    <input
-      type="text"
-      name="room_name"
-      id="room_name"
-      placeholder="Room Name"
-    />
-    <input type="text" name="room_data" id="room_data" placeholder="Message" />
-    <input type="submit" value="Send to Room" />
-  </form>
-  <h2>Receive:</h2>
-  <div id="log"></div>
   <div class="mt-4 text-2xl font font-extrabold tracking-tight text-gray-900">
     Scores
   </div>
   <div id="scores">
     {% for score in scores %} Player {{ score[0] }} &mdash;
-    <span>{{ score[1] }}</span>
+    <span>{{ score[1] }}</span><br />
     {% endfor %}
   </div>
-  <div id="board" class="mt-8">{% include 'board_multi.html' %}</div>
+  <div id="board">{% include 'board_multi.html' %}</div>
   <a
     href="{{ url_for('main.new_game') }}"
     class="
@@ -66,49 +54,42 @@
       // The callback function is invoked when a connection with the
       // server is established.
       socket.on("connect", function () {
-        console.log("socket.on.connect");
+        console.log("socketio connect");
         socket.emit("join", { room: "{{room}}" });
       });
 
-      $("form#send_room").submit(function (event) {
-        socket.emit("my_room_event", {
-          room: $("#room_name").val(),
-          data: $("#room_data").val(),
-        });
-        return false;
+      // Event handler for new game state available.
+      socket.on("refresh_game", function () {
+        console.log("socketio refresh_game");
+        htmx.trigger(htmx.find("#grid"), "reloadBoard", {});
       });
 
+      // Interval function that tests the transport currently used.
+      // Should be websocket, but can be polling as a fallback.
+      window.setInterval(function () {
+        $("#transport").text(socket.io.engine.transport.name);
+      }, 5000);
+
+      // Handler for the clickable board.
       $("#board").on("click", "button", function (event) {
         event.preventDefault();
-        console.log("form.move.submit - before");
 
-        var $button = $(this);
-        // console.log($button);
+        console.log("event player click");
 
-        var $id = $button.attr("id");
-        // console.log($id);
+        var coordinates = $(this).attr("id").split("-")[1].split("");
 
-        var form_id = $id.split("-")[1];
-        var cell = form_id.split("").join(" ");
-        // console.log(cell);
+        var move = {
+          x: coordinates[0],
+          y: coordinates[1],
+          player: "{{my_id}}",
+        };
+        console.log(move);
 
-        socket.emit("emit_move", {
+        socket.emit("move_received", {
           room: "{{room}}",
           player_mark: "{{turn}}",
-          form_id: form_id,
-          coord: cell,
+          move: move,
         });
-
-        console.log("form.move.submit - after");
-
-        $("#grid").trigger("click");
-
-        console.log("form.move.last");
-      });
-
-      socket.on("refresh_game", function () {
-        console.log("socket.on.refresh_game");
-        $("#grid").trigger("click");
       });
     });
   </script>

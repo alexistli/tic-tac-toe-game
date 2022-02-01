@@ -45,9 +45,7 @@ RUN apt-get update
 RUN apt-get install -y nodejs npm
 
 # install postcss-cli as a global package (knwon issue)
-RUN npm install --global postcss-cli@^8.3.1
-COPY src/package.json src/package-lock.json $HOME
-RUN npm install
+RUN npm install --global postcss-cli@8.3.1
 
 # install dependencies
 RUN apt-get install -y --no-install-recommends netcat
@@ -55,9 +53,6 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
-
-# copy app and engine
-COPY src $HOME
 
 # chown all the files to the app user
 RUN chown -R appuser:appuser $HOME

@@ -1,6 +1,13 @@
 """Gunicorn configuration file."""
 import logging_setup
 
+#
+# Config
+#
+#   wsgi_app - A WSGI application path in pattern $(MODULE_NAME):$(VARIABLE_NAME).
+
+wsgi_app = "game:app"
+
 
 #
 # Server socket
@@ -52,7 +59,7 @@ bind = "0.0.0.0:8000"
 #
 #       A positive integer. Generally set in the 1-5 seconds range.
 
-workers = 4
+workers = 1
 worker_class = "eventlet"
 worker_connections = 1000
 timeout = 30
@@ -76,3 +83,15 @@ logger_class = logging_setup.GunicornLogger
 errorlog = "-"
 accesslog = "-"
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
+
+#
+# Debugging
+#
+#   reload - Restart workers when code changes.
+
+reload = True
+
+# check_config = True
+# print_config = True
+
+# worker_tmp_dir = "/dev/shm"
