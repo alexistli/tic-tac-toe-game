@@ -1,13 +1,8 @@
-<p>
-  room is: {{room}}<br />
-  board is: {{board}}<br />
-  turn is: {{turn}}
-</p>
-{% if winner is not none %}{% endif %}
+{% if winner %}{% include 'win.html' %}{% endif %}
 <!--suppress HtmlUnknownAttribute -->
 <div
   id="grid"
-  class="grid grid-cols-3 w-96 h-96"
+  class="grid grid-cols-3 mt-8 w-96 h-96"
   hx-get="/board"
   hx-target="#board"
   hx-trigger="reloadBoard"

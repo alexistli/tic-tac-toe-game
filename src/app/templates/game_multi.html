@@ -17,7 +17,7 @@
     <span>{{ score[1] }}</span><br />
     {% endfor %}
   </div>
-  <div id="board" class="mt-8">{% include 'board_multi.html' %}</div>
+  <div id="board">{% include 'board_multi.html' %}</div>
   <a
     href="{{ url_for('main.new_game') }}"
     class="
