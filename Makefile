@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 NAME := tic-tac-toe-game
 POETRY := $(shell command -v poetry 2> /dev/null)
 NOX := $(shell command -v nox 2> /dev/null)
@@ -51,8 +53,7 @@ freeze:
 .PHONY: start
 start: check-env
 	$(info Make: Using "$(ENV)" environment)
-	docker-compose up --build
-
+	. .env.$(ENV) && docker-compose -f $$COMPOSE_FILE up --build
 
 .PHONY: stop
 stop:
