@@ -8,8 +8,8 @@ module.exports = (ctx) => ({
     require("autoprefixer"),
     process.env.FLASK_ENV === "production" &&
       require("@fullhuman/postcss-purgecss")({
-        content: [path.resolve(__dirname, "templates/**/*.html")],
-        defaultExtractor: (content) => content.match(/[A-Za-z0-9-_:/]+/g) || [],
+        content: [path.resolve(__dirname, "app/templates/*.html")],
+        defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
       }),
   ],
 });
