@@ -1,11 +1,10 @@
-SHELL := /bin/bash
-
 NAME := tic-tac-toe-game
 POETRY := $(shell command -v poetry 2> /dev/null)
 NOX := $(shell command -v nox 2> /dev/null)
 
-.DEFAULT_GOAL := help
+COMPOSE_FILE := docker-compose.$(ENV).yml
 
+.DEFAULT_GOAL := help
 
 
 .PHONY: help
@@ -25,41 +24,43 @@ help:
 .PHONY: check-env
 check-env:
 ifndef ENV
-	$(error The ENV variable is missing)
+	@$(error The ENV variable is missing)
 endif
 ifeq ($(filter $(ENV),dev prod),)
-	$(error The ENV variable is invalid: "$(ENV)")
+	@$(error The ENV variable is invalid: "$(ENV)")
 endif
 
 
 .PHONY: install
 install: pyproject.toml poetry.lock
 	@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
-	$(POETRY) install
-	npm install --global postcss-cli@^8.3.1
-	cd src && npm install
+	@$(POETRY) install
+	@npm install --global postcss-cli@^8.3.1
+	@cd src && npm install
 
 
 .PHONY: clean
 clean:
 	@find . -type d -name "__pycache__" | xargs rm -rf {};
-	@rm -rf .coverage .mypy_cache .nox .pytest_cache dist
+	@rm -rf .cache .coverage .mypy_cache .nox .pytest_cache dist
 	@rm -rf src/app/static/dist src/app/static/.webassets-cache
 
 
 .PHONY: freeze
 freeze:
-	$(POETRY) export -f requirements.txt --output requirements.txt --without-hashes
+	@$(POETRY) export -f requirements.txt --output requirements.txt --without-hashes
 
 
 .PHONY: start
 start: check-env
-	$(info Make: Using "$(ENV)" environment)
-	. .env.$(ENV) && docker-compose -f $$COMPOSE_FILE up --build
+	@$(info Make: Using "$(ENV)" environment)
+	@$(info Make: Using "$(COMPOSE_FILE)" Compose file)
+	@docker-compose -f $(COMPOSE_FILE) up --build
+
 
 .PHONY: stop
 stop:
-	docker rm -f $$(docker ps -aq -f name=^ttt-)
+	@docker rm -f $$(docker ps -aq -f name=^ttt-)
 
 
 .PHONY: re-start
