@@ -33,10 +33,10 @@ RUN python -m venv /venv
 COPY pyproject.toml poetry.lock README.rst ./
 RUN poetry export -f requirements.txt --without-hashes | /venv/bin/pip install -r /dev/stdin
 
-COPY src/package.json src/package-lock.json ./
-RUN npm install
-
+COPY . .
 RUN poetry build && /venv/bin/pip install dist/*.whl
+
+RUN cd src && npm install
 
 
 ################################################################
@@ -46,7 +46,7 @@ FROM base as production
 
 # install dependencies
 COPY --from=builder /venv /venv
-COPY --from=builder /home/ttt/node_modules/ /home/ttt/node_modules/
+COPY --from=builder /home/ttt/src/node_modules/ /home/ttt/node_modules/
 
 COPY src ./
 
