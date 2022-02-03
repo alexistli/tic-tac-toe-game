@@ -63,6 +63,33 @@ Usage
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
+Docker Prod
+^^^^^^^^^^^
+
+Build containers and run them.
+
+.. code:: console
+
+   $ make start ENV=prod
+
+Docker Development
+^^^^^^^^^^^^^^^^^^
+
+Build containers and run them.
+Local code is mounted in a volume to allow reload.
+
+.. code:: console
+
+   $ make start ENV=dev
+
+Poetry Development
+^^^^^^^^^^^^^^^^^^
+
+Alternative to Docker Development environment. Easier to spin-up but detrimental to dev/prod parity.
+
+.. code:: console
+
+   $ poetry run gunicorn -c src/gunicorn.conf.py
 
 Contributing
 ------------
