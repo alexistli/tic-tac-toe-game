@@ -1,7 +1,6 @@
-########
-# BASE #
-########
-
+################################################################
+# Base Image
+################################################################
 FROM python:3.10.1-slim-bullseye as base
 
 ENV PYTHONFAULTHANDLER=1 \
@@ -14,11 +13,9 @@ RUN apt-get update && apt-get install -y nodejs npm
 # install postcss-cli as a global package (knwon issue)
 RUN npm install --global postcss-cli@^8.3.1
 
-###########
-# BUILDER #
-###########
-
-# pull official base image
+################################################################
+# Builder Image
+################################################################
 FROM base as builder
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
@@ -42,12 +39,10 @@ RUN npm install
 RUN poetry build && /venv/bin/pip install dist/*.whl
 
 
-#########
-# FINAL #
-#########
-
-# pull official base image
-FROM base as final
+################################################################
+# Production Image
+################################################################
+FROM base as production
 
 # install dependencies
 COPY --from=builder /venv /venv
