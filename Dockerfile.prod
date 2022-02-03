@@ -35,8 +35,6 @@ RUN python -m venv /venv
 
 COPY pyproject.toml poetry.lock README.rst ./
 RUN poetry export -f requirements.txt --without-hashes | /venv/bin/pip install -r /dev/stdin
-# https://github.com/benoitc/gunicorn/pull/2581#issuecomment-994198667
-RUN /venv/bin/pip install "https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0"
 
 COPY src/package.json src/package-lock.json ./
 RUN npm install

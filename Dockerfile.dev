@@ -21,9 +21,6 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-# https://github.com/benoitc/gunicorn/pull/2581#issuecomment-994198667
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0"
-
 
 #########
 # FINAL #
