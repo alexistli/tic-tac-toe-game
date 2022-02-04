@@ -6,11 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile.dev
       args:
+        ENV: ${ENV}
         ROOT_FOLDER: ${ROOT_FOLDER}
         SECRET_KEY: ${SECRET_KEY}
     image: "ttt-game:latest"
     expose:
       - 8000
+    env_file:
+      - .env
     volumes:
       - $PWD/src:${ROOT_FOLDER}
     environment:

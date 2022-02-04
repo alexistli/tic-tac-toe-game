@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
       args:
+        ENV: ${ENV}
         ROOT_FOLDER: ${ROOT_FOLDER}
         SECRET_KEY: ${SECRET_KEY}
     image: "ttt-game:latest"

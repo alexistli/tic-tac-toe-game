@@ -1,62 +1,50 @@
-###########
-# BUILDER #
-###########
+################################################################
+# Base Image
+################################################################
+FROM python:3.10.1-slim-bullseye AS base
 
-# pull official base image
-FROM python:3.10.1-slim-bullseye as builder
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONHASHSEED=random \
+    PYTHONUNBUFFERED=1
 
-# set work directory
-WORKDIR /usr/src/app
+WORKDIR /home/ttt
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN apt-get update && apt-get install -y nodejs npm
+# install postcss-cli as a global package (knwon issue)
+RUN npm install --global postcss-cli@^8.3.1
+
+################################################################
+# Builder Image
+################################################################
+FROM base AS builder
+
+ENV PIP_DEFAULT_TIMEOUT=100 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    POETRY_VERSION=1.1.12
 
 # install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc
+RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 # install python dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN pip install "poetry==$POETRY_VERSION"
+RUN python -m venv /venv
+
+COPY pyproject.toml poetry.lock README.rst ./
+RUN poetry export -f requirements.txt --without-hashes | /venv/bin/pip install -r /dev/stdin
 
 
-#########
-# FINAL #
-#########
-
-# pull official base image
-FROM python:3.10.1-slim-bullseye
-
-# create directory for the app user
-ARG ROOT_FOLDER
-ENV ROOT=$ROOT_FOLDER
-RUN mkdir -p $ROOT
-WORKDIR $ROOT
-
-# create the app user
-RUN addgroup --system appuser && adduser --system --group appuser
+################################################################
+# Final Image
+################################################################
+FROM base AS final
 
 # install dependencies
-RUN apt-get update
-RUN apt-get install -y nodejs npm
+COPY --from=builder /venv /venv
 
-# install postcss-cli as a global package (knwon issue)
-RUN npm install --global postcss-cli@8.3.1
 
-# install dependencies
-RUN apt-get install -y --no-install-recommends netcat
-COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install --no-cache /wheels/*
-
-# chown all the files to the app user
-RUN chown -R appuser:appuser $ROOT
-
-# change to the app user
-USER appuser
+ENV PATH="/venv/bin:${PATH}"
+ENV VIRTUAL_ENV="/venv"
 
 # run Gunicorn WSGI
 # config file loaded by Gunicorn: ./gunicorn.conf.py
