@@ -4,7 +4,7 @@ services:
   ttt-game:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       args:
         ENV: ${ENV}
         ROOT_FOLDER: ${ROOT_FOLDER}

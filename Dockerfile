@@ -1,3 +1,5 @@
+ARG ENV
+
 ################################################################
 # Base Image
 ################################################################
@@ -33,16 +35,36 @@ RUN python -m venv /venv
 COPY pyproject.toml poetry.lock README.rst ./
 RUN poetry export -f requirements.txt --without-hashes | /venv/bin/pip install -r /dev/stdin
 
+FROM builder AS builder-dev
+RUN echo "builder image - layer for development environment"
+
+FROM builder AS builder-prod
+RUN echo "builder image - layer for production environment"
+COPY . .
+RUN poetry build --format wheel && /venv/bin/pip install dist/*.whl
+RUN cd src && npm install
+
+FROM builder-${ENV} AS builder
+RUN echo "builder image for ${ENV} environment"
+
+
 
 ################################################################
 # Final Image
 ################################################################
 FROM base AS final
-
-# install dependencies
 COPY --from=builder /venv /venv
 
+FROM final AS final-dev
+RUN echo "final image - layer for development environment"
 
+FROM final AS final-prod
+RUN echo "final image - layer for production environment"
+COPY --from=builder /home/ttt/src/node_modules/ /home/ttt/node_modules/
+COPY src ./
+
+FROM final-${ENV} AS final
+RUN echo "final image for ${ENV} environment"
 ENV PATH="/venv/bin:${PATH}"
 ENV VIRTUAL_ENV="/venv"
 
