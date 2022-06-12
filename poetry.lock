@@ -360,7 +360,7 @@ numpy = "*"
 
 [[package]]
 name = "eventlet"
-version = "0.33.0"
+version = "0.33.1"
 description = "Highly concurrent networking library"
 category = "main"
 optional = false
@@ -1610,7 +1610,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "66a00a6450a90ad1b5c8e93525b43f312b6b60fa1938d35455d095d00df194f6"
+content-hash = "7908b17291a3e32ef195d45a25b1eebb0e722d9d0f9e73f5c862fb730ae8a85c"
 
 [metadata.files]
 alabaster = [
@@ -1798,8 +1798,8 @@ easyai = [
     {file = "easyAI-2.0.12.tar.gz", hash = "sha256:8c4d2d488bcd81578e1b48d38158bc50353dfd4ab3ab04e4ddac637e08378fbe"},
 ]
 eventlet = [
-    {file = "eventlet-0.33.0-py2.py3-none-any.whl", hash = "sha256:d10a8fcc9e33381905d9873303fde96ebe3541c03fb795055d2c7347dce0639c"},
-    {file = "eventlet-0.33.0.tar.gz", hash = "sha256:80144f489c1bb273a51b6f96ff9785a382d2866b9bab1f5bd748385019f4141f"},
+    {file = "eventlet-0.33.1-py2.py3-none-any.whl", hash = "sha256:a085922698e5029f820cf311a648ac324d73cec0e4792877609d978a4b5bbf31"},
+    {file = "eventlet-0.33.1.tar.gz", hash = "sha256:afbe17f06a58491e9aebd7a4a03e70b0b63fd4cf76d8307bae07f280479b1515"},
 ]
 filelock = [
     {file = "filelock-3.4.2-py3-none-any.whl", hash = "sha256:cf0fc6a2f8d26bd900f19bf33915ca70ba4dd8c56903eeb14e1e7a2fd7590146"},
