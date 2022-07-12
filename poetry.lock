@@ -1069,7 +1069,7 @@ python-versions = "*"
 
 [[package]]
 name = "pyupgrade"
-version = "2.34.0"
+version = "2.37.1"
 description = "A tool to automatically upgrade syntax for newer versions."
 category = "dev"
 optional = false
@@ -1630,7 +1630,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "9fa2217b0714e149236617eba7f893dac28c5d515e79d85c78db219eb4ada272"
+content-hash = "f58de0d235025eb5abf44f46d8b40909805fa9e9a123c98150701785b836fb58"
 
 [metadata.files]
 alabaster = []
