@@ -1105,7 +1105,7 @@ ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"
 
 [[package]]
 name = "reorder-python-imports"
-version = "3.8.1"
+version = "3.8.2"
 description = "Tool for reordering python imports"
 category = "dev"
 optional = false
@@ -1634,7 +1634,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7b5adc0ddb6e1d42820389f2fd2194b8acc21f70279db7253a63d16294e1d4cc"
+content-hash = "0739917f9325e87c9dc0611060594a9f4a67eeda564e2d676315a118fc9f66ec"
 
 [metadata.files]
 alabaster = [
@@ -2236,8 +2236,8 @@ redis = [
     {file = "redis-4.3.4.tar.gz", hash = "sha256:ddf27071df4adf3821c4f2ca59d67525c3a82e5f268bed97b813cb4fabf87880"},
 ]
 reorder-python-imports = [
-    {file = "reorder_python_imports-3.8.1-py2.py3-none-any.whl", hash = "sha256:bfa44fa719595766c18c59ff552e6e02c071f896425746f94b2a34f4b93e217c"},
-    {file = "reorder_python_imports-3.8.1.tar.gz", hash = "sha256:33a981a477875ac79588dbc6f80d7db85eccd2f5529ff289fe51283afd5affb5"},
+    {file = "reorder_python_imports-3.8.2-py2.py3-none-any.whl", hash = "sha256:c362190fc61f28c9ed3657de0ae702694ce97f90da54617716b23d70b4d4771c"},
+    {file = "reorder_python_imports-3.8.2.tar.gz", hash = "sha256:bc5bd5e01548423fdcf62da767b28d5df6e613b03f9f795438f72b08b75dfba8"},
 ]
 requests = [
     {file = "requests-2.28.0-py3-none-any.whl", hash = "sha256:bc7861137fbce630f17b03d3ad02ad0bf978c844f3536d0edda6499dafce2b6f"},
