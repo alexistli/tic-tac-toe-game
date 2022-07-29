@@ -35,7 +35,7 @@ Flask-SQLAlchemy = "^2.5.1"
 Flask-Migrate = "^3.1.0"
 
 [tool.poetry.dev-dependencies]
-cruft = "^2.10.1"
+cruft = "^2.11.0"
 pytest = "^7.1.2"
 coverage = {extras = ["toml"], version = "^6.4"}
 safety = "^2.1.1"
