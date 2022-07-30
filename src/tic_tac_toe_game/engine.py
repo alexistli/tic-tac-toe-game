@@ -72,7 +72,7 @@ class Move:
             raise ValueError
         return cls(**data)
 
-    def __eq__(self, other: "Move") -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Move):
             return False
@@ -294,7 +294,7 @@ class Board:
             [Move.from_dict(move) for move in data.get("history")],
         )
 
-    def __eq__(self, other: "Board") -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Board):
             return False
@@ -538,7 +538,7 @@ class PlayersMatch:
             players_match.switch()
         return players_match
 
-    def __eq__(self, other: "PlayersMatch") -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, PlayersMatch):
             return False
@@ -604,7 +604,7 @@ class TicTacToeGame:
             Board.from_dict(data.get("board")),
         )
 
-    def __eq__(self, other: "TicTacToeGame") -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, TicTacToeGame):
             return False
