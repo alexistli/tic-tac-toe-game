@@ -485,7 +485,7 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Sequence[Player, Player] = (player_x, player_o)
+        self.players: Sequence[Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self._current_player: Player = player_x
