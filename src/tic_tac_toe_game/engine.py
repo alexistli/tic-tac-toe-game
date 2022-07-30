@@ -409,7 +409,7 @@ class Player(ABC):
         elif class_name == "AIPlayer":
             return AIPlayer(**data)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Player):
             return False
