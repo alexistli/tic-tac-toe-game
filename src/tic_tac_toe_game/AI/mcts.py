@@ -120,7 +120,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
         """
         if not self.is_move_legal(move):
             raise ValueError(f"move {move} on board {self.board} is not legal")
-        new_board = np.copy(self.board)  # type: ignore[no-untyped-call]
+        new_board = np.copy(self.board)
         new_board[move.x_coordinate, move.y_coordinate] = move.value
         if self.next_to_move == TicTacToeGameState.x:
             next_to_move = TicTacToeGameState.o
