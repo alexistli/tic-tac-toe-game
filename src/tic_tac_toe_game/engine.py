@@ -398,6 +398,8 @@ class Player(ABC):
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Player":
         """Constructs Player instance from dictionary."""
+        if not isinstance(data, dict):
+            raise ValueError
         data = dict(data)  # local copy
         class_name = data.pop("__class")
         available_moves = {move.__name__: move for move in cls._available_moves}
@@ -408,6 +410,7 @@ class Player(ABC):
             return HumanPlayer(**data)
         elif class_name == "AIPlayer":
             return AIPlayer(**data)
+        raise ValueError("`class__` must be 'HumanPlayer' or 'AIPlayer'")
 
     def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
