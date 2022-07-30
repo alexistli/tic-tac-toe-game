@@ -72,7 +72,7 @@ class Move:
             raise ValueError
         return cls(**data)
 
-    def __eq__(self, other: "Move"):
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Move):
             return False
@@ -294,7 +294,7 @@ class Board:
             [Move.from_dict(move) for move in data.get("history")],
         )
 
-    def __eq__(self, other: "Board"):
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Board):
             return False
@@ -398,6 +398,8 @@ class Player(ABC):
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Player":
         """Constructs Player instance from dictionary."""
+        if not isinstance(data, dict):
+            raise ValueError
         data = dict(data)  # local copy
         class_name = data.pop("__class")
         available_moves = {move.__name__: move for move in cls._available_moves}
@@ -408,8 +410,9 @@ class Player(ABC):
             return HumanPlayer(**data)
         elif class_name == "AIPlayer":
             return AIPlayer(**data)
+        raise ValueError("`class__` must be 'HumanPlayer' or 'AIPlayer'")
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, Player):
             return False
@@ -485,7 +488,7 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Sequence[Player, Player] = (player_x, player_o)
+        self.players: Sequence[Player] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self._current_player: Player = player_x
@@ -538,7 +541,7 @@ class PlayersMatch:
             players_match.switch()
         return players_match
 
-    def __eq__(self, other: "PlayersMatch"):
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, PlayersMatch):
             return False
@@ -604,7 +607,7 @@ class TicTacToeGame:
             Board.from_dict(data.get("board")),
         )
 
-    def __eq__(self, other: "TicTacToeGame"):
+    def __eq__(self, other: object) -> bool:
         """Check whether other equals self elementwise."""
         if not isinstance(other, TicTacToeGame):
             return False
