@@ -1,31 +1,4 @@
-"""Tic Tac Toe Game.
-
-Rules:
-    The object of Tic Tac Toe is to get three in a row.
-    You play on a three by three game board.
-    The first player is known as X and the second is O.
-    Players alternate placing Xs and Os on the game board,
-    until either opponent has three in a row or all nine squares are filled.
-    X always goes first, and in the event that no one has three in a row,
-    the stalemate is called a cat game.
-
-Version 1.0: Player vs Dumb AI
-    Human Player decide if he wants to start or not.
-    Then roles are switched for every game.
-    Dumb AI will place a mark on a random slot.
-
-
-Version 2.0: Dumb AI + score limit
-    Player scores are memorized and displayed.
-    Player A starts, player B choose score limit.
-
-        # sets score limit
-        choose_score_limit(player=ai_player)
-
-        game = Game()
-        game.score_limit = 123
-        game.current_turn = "X"
-"""
+"""Tic Tac Toe Game."""
 import json
 from abc import ABC
 from abc import abstractmethod
