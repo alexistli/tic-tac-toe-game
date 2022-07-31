@@ -100,7 +100,7 @@ def game() -> Union[str, Response]:
             player_move
         ):
             player = current_game.players_match.current()
-            chosen_cell = current_game.get_move()
+            chosen_cell = current_game.get_move()  # type: ignore[assignment]
             player_move = engine.Move(*chosen_cell, player.get_mark())
             current_board.make_move(player_move)
             current_game.players_match.switch()
