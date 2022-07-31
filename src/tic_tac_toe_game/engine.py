@@ -95,7 +95,7 @@ class Board:
 
     def __init__(
         self,
-        grid: Optional[Tuple[Tuple[int], ...], ...] = None,
+        grid: Optional[Tuple[Tuple[int, ...], ...]] = None,
         history: Optional[List[Move]] = None,
     ) -> None:
         """Inits Grid with an empty grid."""

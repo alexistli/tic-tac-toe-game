@@ -94,6 +94,7 @@ module = [
     "flask_session.*",
     "flask_socketio.*",
     "flask_wtf.*",
+    "gunicorn.*",
     "wtforms.*",
 ]
 ignore_missing_imports = true
