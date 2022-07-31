@@ -1,5 +1,7 @@
 """Flask app routes."""
 import uuid
+from typing import Optional
+from typing import Sequence
 from typing import Tuple
 from typing import Union
 
@@ -88,7 +90,7 @@ def game() -> Union[str, Response]:
     current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
-    chosen_cell = None
+    chosen_cell: Optional[Union[Sequence[int], Sequence[str]]] = None
 
     if "choice" in request.form:
         chosen_cell = request.form["choice"].split()
@@ -100,7 +102,7 @@ def game() -> Union[str, Response]:
             player_move
         ):
             player = current_game.players_match.current()
-            chosen_cell = current_game.get_move()  # type: ignore[assignment]
+            chosen_cell = current_game.get_move()
             player_move = engine.Move(*chosen_cell, player.get_mark())
             current_board.make_move(player_move)
             current_game.players_match.switch()
@@ -152,6 +154,8 @@ def move() -> Union[str, Response]:
     current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
+
+    chosen_cell: Optional[Union[Sequence[int], Sequence[str]]]
 
     chosen_cell = request.form["move"].split()
     player_move = engine.Move(*chosen_cell, player.get_mark())

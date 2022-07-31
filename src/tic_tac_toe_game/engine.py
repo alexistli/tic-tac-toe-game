@@ -8,7 +8,6 @@ from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
-from typing import Sequence
 from typing import Tuple
 from typing import Union
 
@@ -18,7 +17,7 @@ from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
 
 
-Coordinates = Sequence[int]
+Coordinates = Tuple[int, int]
 
 
 class Move:
@@ -96,12 +95,12 @@ class Board:
 
     def __init__(
         self,
-        grid: Optional[List[List[int]]] = None,
+        grid: Optional[Tuple[Tuple[int], ...], ...] = None,
         history: Optional[List[Move]] = None,
     ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
-            grid = [[Board._empty_cell] * 3 for _ in range(3)]
+            grid = ((Board._empty_cell,) * 3 for _ in range(3))
         self.grid: List[List[int]] = grid
         if history is None:
             history = []
@@ -488,7 +487,7 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Sequence[Player] = (player_x, player_o)
+        self.players: Tuple[Player, ...] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self._current_player: Player = player_x
