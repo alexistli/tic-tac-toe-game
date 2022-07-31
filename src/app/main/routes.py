@@ -280,14 +280,15 @@ def board():
     current_player = current_game.players_match.current()
     logger.debug("game retrieved from state", game=current_game, session=session)
 
-    winner = current_game.winner().display_mark() if current_game.winner() else None
+    winner = current_game.winner()
+    winner_mark = winner.display_mark() if winner is not None else None
 
     return render_template(
         "board_multi.html",
         room=room,
         is_over=current_game.board.is_over(),
         is_tie=current_game.board.is_tie(),
-        winner=winner,
+        winner=winner_mark,
         board=current_board.display(),
         my_mark=session["my_mark"],
         turn=current_player.display_mark(),
