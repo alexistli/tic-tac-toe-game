@@ -1,5 +1,6 @@
 """Flask app routes."""
 import uuid
+from typing import Tuple
 from typing import Union
 
 import structlog
@@ -28,7 +29,7 @@ logger = structlog.get_logger()
 
 
 @bp.before_request
-def before_request_func():
+def before_request_func() -> None:
     """Prepares the structlog logger before each request.
 
     Each request will have its own `request_id` to help debugging.
@@ -42,13 +43,13 @@ def before_request_func():
 
 
 @bp.app_errorhandler(404)
-def not_found_error(_):
+def not_found_error(_) -> Tuple[str, int]:
     """Handles 404 not found error."""
     return render_template("404.html"), 404
 
 
 @bp.app_errorhandler(500)
-def internal_error(_):
+def internal_error(_) -> Tuple[str, int]:
     """Handles 500 internal error."""
     return render_template("500.html"), 500
 
@@ -146,7 +147,7 @@ def new_game() -> Response:
 
 
 @bp.route("/move", methods=["POST"])
-def move():
+def move() -> Union[str, Response]:
     """Processes a player's move."""
     current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
@@ -272,7 +273,7 @@ def new_multi_game() -> Union[str, Response]:
 
 
 @bp.route("/board", methods=["GET"])
-def board():
+def board() -> str:
     """Returns the current board state."""
     room = session["room"]
     current_game = state.get_state(room)
