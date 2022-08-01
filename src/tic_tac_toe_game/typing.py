@@ -1,6 +1,7 @@
 """Type alias."""
+from typing import List
 from typing import Tuple
 
 Coordinates = Tuple[int, int]
-Cell = Tuple[int, ...]
-Grid = Tuple[Cell, ...]
+Cell = List[int]
+Grid = List[Cell]

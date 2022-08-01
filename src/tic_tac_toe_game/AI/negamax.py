@@ -126,10 +126,10 @@ GRID_CORRESPONDENCE = {
 def from_negamax_grid_format(grid: List[int]) -> Grid:
     """Loads grid from a list of int."""
     # return [[elem if elem != 2 else -1 for elem in row] for row in grid]
-    return tuple(
-        tuple(elem if elem != 2 else -1 for elem in grid[i : i + 3])
+    return [
+        [elem if elem != 2 else -1 for elem in grid[i : i + 3]]
         for i in range(0, len(grid), 3)
-    )
+    ]
 
 
 def to_negamax_grid_format(grid: Grid) -> List[int]:

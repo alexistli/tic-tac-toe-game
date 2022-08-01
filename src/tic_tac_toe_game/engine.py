@@ -99,7 +99,7 @@ class Board:
     ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
-            grid = tuple((Board._empty_cell,) * 3 for _ in range(3))
+            grid = [[Board._empty_cell] * 3 for _ in range(3)]
         self.grid: Grid = grid
         if history is None:
             history = []

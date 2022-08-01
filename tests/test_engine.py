@@ -1,11 +1,11 @@
 """Test cases for the game module."""
 import random
-from typing import List
 
 import pytest
 
 from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
+from tic_tac_toe_game.typing import Grid
 
 BOARD = engine.Board()
 BOARD_DICT = {
@@ -70,7 +70,7 @@ WIN_O_MOVES = ((2, 2),)
 WIN_O_GRID = "-1 1 1 1 -1 1 -1 1 -1"
 
 
-def load_grid_from_string(grid_str: str) -> List[List[int]]:
+def load_grid_from_string(grid_str: str) -> Grid:
     """Returns a grid by loading a grid passed as a string."""
     array = [int(cell) for cell in grid_str.split()]
     grid = [[int(cell) for cell in array[i : i + 3]] for i in range(0, len(array), 3)]

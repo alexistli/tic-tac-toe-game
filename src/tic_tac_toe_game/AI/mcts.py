@@ -147,7 +147,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
 
 def from_mcts_grid_format(grid: List[List[float]]) -> Grid:
     """Loads grid from a list of int."""
-    return tuple(tuple(int(elem) for elem in row) for row in grid)
+    return [[int(elem) for elem in row] for row in grid]
 
 
 def to_mcts_grid_format(grid: Grid) -> List[List[float]]:
