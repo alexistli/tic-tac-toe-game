@@ -8,7 +8,6 @@ from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
-from typing import Sequence
 from typing import Tuple
 from typing import Union
 
@@ -16,9 +15,8 @@ from tic_tac_toe_game.AI.mcts import mcts_move
 from tic_tac_toe_game.AI.naive import naive_move
 from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
-
-
-Coordinates = Sequence[int]
+from tic_tac_toe_game.typing import Coordinates
+from tic_tac_toe_game.typing import Grid
 
 
 class Move:
@@ -96,13 +94,13 @@ class Board:
 
     def __init__(
         self,
-        grid: Optional[List[List[int]]] = None,
+        grid: Optional[Grid] = None,
         history: Optional[List[Move]] = None,
     ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
             grid = [[Board._empty_cell] * 3 for _ in range(3)]
-        self.grid: List[List[int]] = grid
+        self.grid: Grid = grid
         if history is None:
             history = []
         self.history: List[Move] = history
@@ -315,7 +313,7 @@ class Player(ABC):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -368,7 +366,7 @@ class Player(ABC):
         return self._score
 
     @abstractmethod
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         raise NotImplementedError
 
@@ -426,7 +424,7 @@ class AIPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = naive_move,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = naive_move,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -439,7 +437,7 @@ class AIPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -453,7 +451,7 @@ class HumanPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -466,7 +464,7 @@ class HumanPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -488,13 +486,13 @@ class PlayersMatch:
             player_x: Player, Player with the "X" mark. Will begin game.
             player_o: Player, Player with the "Y" mark.
         """
-        self.players: Sequence[Player] = (player_x, player_o)
+        self.players: Tuple[Player, ...] = (player_x, player_o)
 
         # Holds the player currently playing. Rules dictate that "X" starts the game.
         self._current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[List[List[int]], int], Coordinates]
+        self, algorithm: Callable[[Grid, int], Coordinates]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(

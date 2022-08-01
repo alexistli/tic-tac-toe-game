@@ -6,7 +6,7 @@ import structlog
 from gunicorn import glogging
 
 
-def combined_logformat(_, __, event_dict):
+def combined_logformat(_, __, event_dict):  # type: ignore[no-untyped-def]
     """Custom processor for Gunicorn access events."""
     if event_dict.get("logger") == "gunicorn.access":
         message = event_dict["event"]
@@ -24,7 +24,7 @@ def combined_logformat(_, __, event_dict):
         ]
         pattern = re.compile(r"\s+".join(parts) + r"\s*\Z")
         m = pattern.match(message)
-        res = m.groupdict()
+        res = m.groupdict()  # type: ignore[union-attr]
 
         if res["user"] == "-":
             res["user"] = None
@@ -117,14 +117,14 @@ structlog.configure(
 )
 
 
-class GunicornLogger(glogging.Logger):
+class GunicornLogger(glogging.Logger):  # type: ignore[misc]
     """Subclass of the original Gunicorn logging class.
 
     A subclass of https://github.com/benoitc/gunicorn/blob/master/gunicorn/glogging.py
     to provide structlog logging in gunicorn.
     """
 
-    def __init__(self, cfg):
+    def __init__(self, cfg):  # type: ignore[no-untyped-def]
         """Constructor or the GunicornLogger class.
 
         Some arguments are redefined to benefit from structlog,

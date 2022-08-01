@@ -1,5 +1,8 @@
 """Flask app routes."""
 import uuid
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
 from typing import Union
 
 import structlog
@@ -28,7 +31,7 @@ logger = structlog.get_logger()
 
 
 @bp.before_request
-def before_request_func():
+def before_request_func() -> None:
     """Prepares the structlog logger before each request.
 
     Each request will have its own `request_id` to help debugging.
@@ -42,13 +45,13 @@ def before_request_func():
 
 
 @bp.app_errorhandler(404)
-def not_found_error(_):
+def not_found_error(_) -> Tuple[str, int]:
     """Handles 404 not found error."""
     return render_template("404.html"), 404
 
 
 @bp.app_errorhandler(500)
-def internal_error(_):
+def internal_error(_) -> Tuple[str, int]:
     """Handles 500 internal error."""
     return render_template("500.html"), 500
 
@@ -87,7 +90,7 @@ def game() -> Union[str, Response]:
     current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
-    chosen_cell = None
+    chosen_cell: Optional[Union[Sequence[int], Sequence[str]]] = None
 
     if "choice" in request.form:
         chosen_cell = request.form["choice"].split()
@@ -146,11 +149,13 @@ def new_game() -> Response:
 
 
 @bp.route("/move", methods=["POST"])
-def move():
+def move() -> Union[str, Response]:
     """Processes a player's move."""
     current_game: engine.TicTacToeGame = session["game"]
     current_board = current_game.board
     player = current_game.players_match.current()
+
+    chosen_cell: Optional[Union[Sequence[int], Sequence[str]]]
 
     chosen_cell = request.form["move"].split()
     player_move = engine.Move(*chosen_cell, player.get_mark())
@@ -272,7 +277,7 @@ def new_multi_game() -> Union[str, Response]:
 
 
 @bp.route("/board", methods=["GET"])
-def board():
+def board() -> str:
     """Returns the current board state."""
     room = session["room"]
     current_game = state.get_state(room)
@@ -280,14 +285,15 @@ def board():
     current_player = current_game.players_match.current()
     logger.debug("game retrieved from state", game=current_game, session=session)
 
-    winner = current_game.winner().display_mark() if current_game.winner() else None
+    winner = current_game.winner()
+    winner_mark = winner.display_mark() if winner is not None else None
 
     return render_template(
         "board_multi.html",
         room=room,
         is_over=current_game.board.is_over(),
         is_tie=current_game.board.is_tie(),
-        winner=winner,
+        winner=winner_mark,
         board=current_board.display(),
         my_mark=session["my_mark"],
         turn=current_player.display_mark(),
