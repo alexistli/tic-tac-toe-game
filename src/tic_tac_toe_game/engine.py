@@ -15,9 +15,8 @@ from tic_tac_toe_game.AI.mcts import mcts_move
 from tic_tac_toe_game.AI.naive import naive_move
 from tic_tac_toe_game.AI.negamax import negamax_move
 from tic_tac_toe_game.errors import OverwriteCellError
-
-
-Coordinates = Tuple[int, int]
+from tic_tac_toe_game.typing import Coordinates
+from tic_tac_toe_game.typing import Grid
 
 
 class Move:
@@ -95,13 +94,13 @@ class Board:
 
     def __init__(
         self,
-        grid: Optional[Tuple[Tuple[int, ...], ...]] = None,
+        grid: Optional[Grid] = None,
         history: Optional[List[Move]] = None,
     ) -> None:
         """Inits Grid with an empty grid."""
         if grid is None:
-            grid = ((Board._empty_cell,) * 3 for _ in range(3))
-        self.grid: List[List[int]] = grid
+            grid = tuple((Board._empty_cell,) * 3 for _ in range(3))
+        self.grid: Grid = grid
         if history is None:
             history = []
         self.history: List[Move] = history
@@ -314,7 +313,7 @@ class Player(ABC):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -367,7 +366,7 @@ class Player(ABC):
         return self._score
 
     @abstractmethod
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         raise NotImplementedError
 
@@ -425,7 +424,7 @@ class AIPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = naive_move,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = naive_move,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -438,7 +437,7 @@ class AIPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -452,7 +451,7 @@ class HumanPlayer(Player):
         self,
         mark: int,
         name: str,
-        moves: Optional[Callable[[List[List[int]], int], Coordinates]] = None,
+        moves: Optional[Callable[[Grid, int], Coordinates]] = None,
         score: int = 0,
     ) -> None:
         """Constructor.
@@ -465,7 +464,7 @@ class HumanPlayer(Player):
         """
         super().__init__(mark=mark, name=name, moves=moves, score=score)
 
-    def ask_move(self, grid: List[List[int]]) -> Optional[Coordinates]:
+    def ask_move(self, grid: Grid) -> Optional[Coordinates]:
         """Asks the player what move he wants to play."""
         if self.moves is not None:
             return self.moves(grid, self.get_mark())
@@ -493,7 +492,7 @@ class PlayersMatch:
         self._current_player: Player = player_x
 
     def update_ai_algorithm(
-        self, algorithm: Callable[[List[List[int]], int], Coordinates]
+        self, algorithm: Callable[[Grid, int], Coordinates]
     ) -> None:
         """Updates the AI algorithm of the AIPlayer."""
         ai_player = next(

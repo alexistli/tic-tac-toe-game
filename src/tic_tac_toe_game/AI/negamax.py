@@ -9,6 +9,8 @@ from easyAI import Human_Player
 from easyAI import Negamax
 from easyAI import TwoPlayerGame
 
+from tic_tac_toe_game.typing import Grid
+
 
 class TicTacToe(TwoPlayerGame):  # type: ignore[misc]
     """TicTacToe class.
@@ -121,21 +123,21 @@ GRID_CORRESPONDENCE = {
 }
 
 
-def from_negamax_grid_format(grid: List[int]) -> List[List[int]]:
+def from_negamax_grid_format(grid: List[int]) -> Grid:
     """Loads grid from a list of int."""
     # return [[elem if elem != 2 else -1 for elem in row] for row in grid]
-    return [
-        [elem if elem != 2 else -1 for elem in grid[i : i + 3]]
+    return tuple(
+        tuple(elem if elem != 2 else -1 for elem in grid[i : i + 3])
         for i in range(0, len(grid), 3)
-    ]
+    )
 
 
-def to_negamax_grid_format(grid: List[List[int]]) -> List[int]:
+def to_negamax_grid_format(grid: Grid) -> List[int]:
     """Dumps grid to list of int."""
     return [elem if elem != -1 else 2 for row in grid for elem in row]
 
 
-def negamax_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
+def negamax_move(grid: Grid, mark: int) -> Tuple[int, int]:
     """Computes best move."""
     board = to_negamax_grid_format(grid)
     current_player = mark if mark != -1 else 2

@@ -9,6 +9,8 @@ from mctspy.games.common import TwoPlayersAbstractGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
 from mctspy.tree.search import MonteCarloTreeSearch
 
+from tic_tac_toe_game.typing import Grid
+
 
 class Move:
     """Move class."""
@@ -143,17 +145,17 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
         ]
 
 
-def from_mcts_grid_format(grid: List[List[float]]) -> List[List[int]]:
+def from_mcts_grid_format(grid: List[List[float]]) -> Grid:
     """Loads grid from a list of int."""
-    return [[int(elem) for elem in row] for row in grid]
+    return tuple(tuple(int(elem) for elem in row) for row in grid)
 
 
-def to_mcts_grid_format(grid: List[List[int]]) -> List[List[float]]:
+def to_mcts_grid_format(grid: Grid) -> List[List[float]]:
     """Dumps grid to list of int."""
     return [[float(elem) for elem in row] for row in grid]
 
 
-def mcts_move(grid: List[List[int]], mark: int) -> Tuple[int, int]:
+def mcts_move(grid: Grid, mark: int) -> Tuple[int, int]:
     """Computes best move."""
     board = to_mcts_grid_format(grid)
     current_player = float(mark)
