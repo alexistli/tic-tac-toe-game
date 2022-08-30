@@ -264,7 +264,7 @@ toml = ["tomli"]
 
 [[package]]
 name = "cruft"
-version = "2.11.0"
+version = "2.11.1"
 description = "Allows you to maintain all the necessary cruft for packaging and building projects separate from the code you intentionally write. Built on-top of CookieCutter."
 category = "dev"
 optional = false
@@ -1630,7 +1630,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "063620623c58da00e1af42b348037178913b698a1e13386f8a36fdb59d6e6e42"
+content-hash = "15fef97881f661e5f73570751d83d196c1ccdcf30de901f0dc7df026c0b82777"
 
 [metadata.files]
 alabaster = [
@@ -1794,8 +1794,8 @@ coverage = [
     {file = "coverage-6.4.4.tar.gz", hash = "sha256:e16c45b726acb780e1e6f88b286d3c10b3914ab03438f32117c4aa52d7f30d58"},
 ]
 cruft = [
-    {file = "cruft-2.11.0-py3-none-any.whl", hash = "sha256:0a5f5c8dd4f7ea529fc7e55fe786a8a6dc2134b3db105bd2c4954fc400fe3300"},
-    {file = "cruft-2.11.0.tar.gz", hash = "sha256:dd1edac65f039faca23f63bec46e774d2d3e8af86fd67e6b62cbfecef3d6ff18"},
+    {file = "cruft-2.11.1-py3-none-any.whl", hash = "sha256:36026426d1d602656fe894e027dcd502ccf48da4b30927e071928e35465c2676"},
+    {file = "cruft-2.11.1.tar.gz", hash = "sha256:deae3ee097f091462d7c872df22d6ad0ac89ce870bd1665e716e0d08fd21357b"},
 ]
 darglint = [
     {file = "darglint-1.8.1-py3-none-any.whl", hash = "sha256:5ae11c259c17b0701618a20c3da343a3eb98b3bc4b5a83d31cdd94f5ebdced8d"},
