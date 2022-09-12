@@ -500,8 +500,8 @@ cachelib = "*"
 Flask = ">=0.8"
 
 [[package]]
-name = "flask-socketio"
-version = "5.3.0"
+name = "Flask-SocketIO"
+version = "5.3.1"
 description = "Socket.IO integration for Flask applications"
 category = "main"
 optional = false
@@ -1628,7 +1628,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "30bfc096f5d91e6dbadb3c1f4dc1546e755ef2f969365d3d25313a7fb1a6ef3e"
+content-hash = "411f85365dafa4cb289720fc221a07b2b39058d688781f7c65d40fa4fe52a25a"
 
 [metadata.files]
 alabaster = [
@@ -1864,9 +1864,9 @@ flask-session = [
     {file = "Flask-Session-0.4.0.tar.gz", hash = "sha256:c9ed54321fa8c4ca0132ffd3369582759eda7252fb4b3bee480e690d1ba41f46"},
     {file = "Flask_Session-0.4.0-py2.py3-none-any.whl", hash = "sha256:1e3f8a317005db72c831f85d884a5a9d23145f256c730d80b325a3150a22c3db"},
 ]
-flask-socketio = [
-    {file = "Flask-SocketIO-5.3.0.tar.gz", hash = "sha256:fa547d0c39ccc6223aad191f3f6ef906383eab67d25ffc343b15bfe33d6478fe"},
-    {file = "Flask_SocketIO-5.3.0-py3-none-any.whl", hash = "sha256:77b71d69c0b62ac2ce091efa53ed3ff0498d00059bb171a9ab69a395eb127207"},
+Flask-SocketIO = [
+    {file = "Flask-SocketIO-5.3.1.tar.gz", hash = "sha256:fd0ed0fc1341671d92d5f5b2f5503916deb7aa7e2940e6636cfa2c087c828bf9"},
+    {file = "Flask_SocketIO-5.3.1-py3-none-any.whl", hash = "sha256:ff0c721f20bff1e2cfba77948727a8db48f187e89a72fe50c34478ce6efb3353"},
 ]
 flask-sqlalchemy = [
     {file = "Flask-SQLAlchemy-2.5.1.tar.gz", hash = "sha256:2bda44b43e7cacb15d4e05ff3cc1f8bc97936cc464623424102bfc2c35e95912"},
