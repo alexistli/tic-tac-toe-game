@@ -513,7 +513,7 @@ python-socketio = ">=5.0.2"
 
 [[package]]
 name = "flask-sqlalchemy"
-version = "3.0.1"
+version = "3.0.2"
 description = "Add SQLAlchemy support to your Flask application."
 category = "main"
 optional = false
@@ -1632,7 +1632,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "81f9ea32f91132f6c5752016e9bd8e150a79781f432a7ee319e62e923e1b7775"
+content-hash = "faeab97d2bfab7cc271e67a670d2c58f731da16c0e23feccb8e3c73a903423aa"
 
 [metadata.files]
 alabaster = [
@@ -1871,8 +1871,8 @@ Flask-SocketIO = [
     {file = "Flask_SocketIO-5.3.1-py3-none-any.whl", hash = "sha256:ff0c721f20bff1e2cfba77948727a8db48f187e89a72fe50c34478ce6efb3353"},
 ]
 flask-sqlalchemy = [
-    {file = "Flask-SQLAlchemy-3.0.1.tar.gz", hash = "sha256:0a5d586774949856e4f1fe8be3a64c594615959e39e2b041e887bac5c756bc42"},
-    {file = "Flask_SQLAlchemy-3.0.1-py3-none-any.whl", hash = "sha256:649eddf17ae18814f87f33eb26d9d7b37412ec7ee67985873b3cf882aca099f5"},
+    {file = "Flask-SQLAlchemy-3.0.2.tar.gz", hash = "sha256:16199f5b3ddfb69e0df2f52ae4c76aedbfec823462349dabb21a1b2e0a2b65e9"},
+    {file = "Flask_SQLAlchemy-3.0.2-py3-none-any.whl", hash = "sha256:7d0cd9cf73e64a996bb881a1ebd01633fc5a6d11c36ea27f7b5e251dc45476e7"},
 ]
 flask-wtf = [
     {file = "Flask-WTF-1.0.1.tar.gz", hash = "sha256:34fe5c6fee0f69b50e30f81a3b7ea16aa1492a771fe9ad0974d164610c09a6c9"},
