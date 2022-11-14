@@ -487,7 +487,7 @@ webassets = ">=2.0"
 
 [[package]]
 name = "flask-migrate"
-version = "3.1.0"
+version = "4.0.0"
 description = "SQLAlchemy database migrations for Flask applications using Alembic."
 category = "main"
 optional = false
@@ -1636,7 +1636,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0c28eb4fd531a937a42af799ffd5561cb3282862bf7b6a4fdfca5bc8801d9c27"
+content-hash = "9cec3ae73446ee98fd306bdba8638d8543515ceaab2b31a9e0a5bc2873757dfd"
 
 [metadata.files]
 alabaster = [
@@ -1867,8 +1867,8 @@ flask-assets = [
     {file = "Flask_Assets-2.0-py3-none-any.whl", hash = "sha256:2845bd3b479be9db8556801e7ebc2746ce2d9edb4e7b64a1c786ecbfc1e5867b"},
 ]
 flask-migrate = [
-    {file = "Flask-Migrate-3.1.0.tar.gz", hash = "sha256:57d6060839e3a7f150eaab6fe4e726d9e3e7cffe2150fb223d73f92421c6d1d9"},
-    {file = "Flask_Migrate-3.1.0-py3-none-any.whl", hash = "sha256:a6498706241aba6be7a251078de9cf166d74307bca41a4ca3e403c9d39e2f897"},
+    {file = "Flask-Migrate-4.0.0.tar.gz", hash = "sha256:2a301c3040af6844f29d9149abe428a0f08ebc8fa149e72113bbb36fa341920a"},
+    {file = "Flask_Migrate-4.0.0-py3-none-any.whl", hash = "sha256:e75a46b657e3062296b9f6e92f31e19662f76cfee8abd6ae94640cbcb79fe016"},
 ]
 flask-session = [
     {file = "Flask-Session-0.4.0.tar.gz", hash = "sha256:c9ed54321fa8c4ca0132ffd3369582759eda7252fb4b3bee480e690d1ba41f46"},
