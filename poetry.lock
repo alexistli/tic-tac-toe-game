@@ -355,7 +355,7 @@ numpy = "*"
 
 [[package]]
 name = "eventlet"
-version = "0.33.1"
+version = "0.33.2"
 description = "Highly concurrent networking library"
 category = "main"
 optional = false
@@ -1639,7 +1639,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b68f851c954edd4204b937d082712f810275478f8ba200d0c62dd5441f8b555b"
+content-hash = "52f742dbc868cdaa6bfddd09a2ab5bf061667a5ff3faa349e0eef641350d57ff"
 
 [metadata.files]
 alabaster = [
@@ -1830,8 +1830,8 @@ easyai = [
     {file = "easyAI-2.0.12.tar.gz", hash = "sha256:8c4d2d488bcd81578e1b48d38158bc50353dfd4ab3ab04e4ddac637e08378fbe"},
 ]
 eventlet = [
-    {file = "eventlet-0.33.1-py2.py3-none-any.whl", hash = "sha256:a085922698e5029f820cf311a648ac324d73cec0e4792877609d978a4b5bbf31"},
-    {file = "eventlet-0.33.1.tar.gz", hash = "sha256:afbe17f06a58491e9aebd7a4a03e70b0b63fd4cf76d8307bae07f280479b1515"},
+    {file = "eventlet-0.33.2-py2.py3-none-any.whl", hash = "sha256:96039b9389dbb4431b1c0a6e42ea1326628cc7ad63a6280b02947f111d3d8e04"},
+    {file = "eventlet-0.33.2.tar.gz", hash = "sha256:82c382c2a2c712f1a8320378a9120ac9589d9f1131c36a63780f0b8504afa5bc"},
 ]
 exceptiongroup = [
     {file = "exceptiongroup-1.0.0-py3-none-any.whl", hash = "sha256:2ac84b496be68464a2da60da518af3785fff8b7ec0d090a581604bc870bdee41"},
