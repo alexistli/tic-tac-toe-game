@@ -37,7 +37,7 @@ Flask-Migrate = "^4.0.0"
 [tool.poetry.dev-dependencies]
 cruft = "^2.11.1"
 pytest = "^7.2.0"
-coverage = {extras = ["toml"], version = "^6.5"}
+coverage = {extras = ["toml"], version = "^7.0"}
 safety = "^2.3.5"
 mypy = "^0.991"
 typeguard = "^2.13.3"
