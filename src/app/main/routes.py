@@ -22,6 +22,7 @@ from tic_tac_toe_game.AI import mcts
 from tic_tac_toe_game.AI import naive
 from tic_tac_toe_game.AI import negamax
 
+
 logger = structlog.get_logger()
 
 

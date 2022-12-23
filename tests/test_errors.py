@@ -5,6 +5,7 @@ import pytest
 
 from tic_tac_toe_game import errors
 
+
 RANDOM_ROW = random.randint(0, 2)
 RANDOM_COL = random.randint(0, 2)
 RANDOM_COORD = (RANDOM_ROW, RANDOM_COL)

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from tic_tac_toe_game import engine
 
+
 basedir = Path(__file__).resolve().parent
 
 

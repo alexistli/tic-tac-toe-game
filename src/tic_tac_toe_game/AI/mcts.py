@@ -141,7 +141,7 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):  # type: ignore[misc]
         indices = np.where(self.board == 0)
         return [
             Move(coords[0], coords[1], self.next_to_move)
-            for coords in list(zip(indices[0], indices[1]))
+            for coords in list(zip(indices[0], indices[1], strict=True))
         ]
 
 
