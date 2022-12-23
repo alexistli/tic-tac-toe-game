@@ -7,6 +7,7 @@ from tic_tac_toe_game import engine
 from tic_tac_toe_game import errors
 from tic_tac_toe_game.typing import Grid
 
+
 BOARD = engine.Board()
 BOARD_DICT = {
     "__class": "Board",
