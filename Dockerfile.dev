@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM python:3.10.1-slim-bullseye as builder
+FROM python:3.11.1-slim-bullseye as builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -30,7 +30,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels "https://
 #########
 
 # pull official base image
-FROM python:3.10.1-slim-bullseye
+FROM python:3.11.1-slim-bullseye
 
 # create directory for the app user
 ENV HOME=/home/ttt/
