@@ -1,12 +1,13 @@
 {
   "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
   "author": "Alexis Torelli",
-  "development_status": "Development Status :: 1 - Planning",
+  "copyright_year": "2022",
+  "development_status": "Development Status :: 4 - Beta",
   "email": "alexis.torelli.treanton@gmail.com",
   "friendly_name": "Tic Tac Toe Game",
   "github_user": "alexistli",
   "license": "MIT",
   "package_name": "tic_tac_toe_game",
   "project_name": "tic-tac-toe-game",
-  "version": "0.0.0"
+  "version": "0.2.0"
 }
