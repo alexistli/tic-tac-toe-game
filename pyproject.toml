@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tic-tac-toe-game"
-version = "0.0.0"
+version = "0.2.0"
 description = "Tic Tac Toe Game"
 authors = ["Alexis Torelli <alexis.torelli.treanton@gmail.com>"]
 license = "MIT"
@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/alexistli/tic-tac-toe-game"
 repository = "https://github.com/alexistli/tic-tac-toe-game"
 documentation = "https://tic-tac-toe-game.readthedocs.io"
-classifiers = ["Development Status :: 3 - Alpha"]
+classifiers = ["Development Status :: 4 - Beta"]
 
 [tool.poetry.urls]
 Changelog = "https://github.com/alexistli/tic-tac-toe-game/releases"

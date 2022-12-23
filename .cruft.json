@@ -9,10 +9,10 @@
       "author": "Alexis Torelli",
       "email": "alexis.torelli.treanton@gmail.com",
       "github_user": "alexistli",
-      "version": "0.0.0",
+      "version": "0.2.0",
       "copyright_year": "2022",
       "license": "MIT",
-      "development_status": "Development Status :: 1 - Planning",
+      "development_status": "Development Status :: 4 - Beta",
       "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python"
     }
   },
