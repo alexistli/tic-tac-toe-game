@@ -777,14 +777,14 @@ webassets = ">=2.0"
 
 [[package]]
 name = "flask-migrate"
-version = "4.0.2"
+version = "4.0.3"
 description = "SQLAlchemy database migrations for Flask applications using Alembic."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Migrate-4.0.2.tar.gz", hash = "sha256:3cd95206a5d08c1cd0014d6b915dc70fb9253a346c6aa4f1e8d2417708f4e080"},
-    {file = "Flask_Migrate-4.0.2-py3-none-any.whl", hash = "sha256:cb59b42052ae3aaffab9821022f8dd8161f92f7de048e2c597b63ceecfa4f1c4"},
+    {file = "Flask-Migrate-4.0.3.tar.gz", hash = "sha256:a0062c8d3f32de02847086b46cfc389412f78c71c89a619ebd7097e89d72ea4b"},
+    {file = "Flask_Migrate-4.0.3-py3-none-any.whl", hash = "sha256:8662a9dd391ce36deeaf3265987319c20fdb4c8a45306a32ba4f8224459abed4"},
 ]
 
 [package.dependencies]
