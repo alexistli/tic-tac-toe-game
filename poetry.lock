@@ -810,13 +810,13 @@ sqlalchemy = ">=2.0.16"
 
 [[package]]
 name = "flask-wtf"
-version = "1.1.2"
+version = "1.2.1"
 description = "Form rendering, validation, and CSRF protection for Flask with WTForms."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "flask_wtf-1.1.2-py3-none-any.whl", hash = "sha256:134f45f3155ebdbb2b44fe8e5b498a0956d34a16b10a53fadcb7a865c0b3cea2"},
-    {file = "flask_wtf-1.1.2.tar.gz", hash = "sha256:b51cfa7ad14e03de432a6268e8341354939d0beebf30fce66f8617a93e55e2a0"},
+    {file = "flask_wtf-1.2.1-py3-none-any.whl", hash = "sha256:fa6793f2fb7e812e0fe9743b282118e581fb1b6c45d414b8af05e659bd653287"},
+    {file = "flask_wtf-1.2.1.tar.gz", hash = "sha256:8bb269eb9bb46b87e7c8233d7e7debdf1f8b74bf90cc1789988c29b37a97b695"},
 ]
 
 [package.dependencies]
