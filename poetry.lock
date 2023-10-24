@@ -754,13 +754,13 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-assets"
-version = "2.0"
+version = "2.1.0"
 description = "Asset management for Flask, to compress and merge CSS and Javascript files."
 optional = false
 python-versions = "*"
 files = [
-    {file = "Flask-Assets-2.0.tar.gz", hash = "sha256:1dfdea35e40744d46aada72831f7613d67bf38e8b20ccaaa9e91fdc37aa3b8c2"},
-    {file = "Flask_Assets-2.0-py3-none-any.whl", hash = "sha256:2845bd3b479be9db8556801e7ebc2746ce2d9edb4e7b64a1c786ecbfc1e5867b"},
+    {file = "Flask-Assets-2.1.0.tar.gz", hash = "sha256:f84d6532ffe59c9ff352885e8740ff4da25c0bcfacd805f0a806815e44354813"},
+    {file = "Flask_Assets-2.1.0-py3-none-any.whl", hash = "sha256:a56c476b15f84701712cc3b4b4a001ebbe62b1dcbe81c23f96fbe6f261b75324"},
 ]
 
 [package.dependencies]
