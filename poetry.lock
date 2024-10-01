@@ -826,13 +826,13 @@ flask = ">=2.2"
 
 [[package]]
 name = "flask-socketio"
-version = "5.4.0"
+version = "5.4.1"
 description = "Socket.IO integration for Flask applications"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask_SocketIO-5.4.0-py3-none-any.whl", hash = "sha256:5478e7f3ab15ba5ba9bf139e95b2e09c108051ae4bb15b53bcf14d0aa8e67996"},
-    {file = "flask_socketio-5.4.0.tar.gz", hash = "sha256:e08dcb608e276a7904b09a679fae5723608ab7b4c860741ca868286139621bd0"},
+    {file = "Flask_SocketIO-5.4.1-py3-none-any.whl", hash = "sha256:895da879d162781b9193cbb8fe8f3cf25b263ff242980d5c5e6c16d3c03930d2"},
+    {file = "flask_socketio-5.4.1.tar.gz", hash = "sha256:2e9b8864a5be37ca54f6c76a4d06b1ac5e0df61fde12d03afc81ab4057e1eb86"},
 ]
 
 [package.dependencies]
